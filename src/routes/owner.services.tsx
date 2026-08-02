@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
-import { PageHeader } from "@/components/app/AppShell";
+import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { businesses } from "@/data/businesses";
+import { businesses } from "@/features/businesses";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/owner/services")({ component: ServicesEditor });

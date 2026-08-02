@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { businesses } from "@/data/businesses";
+import { businesses } from "@/features/businesses";
 
 const BASE_URL = "https://websitekaro.lovable.app";
 

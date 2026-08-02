@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, StatCard } from "@/components/app/AppShell";
+import { PageHeader, StatCard } from "@/components/shared";
 
 export const Route = createFileRoute("/owner/analytics")({ component: OwnerAnalytics });
 

@@ -1,17 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { LayoutDashboard, Building2, Wand2, LayoutTemplate, Users, BarChart3, CreditCard, Settings } from "lucide-react";
-import { AppShell, type NavItem } from "@/components/app/AppShell";
-
-const nav: NavItem[] = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/admin/businesses", label: "Businesses", icon: Building2 },
-  { to: "/admin/generate", label: "Generate website", icon: Wand2 },
-  { to: "/admin/templates", label: "Templates", icon: LayoutTemplate },
-  { to: "/admin/users", label: "Users", icon: Users },
-  { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard },
-  { to: "/admin/settings", label: "Settings", icon: Settings },
-];
+import { AppShell } from "@/components/layout";
+import { adminNav } from "@/features/admin";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -24,7 +13,7 @@ export const Route = createFileRoute("/admin")({
     ],
   }),
   component: () => (
-    <AppShell nav={nav} role="/admin" roleLabel="Super Admin">
+    <AppShell nav={adminNav} role="/admin" roleLabel="Super Admin">
       <Outlet />
     </AppShell>
   ),

@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader } from "@/components/app/AppShell";
+import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { businesses } from "@/data/businesses";
+import { businesses } from "@/features/businesses";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/owner/seo")({ component: SeoEditor });

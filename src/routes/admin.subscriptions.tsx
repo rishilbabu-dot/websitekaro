@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, StatusPill } from "@/components/app/AppShell";
-import { businesses } from "@/data/businesses";
+import { PageHeader, StatusPill } from "@/components/shared";
+import { businesses } from "@/features/businesses";
 
 export const Route = createFileRoute("/admin/subscriptions")({ component: SubscriptionsPage });
 

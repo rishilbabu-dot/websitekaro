@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader } from "@/components/app/AppShell";
-import { industryPresets } from "@/data/businesses";
+import { PageHeader } from "@/components/shared";
+import { industryPresets } from "@/features/businesses";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 

@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bell, ChevronsUpDown, Search, Sparkles, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Bell, ChevronsUpDown, Search, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 
 export interface NavItem {
@@ -18,7 +19,7 @@ export function AppShell({
   nav: NavItem[];
   role: string;
   roleLabel: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -108,85 +109,5 @@ export function AppShell({
         <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-8 sm:px-6 lg:px-10">{children}</main>
       </div>
     </div>
-  );
-}
-
-export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: string; actions?: React.ReactNode }) {
-  return (
-    <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <h1 className="text-[2rem] leading-tight">{title}</h1>
-        {subtitle && <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{subtitle}</p>}
-      </div>
-      {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
-    </div>
-  );
-}
-
-export function StatCard({
-  label,
-  value,
-  hint,
-  delta,
-  trend,
-}: {
-  label: string;
-  value: string;
-  hint?: string;
-  delta?: string;
-  trend?: number[];
-}) {
-  const up = delta?.startsWith("-") === false;
-  return (
-    <div className="group rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-soft)] transition-shadow hover:shadow-[var(--shadow-lift)]">
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">{label}</p>
-        {delta && (
-          <span
-            className={`inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[11px] font-medium ${
-              up ? "bg-success/12 text-success" : "bg-destructive/10 text-destructive"
-            }`}
-          >
-            {up ? <ArrowUpRight className="size-3" /> : <ArrowDownRight className="size-3" />}
-            {delta.replace("-", "")}
-          </span>
-        )}
-      </div>
-      <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums">{value}</p>
-      {trend && <Sparkline points={trend} />}
-      {hint && <p className="mt-1.5 text-xs text-muted-foreground">{hint}</p>}
-    </div>
-  );
-}
-
-export function Sparkline({ points }: { points: number[] }) {
-  const max = Math.max(...points, 1);
-  const min = Math.min(...points);
-  const range = max - min || 1;
-  const d = points
-    .map((p, i) => `${(i / (points.length - 1)) * 100},${28 - ((p - min) / range) * 24}`)
-    .join(" ");
-  return (
-    <svg viewBox="0 0 100 30" preserveAspectRatio="none" className="mt-3 h-8 w-full" aria-hidden>
-      <polyline points={d} fill="none" stroke="var(--primary)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-export function StatusPill({ status }: { status: string }) {
-  const tone: Record<string, string> = {
-    published: "bg-success/12 text-success",
-    generated: "bg-primary/10 text-primary",
-    "in-review": "bg-accent text-accent-foreground",
-    draft: "bg-secondary text-muted-foreground",
-    suspended: "bg-destructive/10 text-destructive",
-  };
-  const labels: Record<string, string> = {
-    published: "Published", generated: "Generated", "in-review": "In review", draft: "Draft", suspended: "Suspended",
-  };
-  return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${tone[status] ?? tone['draft']}`}>
-      {labels[status] ?? status}
-    </span>
   );
 }
