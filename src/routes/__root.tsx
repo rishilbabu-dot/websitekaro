@@ -78,21 +78,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "WebsiteKaro — AI Digital Agency for Local Business Websites" },
+      { title: "WebsiteKaro — Websites for Local Business, Built Before You Pay" },
       {
         name: "description",
         content:
-          "Paste your Google Maps business link. WebsiteKaro builds a premium business website before you pay.",
+          "Paste your Google Maps business link and WebsiteKaro's AI digital agency builds a premium, ready-to-launch website for your clinic or shop — before you pay a rupee.",
       },
       { name: "author", content: "WebsiteKaro" },
-      { property: "og:title", content: "WebsiteKaro — AI Digital Agency" },
+      { property: "og:title", content: "WebsiteKaro — Websites for Local Business, Built Before You Pay" },
       {
         property: "og:description",
-        content: "Premium websites for local businesses, built before you pay.",
+        content: "Paste your Google Maps business link and WebsiteKaro's AI digital agency builds a premium, ready-to-launch website for your clinic or shop — before you pay a rupee.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@websitekaro" },
+      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "WebsiteKaro — Websites for Local Business, Built Before You Pay" },
+      { name: "twitter:description", content: "Paste your Google Maps business link and WebsiteKaro's AI digital agency builds a premium, ready-to-launch website for your clinic or shop — before you pay a rupee." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/28878de6-07c4-4773-8c75-d6c535bd7097/id-preview-ce6d5b08--bcbe51bd-67b3-48ac-a54f-eedcd7eb9c57.lovable.app-1785683615181.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/28878de6-07c4-4773-8c75-d6c535bd7097/id-preview-ce6d5b08--bcbe51bd-67b3-48ac-a54f-eedcd7eb9c57.lovable.app-1785683615181.png" },
     ],
     links: [
       {
