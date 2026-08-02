@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import heroImg from "@/assets/dental-hero.jpg";
+import { galleryImages, doctorPhotos } from "@/data/media";
 
 const nav = [
   { id: "about", label: "About" },
@@ -30,7 +31,10 @@ function Section({ id, children, className = "" }: { id?: string; children: Reac
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-primary">{children}</p>
+    <p className="eyebrow mb-4 flex items-center gap-2.5 text-primary">
+      <span className="inline-block h-px w-6 bg-primary/50" />
+      {children}
+    </p>
   );
 }
 
@@ -82,41 +86,70 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
       </header>
 
       {/* Hero */}
-      <div id="top" className="relative overflow-hidden">
+      <div id="top" className="aura relative overflow-hidden">
         <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-2">
           <div className="rise">
             <Eyebrow>{data.category} · {data.city}</Eyebrow>
-            <h1 className="display text-4xl leading-[1.05] sm:text-5xl md:text-6xl">{data.tagline}</h1>
+            <h1 className="display text-balance text-4xl leading-[1.05] sm:text-5xl md:text-[4rem]">{data.tagline}</h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">{data.description}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3 rise-2">
               <Button size="lg" asChild><a href="#contact">{data.cta.primary} <ArrowRight className="size-4" /></a></Button>
               <Button size="lg" variant="outline" asChild><a href={`tel:${data.phone}`}><Phone className="size-4" /> {data.phone}</a></Button>
             </div>
-            <dl className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-4">
+            <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-7 border-t border-border pt-8 sm:grid-cols-4 rise-3">
               {data.trust.map((t) => (
                 <div key={t.label}>
-                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">{t.label}</dt>
-                  <dd className="mt-1 text-lg font-semibold">{t.value}</dd>
+                  <dd className="display text-2xl leading-none">{t.value}</dd>
+                  <dt className="mt-2 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{t.label}</dt>
                 </div>
               ))}
             </dl>
           </div>
-          <div className="relative">
+          <div className="relative rise-2">
+            <div className="absolute -right-4 -top-4 hidden size-40 rounded-full bg-sand/60 blur-2xl md:block" aria-hidden />
             <img
               src={heroImg}
               alt={`Interior of ${data.name} in ${data.city}`}
               width={1600}
               height={1000}
-              className="aspect-4/3 w-full rounded-3xl object-cover shadow-[var(--shadow-lift)]"
+              className="relative aspect-4/5 w-full rounded-[2rem] object-cover shadow-[var(--shadow-lift)] sm:aspect-4/3"
             />
-            <div className="absolute -bottom-6 left-6 hidden rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] sm:block">
+            <div className="absolute -bottom-6 left-6 hidden rounded-2xl border border-border bg-card/95 p-4 shadow-[var(--shadow-lift)] backdrop-blur sm:block">
               <div className="flex items-center gap-2">
                 <Star className="size-4 fill-accent text-accent" />
                 <span className="text-sm font-semibold">{data.reviews.rating}</span>
                 <span className="text-sm text-muted-foreground">· {data.reviews.count} Google reviews</span>
               </div>
             </div>
+            <div className="absolute -left-5 top-8 hidden rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur lg:block">
+              <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Today</p>
+              <p className="mt-1 flex items-center gap-2 text-sm font-medium">
+                <span className="size-1.5 rounded-full bg-success" /> Slots available
+              </p>
+            </div>
           </div>
+        </div>
+      </div>
+
+      {/* Credibility strip */}
+      <div className="overflow-hidden border-y border-border bg-secondary/50 py-4">
+        <div className="marquee-track gap-12 px-6">
+          {[0, 1].map((dup) => (
+            <div key={dup} className="flex shrink-0 items-center gap-12 pr-12" aria-hidden={dup === 1}>
+              {[
+                "ISO-certified sterilisation",
+                "Digital OPG on site",
+                "Zero-cost EMI",
+                "Same-day emergency slots",
+                "Indian Dental Association member",
+                "Wheelchair accessible",
+              ].map((c) => (
+                <span key={c} className="flex items-center gap-2 whitespace-nowrap text-sm text-muted-foreground">
+                  <ShieldCheck className="size-4 text-primary" /> {c}
+                </span>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
 
@@ -147,13 +180,16 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
         <h2 className="max-w-2xl text-3xl sm:text-4xl">Care planned before it begins</h2>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {data.services.map((s) => (
-            <article key={s.id} className="group rounded-3xl border border-border bg-card p-7 transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
+            <article key={s.id} className="card-quiet group p-7">
               <h3 className="text-xl">{s.name}</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.description}</p>
               <div className="mt-6 flex items-center justify-between border-t border-border pt-4 text-sm">
                 <span className="font-semibold">{s.priceFrom ? `From ${s.priceFrom}` : "On consultation"}</span>
                 <span className="text-muted-foreground">{s.duration}</span>
               </div>
+              <a href="#contact" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                Book this <ArrowRight className="size-3.5" />
+              </a>
             </article>
           ))}
         </div>
@@ -164,15 +200,22 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
         <Eyebrow>The team</Eyebrow>
         <h2 className="max-w-2xl text-3xl sm:text-4xl">Specialists you'll actually meet</h2>
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {data.team.map((m) => (
-            <article key={m.id} className="rounded-3xl border border-border bg-card p-7">
-              <div className="flex size-14 items-center justify-center rounded-2xl bg-accent text-lg font-semibold text-accent-foreground">
-                {m.name.split(" ").slice(-2).map((p) => p[0]).join("")}
+          {data.team.map((m, i) => (
+            <article key={m.id} className="card-quiet overflow-hidden">
+              <img
+                src={doctorPhotos[i % doctorPhotos.length]}
+                alt={`${m.name}, ${m.role}`}
+                loading="lazy"
+                width={1024}
+                height={1024}
+                className="aspect-4/5 w-full object-cover"
+              />
+              <div className="p-7">
+                <h3 className="text-xl">{m.name}</h3>
+                <p className="text-sm text-primary">{m.role}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{m.bio}</p>
+                <p className="mt-4 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{m.qualification} · {m.experience}</p>
               </div>
-              <h3 className="mt-5 text-xl">{m.name}</h3>
-              <p className="text-sm text-primary">{m.role}</p>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{m.bio}</p>
-              <p className="mt-4 text-xs uppercase tracking-wide text-muted-foreground">{m.qualification} · {m.experience}</p>
             </article>
           ))}
         </div>
@@ -182,17 +225,24 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
       <Section id="gallery" className="bg-secondary/60">
         <Eyebrow>Gallery</Eyebrow>
         <h2 className="text-3xl sm:text-4xl">Inside the clinic</h2>
-        <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <img
-              key={i}
-              src={heroImg}
-              alt={`${data.name} clinic photo ${i + 1}`}
-              loading="lazy"
-              width={1600}
-              height={1000}
-              className={`w-full rounded-2xl object-cover ${i % 3 === 0 ? "aspect-3/4" : "aspect-square"}`}
-            />
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {galleryImages.map((g, i) => (
+            <figure
+              key={g.caption}
+              className={`group relative overflow-hidden rounded-[1.5rem] ${i === 0 ? "lg:col-span-2 lg:row-span-2" : ""}`}
+            >
+              <img
+                src={g.src}
+                alt={`${g.caption} at ${data.name}`}
+                loading="lazy"
+                width={1200}
+                height={1200}
+                className={`w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] ${i === 0 ? "aspect-square lg:h-full" : "aspect-4/3"}`}
+              />
+              <figcaption className="absolute inset-x-0 bottom-0 bg-linear-to-t from-ink/70 to-transparent p-4 text-xs font-medium text-ink-foreground">
+                {g.caption}
+              </figcaption>
+            </figure>
           ))}
         </div>
       </Section>
