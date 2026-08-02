@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as OwnerRouteImport } from './routes/owner'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminGenerateRouteImport } from './routes/admin.generate'
@@ -18,6 +19,15 @@ import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminSubscriptionsRouteImport } from './routes/admin.subscriptions'
 import { Route as AdminTemplatesRouteImport } from './routes/admin.templates'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as OwnerIndexRouteImport } from './routes/owner.index'
+import { Route as OwnerAnalyticsRouteImport } from './routes/owner.analytics'
+import { Route as OwnerContactRouteImport } from './routes/owner.contact'
+import { Route as OwnerDoctorsRouteImport } from './routes/owner.doctors'
+import { Route as OwnerGalleryRouteImport } from './routes/owner.gallery'
+import { Route as OwnerLeadsRouteImport } from './routes/owner.leads'
+import { Route as OwnerPagesRouteImport } from './routes/owner.pages'
+import { Route as OwnerSeoRouteImport } from './routes/owner.seo'
+import { Route as OwnerServicesRouteImport } from './routes/owner.services'
 import { Route as SiteSlugRouteImport } from './routes/site.$slug'
 import { Route as AdminBusinessesIndexRouteImport } from './routes/admin.businesses.index'
 import { Route as AdminBusinessesIdRouteImport } from './routes/admin.businesses.$id'
@@ -31,6 +41,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OwnerRoute = OwnerRouteImport.update({
+  id: '/owner',
+  path: '/owner',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -68,6 +83,51 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
+const OwnerIndexRoute = OwnerIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => OwnerRoute,
+} as any)
+const OwnerAnalyticsRoute = OwnerAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => OwnerRoute,
+} as any)
+const OwnerContactRoute = OwnerContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => OwnerRoute,
+} as any)
+const OwnerDoctorsRoute = OwnerDoctorsRouteImport.update({
+  id: '/doctors',
+  path: '/doctors',
+  getParentRoute: () => OwnerRoute,
+} as any)
+const OwnerGalleryRoute = OwnerGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => OwnerRoute,
+} as any)
+const OwnerLeadsRoute = OwnerLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => OwnerRoute,
+} as any)
+const OwnerPagesRoute = OwnerPagesRouteImport.update({
+  id: '/pages',
+  path: '/pages',
+  getParentRoute: () => OwnerRoute,
+} as any)
+const OwnerSeoRoute = OwnerSeoRouteImport.update({
+  id: '/seo',
+  path: '/seo',
+  getParentRoute: () => OwnerRoute,
+} as any)
+const OwnerServicesRoute = OwnerServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => OwnerRoute,
+} as any)
 const SiteSlugRoute = SiteSlugRouteImport.update({
   id: '/site/$slug',
   path: '/site/$slug',
@@ -92,14 +152,24 @@ const AdminPreviewSlugRoute = AdminPreviewSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/owner': typeof OwnerRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/generate': typeof AdminGenerateRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/subscriptions': typeof AdminSubscriptionsRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/admin/users': typeof AdminUsersRoute
+  '/owner/analytics': typeof OwnerAnalyticsRoute
+  '/owner/contact': typeof OwnerContactRoute
+  '/owner/doctors': typeof OwnerDoctorsRoute
+  '/owner/gallery': typeof OwnerGalleryRoute
+  '/owner/leads': typeof OwnerLeadsRoute
+  '/owner/pages': typeof OwnerPagesRoute
+  '/owner/seo': typeof OwnerSeoRoute
+  '/owner/services': typeof OwnerServicesRoute
   '/site/$slug': typeof SiteSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/owner/': typeof OwnerIndexRoute
   '/admin/businesses/$id': typeof AdminBusinessesIdRoute
   '/admin/preview/$slug': typeof AdminPreviewSlugRoute
   '/admin/businesses/': typeof AdminBusinessesIndexRoute
@@ -112,8 +182,17 @@ export interface FileRoutesByTo {
   '/admin/subscriptions': typeof AdminSubscriptionsRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/admin/users': typeof AdminUsersRoute
+  '/owner/analytics': typeof OwnerAnalyticsRoute
+  '/owner/contact': typeof OwnerContactRoute
+  '/owner/doctors': typeof OwnerDoctorsRoute
+  '/owner/gallery': typeof OwnerGalleryRoute
+  '/owner/leads': typeof OwnerLeadsRoute
+  '/owner/pages': typeof OwnerPagesRoute
+  '/owner/seo': typeof OwnerSeoRoute
+  '/owner/services': typeof OwnerServicesRoute
   '/site/$slug': typeof SiteSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/owner': typeof OwnerIndexRoute
   '/admin/businesses/$id': typeof AdminBusinessesIdRoute
   '/admin/preview/$slug': typeof AdminPreviewSlugRoute
   '/admin/businesses': typeof AdminBusinessesIndexRoute
@@ -122,14 +201,24 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/owner': typeof OwnerRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/generate': typeof AdminGenerateRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/subscriptions': typeof AdminSubscriptionsRoute
   '/admin/templates': typeof AdminTemplatesRoute
   '/admin/users': typeof AdminUsersRoute
+  '/owner/analytics': typeof OwnerAnalyticsRoute
+  '/owner/contact': typeof OwnerContactRoute
+  '/owner/doctors': typeof OwnerDoctorsRoute
+  '/owner/gallery': typeof OwnerGalleryRoute
+  '/owner/leads': typeof OwnerLeadsRoute
+  '/owner/pages': typeof OwnerPagesRoute
+  '/owner/seo': typeof OwnerSeoRoute
+  '/owner/services': typeof OwnerServicesRoute
   '/site/$slug': typeof SiteSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/owner/': typeof OwnerIndexRoute
   '/admin/businesses/$id': typeof AdminBusinessesIdRoute
   '/admin/preview/$slug': typeof AdminPreviewSlugRoute
   '/admin/businesses/': typeof AdminBusinessesIndexRoute
@@ -139,14 +228,24 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/owner'
     | '/admin/analytics'
     | '/admin/generate'
     | '/admin/settings'
     | '/admin/subscriptions'
     | '/admin/templates'
     | '/admin/users'
+    | '/owner/analytics'
+    | '/owner/contact'
+    | '/owner/doctors'
+    | '/owner/gallery'
+    | '/owner/leads'
+    | '/owner/pages'
+    | '/owner/seo'
+    | '/owner/services'
     | '/site/$slug'
     | '/admin/'
+    | '/owner/'
     | '/admin/businesses/$id'
     | '/admin/preview/$slug'
     | '/admin/businesses/'
@@ -159,8 +258,17 @@ export interface FileRouteTypes {
     | '/admin/subscriptions'
     | '/admin/templates'
     | '/admin/users'
+    | '/owner/analytics'
+    | '/owner/contact'
+    | '/owner/doctors'
+    | '/owner/gallery'
+    | '/owner/leads'
+    | '/owner/pages'
+    | '/owner/seo'
+    | '/owner/services'
     | '/site/$slug'
     | '/admin'
+    | '/owner'
     | '/admin/businesses/$id'
     | '/admin/preview/$slug'
     | '/admin/businesses'
@@ -168,14 +276,24 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/owner'
     | '/admin/analytics'
     | '/admin/generate'
     | '/admin/settings'
     | '/admin/subscriptions'
     | '/admin/templates'
     | '/admin/users'
+    | '/owner/analytics'
+    | '/owner/contact'
+    | '/owner/doctors'
+    | '/owner/gallery'
+    | '/owner/leads'
+    | '/owner/pages'
+    | '/owner/seo'
+    | '/owner/services'
     | '/site/$slug'
     | '/admin/'
+    | '/owner/'
     | '/admin/businesses/$id'
     | '/admin/preview/$slug'
     | '/admin/businesses/'
@@ -184,6 +302,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  OwnerRoute: typeof OwnerRouteWithChildren
   SiteSlugRoute: typeof SiteSlugRoute
 }
 
@@ -201,6 +320,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/owner': {
+      id: '/owner'
+      path: '/owner'
+      fullPath: '/owner'
+      preLoaderRoute: typeof OwnerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -251,6 +377,69 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/users'
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/owner/': {
+      id: '/owner/'
+      path: '/'
+      fullPath: '/owner/'
+      preLoaderRoute: typeof OwnerIndexRouteImport
+      parentRoute: typeof OwnerRoute
+    }
+    '/owner/analytics': {
+      id: '/owner/analytics'
+      path: '/analytics'
+      fullPath: '/owner/analytics'
+      preLoaderRoute: typeof OwnerAnalyticsRouteImport
+      parentRoute: typeof OwnerRoute
+    }
+    '/owner/contact': {
+      id: '/owner/contact'
+      path: '/contact'
+      fullPath: '/owner/contact'
+      preLoaderRoute: typeof OwnerContactRouteImport
+      parentRoute: typeof OwnerRoute
+    }
+    '/owner/doctors': {
+      id: '/owner/doctors'
+      path: '/doctors'
+      fullPath: '/owner/doctors'
+      preLoaderRoute: typeof OwnerDoctorsRouteImport
+      parentRoute: typeof OwnerRoute
+    }
+    '/owner/gallery': {
+      id: '/owner/gallery'
+      path: '/gallery'
+      fullPath: '/owner/gallery'
+      preLoaderRoute: typeof OwnerGalleryRouteImport
+      parentRoute: typeof OwnerRoute
+    }
+    '/owner/leads': {
+      id: '/owner/leads'
+      path: '/leads'
+      fullPath: '/owner/leads'
+      preLoaderRoute: typeof OwnerLeadsRouteImport
+      parentRoute: typeof OwnerRoute
+    }
+    '/owner/pages': {
+      id: '/owner/pages'
+      path: '/pages'
+      fullPath: '/owner/pages'
+      preLoaderRoute: typeof OwnerPagesRouteImport
+      parentRoute: typeof OwnerRoute
+    }
+    '/owner/seo': {
+      id: '/owner/seo'
+      path: '/seo'
+      fullPath: '/owner/seo'
+      preLoaderRoute: typeof OwnerSeoRouteImport
+      parentRoute: typeof OwnerRoute
+    }
+    '/owner/services': {
+      id: '/owner/services'
+      path: '/services'
+      fullPath: '/owner/services'
+      preLoaderRoute: typeof OwnerServicesRouteImport
+      parentRoute: typeof OwnerRoute
     }
     '/site/$slug': {
       id: '/site/$slug'
@@ -311,9 +500,36 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface OwnerRouteChildren {
+  OwnerAnalyticsRoute: typeof OwnerAnalyticsRoute
+  OwnerContactRoute: typeof OwnerContactRoute
+  OwnerDoctorsRoute: typeof OwnerDoctorsRoute
+  OwnerGalleryRoute: typeof OwnerGalleryRoute
+  OwnerLeadsRoute: typeof OwnerLeadsRoute
+  OwnerPagesRoute: typeof OwnerPagesRoute
+  OwnerSeoRoute: typeof OwnerSeoRoute
+  OwnerServicesRoute: typeof OwnerServicesRoute
+  OwnerIndexRoute: typeof OwnerIndexRoute
+}
+
+const OwnerRouteChildren: OwnerRouteChildren = {
+  OwnerAnalyticsRoute: OwnerAnalyticsRoute,
+  OwnerContactRoute: OwnerContactRoute,
+  OwnerDoctorsRoute: OwnerDoctorsRoute,
+  OwnerGalleryRoute: OwnerGalleryRoute,
+  OwnerLeadsRoute: OwnerLeadsRoute,
+  OwnerPagesRoute: OwnerPagesRoute,
+  OwnerSeoRoute: OwnerSeoRoute,
+  OwnerServicesRoute: OwnerServicesRoute,
+  OwnerIndexRoute: OwnerIndexRoute,
+}
+
+const OwnerRouteWithChildren = OwnerRoute._addFileChildren(OwnerRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  OwnerRoute: OwnerRouteWithChildren,
   SiteSlugRoute: SiteSlugRoute,
 }
 export const routeTree = rootRouteImport
