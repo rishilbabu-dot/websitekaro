@@ -180,13 +180,16 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
         <h2 className="max-w-2xl text-3xl sm:text-4xl">Care planned before it begins</h2>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {data.services.map((s) => (
-            <article key={s.id} className="group rounded-3xl border border-border bg-card p-7 transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
+            <article key={s.id} className="card-quiet group p-7">
               <h3 className="text-xl">{s.name}</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.description}</p>
               <div className="mt-6 flex items-center justify-between border-t border-border pt-4 text-sm">
                 <span className="font-semibold">{s.priceFrom ? `From ${s.priceFrom}` : "On consultation"}</span>
                 <span className="text-muted-foreground">{s.duration}</span>
               </div>
+              <a href="#contact" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                Book this <ArrowRight className="size-3.5" />
+              </a>
             </article>
           ))}
         </div>
@@ -197,15 +200,22 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
         <Eyebrow>The team</Eyebrow>
         <h2 className="max-w-2xl text-3xl sm:text-4xl">Specialists you'll actually meet</h2>
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {data.team.map((m) => (
-            <article key={m.id} className="rounded-3xl border border-border bg-card p-7">
-              <div className="flex size-14 items-center justify-center rounded-2xl bg-accent text-lg font-semibold text-accent-foreground">
-                {m.name.split(" ").slice(-2).map((p) => p[0]).join("")}
+          {data.team.map((m, i) => (
+            <article key={m.id} className="card-quiet overflow-hidden">
+              <img
+                src={doctorPhotos[i % doctorPhotos.length]}
+                alt={`${m.name}, ${m.role}`}
+                loading="lazy"
+                width={1024}
+                height={1024}
+                className="aspect-4/5 w-full object-cover"
+              />
+              <div className="p-7">
+                <h3 className="text-xl">{m.name}</h3>
+                <p className="text-sm text-primary">{m.role}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{m.bio}</p>
+                <p className="mt-4 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{m.qualification} · {m.experience}</p>
               </div>
-              <h3 className="mt-5 text-xl">{m.name}</h3>
-              <p className="text-sm text-primary">{m.role}</p>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{m.bio}</p>
-              <p className="mt-4 text-xs uppercase tracking-wide text-muted-foreground">{m.qualification} · {m.experience}</p>
             </article>
           ))}
         </div>
@@ -215,17 +225,24 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
       <Section id="gallery" className="bg-secondary/60">
         <Eyebrow>Gallery</Eyebrow>
         <h2 className="text-3xl sm:text-4xl">Inside the clinic</h2>
-        <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <img
-              key={i}
-              src={heroImg}
-              alt={`${data.name} clinic photo ${i + 1}`}
-              loading="lazy"
-              width={1600}
-              height={1000}
-              className={`w-full rounded-2xl object-cover ${i % 3 === 0 ? "aspect-3/4" : "aspect-square"}`}
-            />
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {galleryImages.map((g, i) => (
+            <figure
+              key={g.caption}
+              className={`group relative overflow-hidden rounded-[1.5rem] ${i === 0 ? "lg:col-span-2 lg:row-span-2" : ""}`}
+            >
+              <img
+                src={g.src}
+                alt={`${g.caption} at ${data.name}`}
+                loading="lazy"
+                width={1200}
+                height={1200}
+                className={`w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] ${i === 0 ? "aspect-square lg:h-full" : "aspect-4/3"}`}
+              />
+              <figcaption className="absolute inset-x-0 bottom-0 bg-linear-to-t from-ink/70 to-transparent p-4 text-xs font-medium text-ink-foreground">
+                {g.caption}
+              </figcaption>
+            </figure>
           ))}
         </div>
       </Section>
