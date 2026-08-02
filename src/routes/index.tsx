@@ -126,7 +126,7 @@ function Landing() {
                       <span className="rounded-md border border-border px-2.5 py-1 text-[9px]">Call</span>
                     </div>
                   </div>
-                  <img src={heroImg} alt="Generated dental clinic website hero" width={1400} height={1000} className="aspect-4/3 w-full rounded-xl object-cover" />
+                  <img src={clinicImg} alt="Generated dental clinic website hero" width={1600} height={1000} className="aspect-4/3 w-full rounded-xl object-cover" />
                 </div>
                 <div className="mt-5 grid grid-cols-4 gap-2 border-t border-border pt-4">
                   {[["40,000+", "Patients"], ["4.9 / 5", "Rating"], ["12", "Years"], ["ISO", "Sterilised"]].map(([v, l]) => (
@@ -138,11 +138,11 @@ function Landing() {
                 </div>
               </div>
             </div>
-            <div className="absolute -bottom-6 -left-4 hidden rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-[var(--shadow-lift)] backdrop-blur sm:block">
+            <div className="absolute -bottom-7 -right-4 hidden rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-[var(--shadow-lift)] backdrop-blur sm:block">
               <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Generated in</p>
               <p className="display text-2xl leading-none">4m 12s</p>
             </div>
-            <div className="absolute -right-3 top-8 hidden rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur lg:block">
+            <div className="absolute -left-5 top-24 hidden rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur lg:block">
               <p className="flex items-center gap-2 text-sm font-medium"><Check className="size-4 text-success" /> 8 pages ready</p>
             </div>
           </div>
