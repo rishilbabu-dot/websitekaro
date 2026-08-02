@@ -51,7 +51,7 @@ function BusinessDetail() {
             <h3 className="text-sm font-semibold">Blueprint summary</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.description}</p>
             <div className="mt-4 flex flex-wrap gap-2">
-              {b.personality.map((p) => <span key={p} className="rounded-full bg-secondary px-3 py-1 text-xs">{p}</span>)}
+              {b.personality.map((p: string) => <span key={p} className="rounded-full bg-secondary px-3 py-1 text-xs">{p}</span>)}
             </div>
           </div>
         </section>
@@ -70,7 +70,7 @@ function BusinessDetail() {
             <p className="mt-2 text-sm font-medium">{b.seo.title}</p>
             <p className="mt-1 text-sm text-muted-foreground">{b.seo.metaDescription}</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {b.seo.keywords.map((k) => <span key={k} className="rounded-full border border-border px-2.5 py-1 text-xs">{k}</span>)}
+              {b.seo.keywords.map((k: string) => <span key={k} className="rounded-full border border-border px-2.5 py-1 text-xs">{k}</span>)}
             </div>
           </section>
           <section className="rounded-2xl border border-destructive/25 bg-card p-6">
