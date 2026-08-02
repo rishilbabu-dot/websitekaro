@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ExternalLink, Inbox } from "lucide-react";
-import { PageHeader, StatCard, StatusPill } from "@/components/app/AppShell";
+import { PageHeader, StatCard, StatusPill } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { businesses, leads } from "@/data/businesses";
+import { businesses, leads } from "@/features/businesses";
 
 export const Route = createFileRoute("/owner/")({ component: OwnerHome });
 

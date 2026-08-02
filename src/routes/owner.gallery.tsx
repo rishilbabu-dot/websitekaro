@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Upload } from "lucide-react";
-import { PageHeader } from "@/components/app/AppShell";
+import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import img from "@/assets/dental-hero.jpg";

@@ -2,14 +2,14 @@ import { useState } from "react";
 import {
   Phone, MessageCircle, MapPin, Clock, Star, Check, ArrowRight, Mail, Menu, X, ShieldCheck,
 } from "lucide-react";
-import type { BusinessBlueprint } from "@/data/blueprint";
+import type { BusinessBlueprint } from "@/features/businesses";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import heroImg from "@/assets/dental-hero.jpg";
-import { galleryImages, doctorPhotos } from "@/data/media";
+import { galleryImages, doctorPhotos } from "@/features/website-generation";
 
 const nav = [
   { id: "about", label: "About" },

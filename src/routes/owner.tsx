@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { LayoutDashboard, FileText, Stethoscope, Sparkles, Images, Inbox, Phone, Search, BarChart3 } from "lucide-react";
-import { AppShell, type NavItem } from "@/components/app/AppShell";
+import { AppShell, type NavItem } from "@/components/layout";
 
 const nav: NavItem[] = [
   { to: "/owner", label: "Dashboard", icon: LayoutDashboard },

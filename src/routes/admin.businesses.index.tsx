@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Wand2 } from "lucide-react";
-import { PageHeader, StatusPill } from "@/components/app/AppShell";
+import { PageHeader, StatusPill } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { businesses } from "@/data/businesses";
+import { businesses } from "@/features/businesses";
 
 export const Route = createFileRoute("/admin/businesses/")({ component: BusinessesPage });
 

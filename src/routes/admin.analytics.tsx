@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, StatCard } from "@/components/app/AppShell";
+import { PageHeader, StatCard } from "@/components/shared";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export const Route = createFileRoute("/admin/analytics")({ component: AnalyticsPage });

@@ -1,6 +1,6 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { GeneratedSite } from "@/components/site/GeneratedSite";
-import { getBusiness } from "@/data/businesses";
+import { GeneratedSite } from "@/features/website-generation";
+import { getBusiness } from "@/features/businesses";
 
 export const Route = createFileRoute("/site/$slug")({
   loader: ({ params }) => {

@@ -1,10 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Link2, Wand2, Check, Loader2 } from "lucide-react";
-import { PageHeader } from "@/components/app/AppShell";
+import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { industryPresets } from "@/data/businesses";
+import { industryPresets } from "@/features/businesses";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/generate")({ component: GeneratePage });

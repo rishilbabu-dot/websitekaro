@@ -1,8 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Eye, Globe, Mail, MapPin, Phone, RefreshCw, Trash2, UserCog } from "lucide-react";
-import { PageHeader, StatusPill } from "@/components/app/AppShell";
+import { PageHeader, StatusPill } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { getBusiness } from "@/data/businesses";
+import { getBusiness } from "@/features/businesses";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/businesses/$id")({

@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Monitor, Tablet, Smartphone, Globe, Pencil, RefreshCw, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getBusiness } from "@/data/businesses";
+import { getBusiness } from "@/features/businesses";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/preview/$slug")({

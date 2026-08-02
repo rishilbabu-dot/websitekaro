@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { PageHeader } from "@/components/app/AppShell";
+import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { leads } from "@/data/businesses";
+import { leads } from "@/features/businesses";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/owner/leads")({ component: LeadsPage });
