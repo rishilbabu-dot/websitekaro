@@ -1,4 +1,4 @@
-import type { BusinessBlueprint, Lead } from "./blueprint";
+import type { BusinessBlueprint, Lead } from "./business.types";
 
 export const businesses: BusinessBlueprint[] = [
   {
@@ -191,31 +191,4 @@ export const leads: Lead[] = [
   { id: "l2", businessId: "biz_01", name: "Imran Sheikh", phone: "+91 98220 71234", message: "Severe tooth pain, need an emergency slot today.", channel: "WhatsApp", createdAt: "5 hours ago", status: "new" },
   { id: "l3", businessId: "biz_01", name: "Deepa Iyer", phone: "+91 90040 55621", message: "Asking about implant cost and EMI options.", channel: "Contact form", createdAt: "Yesterday", status: "contacted" },
   { id: "l4", businessId: "biz_01", name: "Karan Bhatia", phone: "+91 99870 11223", message: "Scaling appointment for two people.", channel: "Call", createdAt: "2 days ago", status: "closed" },
-];
-
-export const getBusiness = (slugOrId: string) =>
-  businesses.find((b) => b.slug === slugOrId || b.id === slugOrId);
-
-export const statusLabel: Record<string, string> = {
-  draft: "Draft",
-  generated: "Generated",
-  "in-review": "In review",
-  published: "Published",
-  suspended: "Suspended",
-};
-
-export const industryPresets: { id: string; label: string; ready: boolean }[] = [
-  { id: "dental", label: "Dental Clinic", ready: true },
-  { id: "restaurant", label: "Restaurant", ready: false },
-  { id: "salon", label: "Salon & Spa", ready: false },
-  { id: "lawyer", label: "Law Firm", ready: false },
-  { id: "ca", label: "Chartered Accountant", ready: false },
-  { id: "gym", label: "Gym & Fitness", ready: false },
-  { id: "school", label: "School", ready: false },
-  { id: "hotel", label: "Hotel", ready: false },
-  { id: "interior", label: "Interior Designer", ready: false },
-  { id: "architect", label: "Architect", ready: false },
-  { id: "retail", label: "Retail Store", ready: false },
-  { id: "home-services", label: "Home Services", ready: false },
-  { id: "real-estate", label: "Real Estate", ready: false },
 ];
