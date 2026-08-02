@@ -10,42 +10,120 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminGenerateRouteImport } from './routes/admin.generate'
 import { Route as SiteSlugRouteImport } from './routes/site.$slug'
+import { Route as AdminBusinessesIndexRouteImport } from './routes/admin.businesses.index'
+import { Route as AdminBusinessesIdRouteImport } from './routes/admin.businesses.$id'
+import { Route as AdminPreviewSlugRouteImport } from './routes/admin.preview.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminGenerateRoute = AdminGenerateRouteImport.update({
+  id: '/generate',
+  path: '/generate',
+  getParentRoute: () => AdminRoute,
+} as any)
 const SiteSlugRoute = SiteSlugRouteImport.update({
   id: '/site/$slug',
   path: '/site/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminBusinessesIndexRoute = AdminBusinessesIndexRouteImport.update({
+  id: '/businesses/',
+  path: '/businesses/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBusinessesIdRoute = AdminBusinessesIdRouteImport.update({
+  id: '/businesses/$id',
+  path: '/businesses/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPreviewSlugRoute = AdminPreviewSlugRouteImport.update({
+  id: '/preview/$slug',
+  path: '/preview/$slug',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/admin/generate': typeof AdminGenerateRoute
   '/site/$slug': typeof SiteSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/businesses/$id': typeof AdminBusinessesIdRoute
+  '/admin/preview/$slug': typeof AdminPreviewSlugRoute
+  '/admin/businesses/': typeof AdminBusinessesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/generate': typeof AdminGenerateRoute
   '/site/$slug': typeof SiteSlugRoute
+  '/admin': typeof AdminIndexRoute
+  '/admin/businesses/$id': typeof AdminBusinessesIdRoute
+  '/admin/preview/$slug': typeof AdminPreviewSlugRoute
+  '/admin/businesses': typeof AdminBusinessesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/admin/generate': typeof AdminGenerateRoute
   '/site/$slug': typeof SiteSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/businesses/$id': typeof AdminBusinessesIdRoute
+  '/admin/preview/$slug': typeof AdminPreviewSlugRoute
+  '/admin/businesses/': typeof AdminBusinessesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/site/$slug'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/admin/generate'
+    | '/site/$slug'
+    | '/admin/'
+    | '/admin/businesses/$id'
+    | '/admin/preview/$slug'
+    | '/admin/businesses/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/site/$slug'
-  id: '__root__' | '/' | '/site/$slug'
+  to:
+    | '/'
+    | '/admin/generate'
+    | '/site/$slug'
+    | '/admin'
+    | '/admin/businesses/$id'
+    | '/admin/preview/$slug'
+    | '/admin/businesses'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/admin/generate'
+    | '/site/$slug'
+    | '/admin/'
+    | '/admin/businesses/$id'
+    | '/admin/preview/$slug'
+    | '/admin/businesses/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   SiteSlugRoute: typeof SiteSlugRoute
 }
 
@@ -58,6 +136,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/generate': {
+      id: '/admin/generate'
+      path: '/generate'
+      fullPath: '/admin/generate'
+      preLoaderRoute: typeof AdminGenerateRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/site/$slug': {
       id: '/site/$slug'
       path: '/site/$slug'
@@ -65,11 +164,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/businesses/': {
+      id: '/admin/businesses/'
+      path: '/businesses'
+      fullPath: '/admin/businesses/'
+      preLoaderRoute: typeof AdminBusinessesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/businesses/$id': {
+      id: '/admin/businesses/$id'
+      path: '/businesses/$id'
+      fullPath: '/admin/businesses/$id'
+      preLoaderRoute: typeof AdminBusinessesIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/preview/$slug': {
+      id: '/admin/preview/$slug'
+      path: '/preview/$slug'
+      fullPath: '/admin/preview/$slug'
+      preLoaderRoute: typeof AdminPreviewSlugRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminGenerateRoute: typeof AdminGenerateRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminBusinessesIdRoute: typeof AdminBusinessesIdRoute
+  AdminPreviewSlugRoute: typeof AdminPreviewSlugRoute
+  AdminBusinessesIndexRoute: typeof AdminBusinessesIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminGenerateRoute: AdminGenerateRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminBusinessesIdRoute: AdminBusinessesIdRoute,
+  AdminPreviewSlugRoute: AdminPreviewSlugRoute,
+  AdminBusinessesIndexRoute: AdminBusinessesIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   SiteSlugRoute: SiteSlugRoute,
 }
 export const routeTree = rootRouteImport
