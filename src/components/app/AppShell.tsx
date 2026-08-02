@@ -117,7 +117,7 @@ export function StatusPill({ status }: { status: string }) {
     published: "Published", generated: "Generated", "in-review": "In review", draft: "Draft", suspended: "Suspended",
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${tone[status] ?? tone.draft}`}>
+    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${tone[status] ?? tone['draft']}`}>
       {labels[status] ?? status}
     </span>
   );
