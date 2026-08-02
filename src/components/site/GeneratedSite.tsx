@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import heroImg from "@/assets/dental-hero.jpg";
+import { galleryImages, doctorPhotos } from "@/data/media";
 
 const nav = [
   { id: "about", label: "About" },
@@ -30,7 +31,10 @@ function Section({ id, children, className = "" }: { id?: string; children: Reac
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-primary">{children}</p>
+    <p className="eyebrow mb-4 flex items-center gap-2.5 text-primary">
+      <span className="inline-block h-px w-6 bg-primary/50" />
+      {children}
+    </p>
   );
 }
 
