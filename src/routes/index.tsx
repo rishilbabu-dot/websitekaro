@@ -131,11 +131,14 @@ function Landing() {
 
       <section className="border-y border-border bg-secondary/50 px-5 py-20 sm:px-8 md:py-28">
         <div className="mx-auto w-full max-w-6xl">
-          <h2 className="max-w-2xl text-3xl sm:text-4xl">You hired an agency. It just happens to be very fast.</h2>
+          <p className="eyebrow mb-4 text-primary">Why it's different</p>
+          <h2 className="max-w-2xl text-balance text-3xl sm:text-4xl">You hired an agency. It just happens to be very fast.</h2>
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((f) => (
-              <article key={f.title} className="rounded-3xl border border-border bg-card p-7 transition-transform hover:-translate-y-1">
-                <f.icon className="size-5 text-primary" />
+              <article key={f.title} className="card-quiet p-7">
+                <span className="flex size-10 items-center justify-center rounded-xl bg-primary/8 text-primary">
+                  <f.icon className="size-5" />
+                </span>
                 <h3 className="mt-5 text-xl">{f.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
               </article>
@@ -146,13 +149,16 @@ function Landing() {
 
       <section id="how" className="px-5 py-20 sm:px-8 md:py-28">
         <div className="mx-auto w-full max-w-6xl">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-primary">How it works</p>
-          <h2 className="max-w-2xl text-3xl sm:text-4xl">Four steps. Nothing for you to configure.</h2>
-          <ol className="mt-12 grid gap-8 md:grid-cols-4">
+          <p className="eyebrow mb-4 text-primary">How it works</p>
+          <h2 className="max-w-2xl text-balance text-3xl sm:text-4xl">Four steps. Nothing for you to configure.</h2>
+          <ol className="mt-14 grid gap-10 md:grid-cols-4">
             {steps.map((s) => (
-              <li key={s.n}>
-                <span className="display text-4xl text-muted-foreground/50">{s.n}</span>
-                <h3 className="mt-3 text-xl">{s.title}</h3>
+              <li key={s.n} className="relative">
+                <span className="absolute left-0 top-4 hidden h-px w-full bg-border md:block" aria-hidden />
+                <span className="relative flex size-9 items-center justify-center rounded-full border border-border bg-card text-xs font-semibold">
+                  {s.n}
+                </span>
+                <h3 className="mt-5 text-xl">{s.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
               </li>
             ))}
@@ -167,9 +173,17 @@ function Landing() {
             { q: "Our old site took four months and a designer. This took one link.", a: "Dr. Vikram Shah", r: "Pearl Avenue Dental, Andheri" },
             { q: "Patients now book through the site instead of calling reception twice.", a: "Dr. Kavita Rao", r: "The Dental Loft, Powai" },
           ].map((t) => (
-            <figure key={t.a} className="rounded-3xl border border-border bg-card p-7">
-              <blockquote className="text-base leading-relaxed">"{t.q}"</blockquote>
-              <figcaption className="mt-5 text-sm"><span className="font-medium">{t.a}</span><br /><span className="text-muted-foreground">{t.r}</span></figcaption>
+            <figure key={t.a} className="card-quiet flex flex-col p-7">
+              <div className="flex gap-0.5" aria-hidden>
+                {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="size-3.5 fill-accent text-accent" />)}
+              </div>
+              <blockquote className="mt-5 flex-1 text-base leading-relaxed">"{t.q}"</blockquote>
+              <figcaption className="mt-6 flex items-center gap-3 border-t border-border pt-5 text-sm">
+                <span className="flex size-9 items-center justify-center rounded-full bg-secondary text-xs font-semibold">
+                  {t.a.split(" ").slice(-2).map((p) => p[0]).join("")}
+                </span>
+                <span><span className="font-medium">{t.a}</span><br /><span className="text-muted-foreground">{t.r}</span></span>
+              </figcaption>
             </figure>
           ))}
         </div>
@@ -177,6 +191,7 @@ function Landing() {
 
       <section id="pricing" className="border-y border-border bg-secondary/50 px-5 py-20 sm:px-8 md:py-28">
         <div className="mx-auto w-full max-w-6xl">
+          <p className="eyebrow mb-4 text-primary">Pricing</p>
           <h2 className="text-3xl sm:text-4xl">Simple pricing, once you're convinced</h2>
           <p className="mt-3 text-sm text-muted-foreground">Indicative plans. Billing arrives in a later release.</p>
           <div className="mt-12 grid gap-5 md:grid-cols-3">
@@ -185,7 +200,12 @@ function Landing() {
               { name: "Growth", price: "₹2,499", note: "per month", perks: ["Everything in Launch", "Owner dashboard", "Unlimited content edits", "Lead inbox"], featured: true },
               { name: "Agency", price: "Custom", note: "for chains", perks: ["Multiple locations", "Priority generation", "Custom domain setup", "Dedicated manager"] },
             ].map((p) => (
-              <article key={p.name} className={`rounded-3xl border p-7 ${p.featured ? "surface-ink border-transparent" : "border-border bg-card"}`}>
+              <article key={p.name} className={`relative rounded-3xl border p-7 ${p.featured ? "surface-ink border-transparent shadow-[var(--shadow-lift)] md:-mt-4 md:pb-11" : "border-border bg-card"}`}>
+                {p.featured && (
+                  <span className="absolute right-6 top-6 rounded-full bg-accent px-2.5 py-1 text-[11px] font-semibold text-accent-foreground">
+                    Most chosen
+                  </span>
+                )}
                 <h3 className={`text-xl ${p.featured ? "text-ink-foreground" : ""}`}>{p.name}</h3>
                 <p className="mt-4 text-4xl font-semibold tracking-tight">{p.price}</p>
                 <p className={`text-sm ${p.featured ? "opacity-70" : "text-muted-foreground"}`}>{p.note}</p>
