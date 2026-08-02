@@ -9,13 +9,51 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { toast } from "sonner";
 import clinicImg from "@/assets/dental-hero.jpg";
 
+const homeFaqs: [string, string][] = [
+  ["Do I really pay nothing upfront?", "Correct. We generate the full website first. You only pay when you decide to publish it."],
+  ["Can I edit the content myself?", "Yes. Every published site comes with an owner dashboard for services, team, gallery, hours and enquiries."],
+  ["Which businesses do you support today?", "Dental clinics in Mumbai are our first vertical. Restaurants, salons, law firms, gyms and more are queued."],
+  ["Do you use my Google reviews?", "We summarise your public rating and highlight reviews with attribution. Nothing is fabricated."],
+];
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "WebsiteKaro — Websites for Local Business, Built Before You Pay" },
-      { name: "description", content: "Paste your Google Maps business link and WebsiteKaro's AI digital agency builds a premium, ready-to-launch website for your clinic or shop — before you pay a rupee." },
+      { title: "WebsiteKaro — Local Business Websites, Built First" },
+      { name: "description", content: "WebsiteKaro is an AI digital agency that builds a premium, ready-to-launch website for your local business before you pay." },
       { property: "og:title", content: "WebsiteKaro — Built before you pay" },
       { property: "og:description", content: "An AI digital agency that ships premium websites for local businesses in Mumbai." },
+      { property: "og:url", content: "/" },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              name: "WebsiteKaro",
+              description: "AI digital agency building premium websites for local businesses in Mumbai.",
+              areaServed: "Mumbai, India",
+            },
+            {
+              "@type": "WebSite",
+              name: "WebsiteKaro",
+              description: "Premium websites for local businesses, built before you pay.",
+            },
+            {
+              "@type": "FAQPage",
+              mainEntity: homeFaqs.map(([q, a]) => ({
+                "@type": "Question",
+                name: q,
+                acceptedAnswer: { "@type": "Answer", text: a },
+              })),
+            },
+          ],
+        }),
+      },
     ],
   }),
   component: Landing,
@@ -65,7 +103,7 @@ function Landing() {
               <span className="size-1.5 rounded-full bg-success" /> Now building for dental clinics in Mumbai
             </span>
             <h1 className="mt-6 text-balance text-4xl leading-[1.03] sm:text-6xl md:text-7xl">
-              Paste your Google Maps <span className="italic text-primary">business link</span>
+              Premium websites for <span className="italic text-primary">local businesses</span>, built before you pay
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
               We'll build your professional business website before you pay. Not a builder, not a template — an AI digital agency that delivers finished work.
@@ -260,12 +298,7 @@ function Landing() {
             <h2 className="text-3xl sm:text-4xl">Questions we get daily</h2>
           </div>
           <Accordion type="single" collapsible>
-            {[
-              ["Do I really pay nothing upfront?", "Correct. We generate the full website first. You only pay when you decide to publish it."],
-              ["Can I edit the content myself?", "Yes. Every published site comes with an owner dashboard for services, team, gallery, hours and enquiries."],
-              ["Which businesses do you support today?", "Dental clinics in Mumbai are our first vertical. Restaurants, salons, law firms, gyms and more are queued."],
-              ["Do you use my Google reviews?", "We summarise your public rating and highlight reviews with attribution. Nothing is fabricated."],
-            ].map(([q, a]) => (
+            {homeFaqs.map(([q, a]) => (
               <AccordionItem key={q} value={q as string}>
                 <AccordionTrigger className="text-left text-base">{q}</AccordionTrigger>
                 <AccordionContent className="text-sm leading-relaxed text-muted-foreground">{a}</AccordionContent>

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as OwnerRouteImport } from './routes/owner'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminGenerateRouteImport } from './routes/admin.generate'
@@ -46,6 +47,11 @@ const AdminRoute = AdminRouteImport.update({
 const OwnerRoute = OwnerRouteImport.update({
   id: '/owner',
   path: '/owner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -153,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/owner': typeof OwnerRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/generate': typeof AdminGenerateRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -176,6 +183,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/generate': typeof AdminGenerateRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -202,6 +210,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/owner': typeof OwnerRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/generate': typeof AdminGenerateRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -229,6 +238,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/owner'
+    | '/sitemap.xml'
     | '/admin/analytics'
     | '/admin/generate'
     | '/admin/settings'
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/sitemap.xml'
     | '/admin/analytics'
     | '/admin/generate'
     | '/admin/settings'
@@ -277,6 +288,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/owner'
+    | '/sitemap.xml'
     | '/admin/analytics'
     | '/admin/generate'
     | '/admin/settings'
@@ -303,6 +315,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   OwnerRoute: typeof OwnerRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SiteSlugRoute: typeof SiteSlugRoute
 }
 
@@ -327,6 +340,13 @@ declare module '@tanstack/react-router' {
       path: '/owner'
       fullPath: '/owner'
       preLoaderRoute: typeof OwnerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -530,6 +550,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   OwnerRoute: OwnerRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SiteSlugRoute: SiteSlugRoute,
 }
 export const routeTree = rootRouteImport
