@@ -86,41 +86,70 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
       </header>
 
       {/* Hero */}
-      <div id="top" className="relative overflow-hidden">
+      <div id="top" className="aura relative overflow-hidden">
         <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-2">
           <div className="rise">
             <Eyebrow>{data.category} · {data.city}</Eyebrow>
-            <h1 className="display text-4xl leading-[1.05] sm:text-5xl md:text-6xl">{data.tagline}</h1>
+            <h1 className="display text-balance text-4xl leading-[1.05] sm:text-5xl md:text-[4rem]">{data.tagline}</h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">{data.description}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3 rise-2">
               <Button size="lg" asChild><a href="#contact">{data.cta.primary} <ArrowRight className="size-4" /></a></Button>
               <Button size="lg" variant="outline" asChild><a href={`tel:${data.phone}`}><Phone className="size-4" /> {data.phone}</a></Button>
             </div>
-            <dl className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-4">
+            <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-7 border-t border-border pt-8 sm:grid-cols-4 rise-3">
               {data.trust.map((t) => (
                 <div key={t.label}>
-                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">{t.label}</dt>
-                  <dd className="mt-1 text-lg font-semibold">{t.value}</dd>
+                  <dd className="display text-2xl leading-none">{t.value}</dd>
+                  <dt className="mt-2 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{t.label}</dt>
                 </div>
               ))}
             </dl>
           </div>
-          <div className="relative">
+          <div className="relative rise-2">
+            <div className="absolute -right-4 -top-4 hidden size-40 rounded-full bg-sand/60 blur-2xl md:block" aria-hidden />
             <img
               src={heroImg}
               alt={`Interior of ${data.name} in ${data.city}`}
               width={1600}
               height={1000}
-              className="aspect-4/3 w-full rounded-3xl object-cover shadow-[var(--shadow-lift)]"
+              className="relative aspect-4/5 w-full rounded-[2rem] object-cover shadow-[var(--shadow-lift)] sm:aspect-4/3"
             />
-            <div className="absolute -bottom-6 left-6 hidden rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] sm:block">
+            <div className="absolute -bottom-6 left-6 hidden rounded-2xl border border-border bg-card/95 p-4 shadow-[var(--shadow-lift)] backdrop-blur sm:block">
               <div className="flex items-center gap-2">
                 <Star className="size-4 fill-accent text-accent" />
                 <span className="text-sm font-semibold">{data.reviews.rating}</span>
                 <span className="text-sm text-muted-foreground">· {data.reviews.count} Google reviews</span>
               </div>
             </div>
+            <div className="absolute -left-5 top-8 hidden rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur lg:block">
+              <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Today</p>
+              <p className="mt-1 flex items-center gap-2 text-sm font-medium">
+                <span className="size-1.5 rounded-full bg-success" /> Slots available
+              </p>
+            </div>
           </div>
+        </div>
+      </div>
+
+      {/* Credibility strip */}
+      <div className="overflow-hidden border-y border-border bg-secondary/50 py-4">
+        <div className="marquee-track gap-12 px-6">
+          {[0, 1].map((dup) => (
+            <div key={dup} className="flex shrink-0 items-center gap-12 pr-12" aria-hidden={dup === 1}>
+              {[
+                "ISO-certified sterilisation",
+                "Digital OPG on site",
+                "Zero-cost EMI",
+                "Same-day emergency slots",
+                "Indian Dental Association member",
+                "Wheelchair accessible",
+              ].map((c) => (
+                <span key={c} className="flex items-center gap-2 whitespace-nowrap text-sm text-muted-foreground">
+                  <ShieldCheck className="size-4 text-primary" /> {c}
+                </span>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
 
