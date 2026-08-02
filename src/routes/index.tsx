@@ -138,11 +138,11 @@ function Landing() {
                 </div>
               </div>
             </div>
-            <div className="absolute -bottom-7 -right-4 hidden rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-[var(--shadow-lift)] backdrop-blur sm:block">
+            <div className="absolute -bottom-10 right-6 hidden rounded-2xl border border-border bg-card px-4 py-3 shadow-[var(--shadow-lift)] sm:block">
               <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Generated in</p>
               <p className="display text-2xl leading-none">4m 12s</p>
             </div>
-            <div className="absolute -left-5 top-24 hidden rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur lg:block">
+            <div className="absolute -left-8 -top-5 hidden rounded-2xl border border-border bg-card px-4 py-3 shadow-[var(--shadow-soft)] lg:block">
               <p className="flex items-center gap-2 text-sm font-medium"><Check className="size-4 text-success" /> 8 pages ready</p>
             </div>
           </div>
