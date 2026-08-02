@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import heroImg from "@/assets/landing-hero.jpg";
+import clinicImg from "@/assets/dental-hero.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
