@@ -1,14 +1,17 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Sparkles, ArrowLeft } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { Sparkles, ArrowLeft, Info } from "lucide-react";
 import { toast } from "sonner";
 import { buildBlueprint, getIndustryDesign } from "@/features/industries";
+import { generateBlueprint, generationModeInfo, getGenerationMode, type GenerationMode, type GenerationOutcome } from "@/features/ai";
 import { GenerationComplete, GenerationProgress } from "@/features/website-generation/components/GenerationExperience";
 
 interface GenerateSearch {
   url: string;
   industry: string;
   name: string;
+  mode: GenerationMode;
 }
 
 export const Route = createFileRoute("/generate")({
@@ -16,6 +19,7 @@ export const Route = createFileRoute("/generate")({
     url: typeof search["url"] === "string" ? search["url"] : "",
     industry: typeof search["industry"] === "string" ? search["industry"] : "dental",
     name: typeof search["name"] === "string" ? search["name"] : "",
+    mode: getGenerationMode(typeof search["mode"] === "string" ? search["mode"] : undefined),
   }),
   head: () => ({
     meta: [
@@ -42,17 +46,35 @@ const nameFromUrl = (url: string, fallback: string) => {
 };
 
 function GeneratePage() {
-  const { url, industry, name } = Route.useSearch();
+  const { url, industry, name, mode } = Route.useSearch();
   const navigate = useNavigate();
   const [done, setDone] = useState(false);
+  const [outcome, setOutcome] = useState<GenerationOutcome | null>(null);
+  const requestedRef = useRef(false);
+  const runGeneration = useServerFn(generateBlueprint);
 
   const design = getIndustryDesign(industry);
   const businessName = name.trim() || nameFromUrl(url, `${design.label} Studio`);
 
-  const blueprint = useMemo(
+  const draftBlueprint = useMemo(
     () => buildBlueprint({ name: businessName, city: "Mumbai", industry, sourceUrl: url }),
     [businessName, industry, url],
   );
+
+  // Draft costs nothing and resolves locally. Standard/Deep go through the
+  // credit-aware server function while the progress animation plays.
+  useEffect(() => {
+    if (mode === "draft" || requestedRef.current) return;
+    requestedRef.current = true;
+    let active = true;
+    runGeneration({ data: { name: businessName, city: "Mumbai", industry, mode, sourceUrl: url } })
+      .then((result) => { if (active) setOutcome(result); })
+      .catch(() => { if (active) setOutcome(null); });
+    return () => { active = false; };
+  }, [businessName, industry, mode, url, runGeneration]);
+
+  const blueprint = outcome?.blueprint ?? draftBlueprint;
+  const notice = outcome?.notice;
 
   return (
     <div className="min-h-dvh bg-background">
