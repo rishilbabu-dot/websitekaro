@@ -1,4 +1,4 @@
-import { defineMcp, type AnyToolDefinition } from "@lovable.dev/mcp-js";
+import { defineMcp, type ToolDefinition } from "@lovable.dev/mcp-js";
 import listIndustriesTool from "./tools/list-industries";
 import listSampleBusinessesTool from "./tools/list-sample-businesses";
 import getBusinessBlueprintTool from "./tools/get-business-blueprint";
@@ -15,5 +15,5 @@ export default defineMcp({
     listSampleBusinessesTool,
     getBusinessBlueprintTool,
     generateWebsiteBlueprintTool,
-  ] as unknown as AnyToolDefinition[],
+  ] as unknown as ToolDefinition[],
 });
