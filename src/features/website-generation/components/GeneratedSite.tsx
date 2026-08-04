@@ -10,8 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
-import heroImg from "@/assets/dental-hero.jpg";
-import { galleryImages, doctorPhotos } from "@/features/website-generation/media";
+import { siteImages } from "@/features/website-generation/media";
 
 interface Ctx {
   data: BusinessBlueprint;
@@ -206,7 +205,7 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
         {data.team.map((m, i) => (
           <article key={m.id} className="card-quiet overflow-hidden">
             <img
-              src={doctorPhotos[i % doctorPhotos.length]}
+              src={siteImages(data).team[i]}
               alt={`${m.name}, ${m.role}`}
               loading="lazy"
               width={1024}
@@ -230,21 +229,21 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
       <Eyebrow>{design.words.galleryNav}</Eyebrow>
       <h2 className="text-3xl sm:text-4xl">{design.words.galleryTitle}</h2>
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {galleryImages.map((g, i) => (
+        {siteImages(data).gallery.map((src, i) => (
           <figure
-            key={g.caption}
+            key={src}
             className={`group relative overflow-hidden rounded-[calc(var(--radius)+0.75rem)] ${i === 0 ? "lg:col-span-2 lg:row-span-2" : ""}`}
           >
             <img
-              src={g.src}
-              alt={`${design.seed.gallery[i] ?? g.caption} at ${data.name}`}
+              src={src}
+              alt={`${design.seed.gallery[i] ?? design.words.galleryNav} at ${data.name}`}
               loading="lazy"
               width={1200}
               height={1200}
               className={`w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] ${i === 0 ? "aspect-square lg:h-full" : "aspect-4/3"}`}
             />
             <figcaption className="absolute inset-x-0 bottom-0 bg-linear-to-t from-ink/70 to-transparent p-4 text-xs font-medium text-ink-foreground">
-              {design.seed.gallery[i] ?? g.caption}
+              {design.seed.gallery[i] ?? design.words.galleryNav}
             </figcaption>
           </figure>
         ))}
@@ -361,7 +360,7 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
 export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
   const [open, setOpen] = useState(false);
   const design = getIndustryDesign(data.industry);
-  const heroImage = data.industry === "dental" ? heroImg : galleryImages[0]!.src;
+  const heroImage = siteImages(data).hero;
 
   const nav = design.sections
     .filter((s) => s !== "contact")
