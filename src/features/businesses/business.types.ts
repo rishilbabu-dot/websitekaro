@@ -7,18 +7,24 @@
 
 export type Industry =
   | "dental"
+  | "doctor"
   | "restaurant"
+  | "hotel"
+  | "resort"
+  | "banquet"
+  | "event"
+  | "wedding"
+  | "photographer"
+  | "decorator"
   | "salon"
   | "lawyer"
-  | "ca"
   | "gym"
   | "school"
-  | "hotel"
+  | "coaching"
   | "interior"
   | "architect"
   | "retail"
-  | "home-services"
-  | "real-estate";
+  | "home-services";
 
 export type WebsiteStatus = "draft" | "generated" | "in-review" | "published" | "suspended";
 
