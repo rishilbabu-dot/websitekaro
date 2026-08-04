@@ -30,7 +30,7 @@ function GeneratePage() {
 
   const run = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate({ to: "/generate", search: { url, industry, name } });
+    navigate({ to: "/generate", search: { url, industry, name, mode } });
   };
 
   return (
