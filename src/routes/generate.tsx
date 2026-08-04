@@ -91,13 +91,30 @@ function GeneratePage() {
       </header>
 
       {done ? (
-        <GenerationComplete
+        <>
+          {notice ? (
+            <div className="mx-auto mt-6 flex w-full max-w-3xl items-start gap-2.5 rounded-xl border border-border bg-secondary/50 px-4 py-3 text-sm text-muted-foreground">
+              <Info className="mt-0.5 size-4 shrink-0" />
+              <span>{notice}</span>
+            </div>
+          ) : outcome && !outcome.cached ? (
+            <div className="mx-auto mt-6 w-full max-w-3xl rounded-xl border border-border bg-secondary/50 px-4 py-3 text-sm text-muted-foreground">
+              Written with {generationModeInfo(outcome.mode).label} quality · {generationModeInfo(outcome.mode).costLabel}
+              {outcome.usage ? ` · ~${outcome.usage.estimatedCredits} credits` : ""}
+            </div>
+          ) : outcome?.cached ? (
+            <div className="mx-auto mt-6 w-full max-w-3xl rounded-xl border border-border bg-secondary/50 px-4 py-3 text-sm text-muted-foreground">
+              Served from cache — this business was already generated, so no credits were used.
+            </div>
+          ) : null}
+          <GenerationComplete
           data={blueprint}
           onPublish={() => {
             toast.success("Launch requested", { description: "Our team will confirm your domain and go live." });
             navigate({ to: "/owner" });
           }}
-        />
+          />
+        </>
       ) : (
         <GenerationProgress businessName={businessName} onDone={() => setDone(true)} />
       )}
