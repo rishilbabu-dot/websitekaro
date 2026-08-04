@@ -6,6 +6,7 @@
  */
 import type { BusinessBlueprint, Industry, Lead, WebsiteStatus } from "./business.types";
 import { businesses, leads } from "./business.mock";
+import { industryDesigns } from "@/features/industries/industry.config";
 
 export const listBusinesses = (): BusinessBlueprint[] => businesses;
 
@@ -32,18 +33,9 @@ export interface IndustryPreset {
   ready: boolean;
 }
 
-export const industryPresets: IndustryPreset[] = [
-  { id: "dental", label: "Dental Clinic", ready: true },
-  { id: "restaurant", label: "Restaurant", ready: false },
-  { id: "salon", label: "Salon & Spa", ready: false },
-  { id: "lawyer", label: "Law Firm", ready: false },
-  { id: "ca", label: "Chartered Accountant", ready: false },
-  { id: "gym", label: "Gym & Fitness", ready: false },
-  { id: "school", label: "School", ready: false },
-  { id: "hotel", label: "Hotel", ready: false },
-  { id: "interior", label: "Interior Designer", ready: false },
-  { id: "architect", label: "Architect", ready: false },
-  { id: "retail", label: "Retail Store", ready: false },
-  { id: "home-services", label: "Home Services", ready: false },
-  { id: "real-estate", label: "Real Estate", ready: false },
-];
+/** Every vertical with its own design system is generation-ready. */
+export const industryPresets: IndustryPreset[] = industryDesigns.map((d) => ({
+  id: d.id,
+  label: d.label,
+  ready: true,
+}));
