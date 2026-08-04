@@ -59,13 +59,14 @@ function GeneratePage() {
   const [blocked, setBlocked] = useState(false);
   const [signIn, setSignIn] = useState(false);
   const quotaRef = useRef(false);
+  const blockedRef = useRef(false);
 
   // Guests get 3 generations per rolling 7 days; the counter lives in browser
   // storage behind the quota module so it can move server-side later.
   useEffect(() => {
     if (!isGuest || quotaRef.current) return;
     quotaRef.current = true;
-    if (readGuestQuota().exhausted) setBlocked(true);
+    if (readGuestQuota().exhausted) { blockedRef.current = true; setBlocked(true); }
     else recordGuestGeneration();
   }, [isGuest]);
 
@@ -80,7 +81,7 @@ function GeneratePage() {
   // Draft costs nothing and resolves locally. Standard/Deep go through the
   // credit-aware server function while the progress animation plays.
   useEffect(() => {
-    if (mode === "draft" || requestedRef.current) return;
+    if (mode === "draft" || requestedRef.current || blockedRef.current) return;
     requestedRef.current = true;
     let active = true;
     runGeneration({ data: { name: businessName, city: "Mumbai", industry, mode, sourceUrl: url } })
