@@ -935,6 +935,7 @@ export const industryCssVars = (d: IndustryDesign): React.CSSProperties => {
     "--input": th.border,
     "--ring": th.primary,
     "--ink": th.ink,
+    "--ink-foreground": th.background,
     "--sand": th.sand,
     "--radius": th.radius,
     "--font-display": th.displayFont,
