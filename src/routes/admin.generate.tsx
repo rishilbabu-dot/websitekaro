@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { GENERATION_MODES, type GenerationMode } from "@/features/ai";
 import { useState } from "react";
 import { Link2, Wand2 } from "lucide-react";
 import { PageHeader } from "@/components/shared";
