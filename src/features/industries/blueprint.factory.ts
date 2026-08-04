@@ -35,7 +35,7 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     status: "generated",
     generatedAt: new Date().toISOString().slice(0, 10),
     name,
-    tagline: `${city}'s ${s.tagline.toLowerCase()}`,
+    tagline: s.tagline,
     category: design.category,
     description: `${name} is a ${design.category.toLowerCase()} in ${city}. ${s.blurb}`,
     address: `Ground Floor, Linking Road, ${city} 400050`,
