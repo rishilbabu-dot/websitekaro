@@ -13,9 +13,9 @@ interface GenerateSearch {
 
 export const Route = createFileRoute("/generate")({
   validateSearch: (search: Record<string, unknown>): GenerateSearch => ({
-    url: typeof search.url === "string" ? search.url : "",
-    industry: typeof search.industry === "string" ? search.industry : "dental",
-    name: typeof search.name === "string" ? search.name : "",
+    url: typeof search["url"] === "string" ? search["url"] : "",
+    industry: typeof search["industry"] === "string" ? search["industry"] : "dental",
+    name: typeof search["name"] === "string" ? search["name"] : "",
   }),
   head: () => ({
     meta: [
