@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import logo from "@/assets/websitekaro-logo.png";
+import logo from "@/assets/websitekaro-mark.png";
 import { SuperAdminPasscodeDialog } from "@/features/auth";
 
 const CLICKS_REQUIRED = 5;

@@ -11,6 +11,7 @@ const filters = ["all", "new", "contacted", "closed"] as const;
 
 function LeadsPage() {
   const [filter, setFilter] = useState<(typeof filters)[number]>("all");
+  const { leads } = useOwnerBusiness();
   const rows = leads.filter((l) => filter === "all" || l.status === filter);
 
   return (

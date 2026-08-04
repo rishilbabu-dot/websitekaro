@@ -61,7 +61,6 @@ function Landing() {
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5 sm:px-8">
           <BrandMark />
           <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
-            <a href="#start" className="text-sm text-muted-foreground hover:text-foreground">Generate website</a>
             <a href="#how" className="text-sm text-muted-foreground hover:text-foreground">How it works</a>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground">Pricing</a>
             {isSuperAdmin ? <Link to="/admin" className="text-sm text-muted-foreground hover:text-foreground">Admin</Link> : null}
