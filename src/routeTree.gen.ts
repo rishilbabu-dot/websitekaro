@@ -23,6 +23,7 @@ import { Route as AdminGenerateRouteImport } from './routes/admin.generate'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminSubscriptionsRouteImport } from './routes/admin.subscriptions'
 import { Route as AdminTemplatesRouteImport } from './routes/admin.templates'
+import { Route as AdminUsageRouteImport } from './routes/admin.usage'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as OwnerIndexRouteImport } from './routes/owner.index'
 import { Route as OwnerAnalyticsRouteImport } from './routes/owner.analytics'
@@ -109,6 +110,11 @@ const AdminSubscriptionsRoute = AdminSubscriptionsRouteImport.update({
 const AdminTemplatesRoute = AdminTemplatesRouteImport.update({
   id: '/templates',
   path: '/templates',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsageRoute = AdminUsageRouteImport.update({
+  id: '/usage',
+  path: '/usage',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
@@ -202,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/subscriptions': typeof AdminSubscriptionsRoute
   '/admin/templates': typeof AdminTemplatesRoute
+  '/admin/usage': typeof AdminUsageRoute
   '/admin/users': typeof AdminUsersRoute
   '/owner/analytics': typeof OwnerAnalyticsRoute
   '/owner/contact': typeof OwnerContactRoute
@@ -231,6 +238,7 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/subscriptions': typeof AdminSubscriptionsRoute
   '/admin/templates': typeof AdminTemplatesRoute
+  '/admin/usage': typeof AdminUsageRoute
   '/admin/users': typeof AdminUsersRoute
   '/owner/analytics': typeof OwnerAnalyticsRoute
   '/owner/contact': typeof OwnerContactRoute
@@ -263,6 +271,7 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/subscriptions': typeof AdminSubscriptionsRoute
   '/admin/templates': typeof AdminTemplatesRoute
+  '/admin/usage': typeof AdminUsageRoute
   '/admin/users': typeof AdminUsersRoute
   '/owner/analytics': typeof OwnerAnalyticsRoute
   '/owner/contact': typeof OwnerContactRoute
@@ -296,6 +305,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/subscriptions'
     | '/admin/templates'
+    | '/admin/usage'
     | '/admin/users'
     | '/owner/analytics'
     | '/owner/contact'
@@ -325,6 +335,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/subscriptions'
     | '/admin/templates'
+    | '/admin/usage'
     | '/admin/users'
     | '/owner/analytics'
     | '/owner/contact'
@@ -356,6 +367,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/subscriptions'
     | '/admin/templates'
+    | '/admin/usage'
     | '/admin/users'
     | '/owner/analytics'
     | '/owner/contact'
@@ -487,6 +499,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTemplatesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/usage': {
+      id: '/admin/usage'
+      path: '/usage'
+      fullPath: '/admin/usage'
+      preLoaderRoute: typeof AdminUsageRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/users': {
       id: '/admin/users'
       path: '/users'
@@ -601,6 +620,7 @@ interface AdminRouteChildren {
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSubscriptionsRoute: typeof AdminSubscriptionsRoute
   AdminTemplatesRoute: typeof AdminTemplatesRoute
+  AdminUsageRoute: typeof AdminUsageRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminBusinessesIdRoute: typeof AdminBusinessesIdRoute
@@ -614,6 +634,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSubscriptionsRoute: AdminSubscriptionsRoute,
   AdminTemplatesRoute: AdminTemplatesRoute,
+  AdminUsageRoute: AdminUsageRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminBusinessesIdRoute: AdminBusinessesIdRoute,

@@ -1,4 +1,4 @@
-import { BarChart3, Building2, CreditCard, LayoutDashboard, LayoutTemplate, Settings, Users, Wand2 } from "lucide-react";
+import { BarChart3, Coins, Building2, CreditCard, LayoutDashboard, LayoutTemplate, Settings, Users, Wand2 } from "lucide-react";
 import type { NavItem } from "@/components/layout";
 
 export const adminNav: NavItem[] = [
@@ -8,6 +8,7 @@ export const adminNav: NavItem[] = [
   { to: "/admin/templates", label: "Templates", icon: LayoutTemplate },
   { to: "/admin/users", label: "Users", icon: Users },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+  { to: "/admin/usage", label: "Usage & costs", icon: Coins },
   { to: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard },
   { to: "/admin/settings", label: "Settings", icon: Settings },
 ];
