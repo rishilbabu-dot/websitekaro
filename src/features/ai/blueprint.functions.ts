@@ -183,7 +183,7 @@ export const generateBlueprint = createServerFn({ method: "POST" })
         ? "AI credits are exhausted — showing the free Draft version. Top up credits to use Standard or Deep."
         : /429|rate limit/i.test(message)
           ? "AI is rate limited right now — showing the free Draft version. Try again in a minute."
-          : `AI generation failed — showing the free Draft version. [${message.slice(0, 300)}]`;
+          : "AI generation failed — showing the free Draft version.";
       return finish(base, "draft", { notice });
     }
   });
