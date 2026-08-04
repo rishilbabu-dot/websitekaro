@@ -51,7 +51,7 @@ export function BrandMark({
         <span className="min-w-0 leading-tight">
           <span className="block truncate text-sm font-semibold tracking-tight">WebsiteKaro</span>
           {tagline ? (
-            <span className="block truncate text-[10px] text-muted-foreground transition-colors group-hover:text-primary">
+            <span className="block max-w-[168px] text-[10px] leading-tight text-muted-foreground transition-colors group-hover:text-primary">
               {subtitle ?? "Your Professional Website. Ready Before You Pay."}
             </span>
           ) : null}
