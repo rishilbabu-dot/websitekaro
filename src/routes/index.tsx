@@ -71,7 +71,7 @@ function Landing() {
         <div className="mx-auto grid w-full max-w-6xl items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="rise">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium shadow-[var(--shadow-soft)]">
-              <span className="size-1.5 rounded-full bg-success" /> Now building for dental clinics in Mumbai
+              <span className="size-1.5 rounded-full bg-success" /> 19 industries · each with its own design system
             </span>
             <h1 className="mt-6 text-balance text-4xl leading-[1.03] sm:text-6xl md:text-7xl">
               Paste your Google Maps <span className="italic text-primary">business link</span>
