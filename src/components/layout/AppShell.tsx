@@ -16,11 +16,13 @@ export function AppShell({
   nav,
   role,
   roleLabel,
+  footer,
   children,
 }: {
   nav: NavItem[];
   role: string;
   roleLabel: string;
+  footer?: ReactNode;
   children: ReactNode;
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -57,18 +59,7 @@ export function AppShell({
             );
           })}
         </nav>
-        <div className="mt-auto rounded-xl border border-border bg-card p-4">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-medium">Dental pilot</p>
-            <span className="text-[11px] text-muted-foreground">3 / 25</span>
-          </div>
-          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-            <div className="h-full w-[12%] rounded-full bg-primary" />
-          </div>
-          <p className="mt-2.5 text-[11px] leading-relaxed text-muted-foreground">
-            More industries unlock as blueprints are approved.
-          </p>
-        </div>
+        {footer ? <div className="mt-auto">{footer}</div> : null}
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
@@ -78,7 +69,7 @@ export function AppShell({
             className="hidden h-9 w-full max-w-sm items-center gap-2.5 rounded-lg border border-border bg-secondary/60 px-3 text-sm text-muted-foreground transition-colors hover:bg-secondary sm:flex"
           >
             <Search className="size-4" />
-            <span className="flex-1 text-left">Search businesses, leads, templates</span>
+            <span className="flex-1 text-left">{role === "/admin" ? "Search businesses, leads, templates" : "Search your website content and leads"}</span>
             <span className="kbd">⌘</span>
             <span className="kbd">K</span>
           </button>
