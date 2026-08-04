@@ -1,15 +1,16 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
-import { GeneratedSite } from "@/features/website-generation";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { GeneratedSite, loadPreviewBlueprint } from "@/features/website-generation";
+import type { BusinessBlueprint } from "@/features/businesses";
 import { getBusiness } from "@/features/businesses";
 
 export const Route = createFileRoute("/site/$slug")({
-  loader: ({ params }) => {
-    const business = getBusiness(params.slug);
-    if (!business) throw notFound();
-    return { business };
-  },
+  // A freshly generated site is not in the business service yet, so the
+  // loader may legitimately return nothing and the component falls back to the
+  // locally stored blueprint.
+  loader: ({ params }) => ({ business: getBusiness(params.slug) ?? null }),
   head: ({ params, loaderData }) => {
-    if (!loaderData) {
+    if (!loaderData?.business) {
       return { meta: [{ title: "Website unavailable" }, { name: "robots", content: "noindex" }] };
     }
     const b = loaderData.business;
@@ -68,5 +69,20 @@ export const Route = createFileRoute("/site/$slug")({
 
 function SitePage() {
   const { business } = Route.useLoaderData();
-  return <GeneratedSite data={business} />;
+  const { slug } = Route.useParams();
+  const [local, setLocal] = useState<BusinessBlueprint | null>(null);
+  useEffect(() => { if (!business) setLocal(loadPreviewBlueprint(slug) ?? null); }, [business, slug]);
+
+  const data = business ?? local;
+  if (!data) {
+    return (
+      <div className="flex min-h-dvh items-center justify-center px-6 text-center">
+        <div>
+          <h1 className="text-2xl">This preview isn't available</h1>
+          <p className="mt-3 text-sm text-muted-foreground">Generate the website again to open its preview.</p>
+        </div>
+      </div>
+    );
+  }
+  return <GeneratedSite data={data} />;
 }
