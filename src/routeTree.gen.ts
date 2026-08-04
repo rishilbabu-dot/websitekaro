@@ -12,8 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as GenerateRouteImport } from './routes/generate'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as OwnerRouteImport } from './routes/owner'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminGenerateRouteImport } from './routes/admin.generate'
@@ -31,6 +34,7 @@ import { Route as OwnerPagesRouteImport } from './routes/owner.pages'
 import { Route as OwnerSeoRouteImport } from './routes/owner.seo'
 import { Route as OwnerServicesRouteImport } from './routes/owner.services'
 import { Route as SiteSlugRouteImport } from './routes/site.$slug'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as AdminBusinessesIndexRouteImport } from './routes/admin.businesses.index'
 import { Route as AdminBusinessesIdRouteImport } from './routes/admin.businesses.$id'
 import { Route as AdminPreviewSlugRouteImport } from './routes/admin.preview.$slug'
@@ -50,6 +54,11 @@ const GenerateRoute = GenerateRouteImport.update({
   path: '/generate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OwnerRoute = OwnerRouteImport.update({
   id: '/owner',
   path: '/owner',
@@ -60,6 +69,18 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -145,6 +166,12 @@ const SiteSlugRoute = SiteSlugRouteImport.update({
   path: '/site/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminBusinessesIndexRoute = AdminBusinessesIndexRouteImport.update({
   id: '/businesses/',
   path: '/businesses/',
@@ -165,8 +192,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/generate': typeof GenerateRoute
+  '/mcp': typeof McpRoute
   '/owner': typeof OwnerRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/generate': typeof AdminGenerateRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -184,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/site/$slug': typeof SiteSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/owner/': typeof OwnerIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/businesses/$id': typeof AdminBusinessesIdRoute
   '/admin/preview/$slug': typeof AdminPreviewSlugRoute
   '/admin/businesses/': typeof AdminBusinessesIndexRoute
@@ -191,7 +222,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/generate': typeof GenerateRoute
+  '/mcp': typeof McpRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/generate': typeof AdminGenerateRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -209,6 +243,7 @@ export interface FileRoutesByTo {
   '/site/$slug': typeof SiteSlugRoute
   '/admin': typeof AdminIndexRoute
   '/owner': typeof OwnerIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/businesses/$id': typeof AdminBusinessesIdRoute
   '/admin/preview/$slug': typeof AdminPreviewSlugRoute
   '/admin/businesses': typeof AdminBusinessesIndexRoute
@@ -218,8 +253,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/generate': typeof GenerateRoute
+  '/mcp': typeof McpRoute
   '/owner': typeof OwnerRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/generate': typeof AdminGenerateRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -237,6 +275,7 @@ export interface FileRoutesById {
   '/site/$slug': typeof SiteSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/owner/': typeof OwnerIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/businesses/$id': typeof AdminBusinessesIdRoute
   '/admin/preview/$slug': typeof AdminPreviewSlugRoute
   '/admin/businesses/': typeof AdminBusinessesIndexRoute
@@ -247,8 +286,11 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/generate'
+    | '/mcp'
     | '/owner'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin/analytics'
     | '/admin/generate'
     | '/admin/settings'
@@ -266,6 +308,7 @@ export interface FileRouteTypes {
     | '/site/$slug'
     | '/admin/'
     | '/owner/'
+    | '/.mcp/invoke-tool/$tool'
     | '/admin/businesses/$id'
     | '/admin/preview/$slug'
     | '/admin/businesses/'
@@ -273,7 +316,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/generate'
+    | '/mcp'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin/analytics'
     | '/admin/generate'
     | '/admin/settings'
@@ -291,6 +337,7 @@ export interface FileRouteTypes {
     | '/site/$slug'
     | '/admin'
     | '/owner'
+    | '/.mcp/invoke-tool/$tool'
     | '/admin/businesses/$id'
     | '/admin/preview/$slug'
     | '/admin/businesses'
@@ -299,8 +346,11 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/generate'
+    | '/mcp'
     | '/owner'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin/analytics'
     | '/admin/generate'
     | '/admin/settings'
@@ -318,6 +368,7 @@ export interface FileRouteTypes {
     | '/site/$slug'
     | '/admin/'
     | '/owner/'
+    | '/.mcp/invoke-tool/$tool'
     | '/admin/businesses/$id'
     | '/admin/preview/$slug'
     | '/admin/businesses/'
@@ -327,9 +378,13 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   GenerateRoute: typeof GenerateRoute
+  McpRoute: typeof McpRoute
   OwnerRoute: typeof OwnerRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   SiteSlugRoute: typeof SiteSlugRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -355,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GenerateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/owner': {
       id: '/owner'
       path: '/owner'
@@ -367,6 +429,20 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -488,6 +564,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/businesses/': {
       id: '/admin/businesses/'
       path: '/businesses'
@@ -570,9 +653,14 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   GenerateRoute: GenerateRoute,
+  McpRoute: McpRoute,
   OwnerRoute: OwnerRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   SiteSlugRoute: SiteSlugRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
