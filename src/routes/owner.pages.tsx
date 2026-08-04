@@ -3,13 +3,13 @@ import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { businesses } from "@/features/businesses";
+import { useOwnerBusiness } from "@/features/owner";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/owner/pages")({ component: PagesEditor });
 
 function PagesEditor() {
-  const b = businesses[0]!;
+  const { business: b } = useOwnerBusiness();
   return (
     <>
       <PageHeader title="Pages" subtitle="Edit the words on your website. Layout and design stay locked to keep the site fast and consistent." />

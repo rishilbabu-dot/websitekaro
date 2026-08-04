@@ -2,13 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { businesses } from "@/features/businesses";
+import { useOwnerBusiness } from "@/features/owner";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/owner/contact")({ component: ContactEditor });
 
 function ContactEditor() {
-  const b = businesses[0]!;
+  const { business: b } = useOwnerBusiness();
   return (
     <>
       <PageHeader title="Contact & hours" subtitle="Wrong hours cost more appointments than bad design. Keep these current." />

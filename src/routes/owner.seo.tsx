@@ -3,13 +3,13 @@ import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { businesses } from "@/features/businesses";
+import { useOwnerBusiness } from "@/features/owner";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/owner/seo")({ component: SeoEditor });
 
 function SeoEditor() {
-  const b = businesses[0]!;
+  const { business: b } = useOwnerBusiness();
   return (
     <>
       <PageHeader title="SEO" subtitle="How your clinic appears on Google. We generated these — adjust only if you know what you want." />

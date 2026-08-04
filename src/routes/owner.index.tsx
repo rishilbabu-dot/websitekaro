@@ -2,12 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ExternalLink, Inbox } from "lucide-react";
 import { PageHeader, StatCard, StatusPill } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { businesses, leads } from "@/features/businesses";
+import { useOwnerBusiness } from "@/features/owner";
 
 export const Route = createFileRoute("/owner/")({ component: OwnerHome });
 
 function OwnerHome() {
-  const b = businesses[0]!;
+  const { business: b, leads } = useOwnerBusiness();
   return (
     <>
       <PageHeader

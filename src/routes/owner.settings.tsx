@@ -3,14 +3,14 @@ import { LogOut } from "lucide-react";
 import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { businesses } from "@/features/businesses";
+import { useOwnerBusiness } from "@/features/owner";
 import { useAuth } from "@/features/auth";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/owner/settings")({ component: OwnerSettings });
 
 function OwnerSettings() {
-  const b = businesses[0]!;
+  const { business: b } = useOwnerBusiness();
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 

@@ -15,7 +15,25 @@ export const Route = createFileRoute("/admin")({
   }),
   component: () => (
     <RequireRole role="super-admin">
-      <AppShell nav={adminNav} role="/admin" roleLabel="Super Admin">
+      <AppShell
+        nav={adminNav}
+        role="/admin"
+        roleLabel="Super Admin"
+        footer={
+          <div className="rounded-xl border border-border bg-card p-4">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-medium">Dental pilot</p>
+              <span className="text-[11px] text-muted-foreground">3 / 25</span>
+            </div>
+            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+              <div className="h-full w-[12%] rounded-full bg-primary" />
+            </div>
+            <p className="mt-2.5 text-[11px] leading-relaxed text-muted-foreground">
+              More industries unlock as blueprints are approved.
+            </p>
+          </div>
+        }
+      >
         <Outlet />
       </AppShell>
     </RequireRole>

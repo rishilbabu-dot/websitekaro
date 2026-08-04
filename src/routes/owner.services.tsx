@@ -2,13 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { businesses } from "@/features/businesses";
+import { useOwnerBusiness } from "@/features/owner";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/owner/services")({ component: ServicesEditor });
 
 function ServicesEditor() {
-  const b = businesses[0]!;
+  const { business: b } = useOwnerBusiness();
   return (
     <>
       <PageHeader title="Services" subtitle="Treatments shown on your website, in order." actions={<Button onClick={() => toast("New service row added")}><Plus className="size-4" /> Add service</Button>} />

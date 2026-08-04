@@ -2,13 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { businesses } from "@/features/businesses";
+import { useOwnerBusiness } from "@/features/owner";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/owner/doctors")({ component: DoctorsEditor });
 
 function DoctorsEditor() {
-  const b = businesses[0]!;
+  const { business: b } = useOwnerBusiness();
   return (
     <>
       <PageHeader title="Doctors" subtitle="Profiles shown on your website's team section." actions={<Button onClick={() => toast("New doctor profile added")}><Plus className="size-4" /> Add doctor</Button>} />
