@@ -2,13 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ExternalLink } from "lucide-react";
 import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { businesses } from "@/features/businesses";
+import { useOwnerBusiness } from "@/features/owner";
 import { DevicePreview } from "@/features/website-generation";
 
 export const Route = createFileRoute("/owner/preview")({ component: OwnerPreview });
 
 function OwnerPreview() {
-  const b = businesses[0]!;
+  const { business: b } = useOwnerBusiness();
   return (
     <>
       <PageHeader
