@@ -386,14 +386,19 @@ function Landing() {
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p className="flex items-center gap-2 font-medium text-foreground"><Sparkles className="size-4 text-primary" /> WebsiteKaro</p>
           <div className="flex flex-wrap gap-5">
-            <Link to="/admin">Super Admin</Link>
-            <Link to="/owner">Business Owner</Link>
+            {isOwner || isSuperAdmin ? (
+              <Link to={isSuperAdmin ? "/admin" : "/owner"}>Dashboard</Link>
+            ) : (
+              <button type="button" onClick={() => setSignIn(true)}>Login</button>
+            )}
             <a href="#pricing">Pricing</a>
             <a href="#faq">FAQ</a>
           </div>
           <p>© {new Date().getFullYear()} WebsiteKaro, Mumbai</p>
         </div>
       </footer>
+
+      <GoogleSignInDialog open={signIn} onOpenChange={setSignIn} />
     </div>
   );
 }
