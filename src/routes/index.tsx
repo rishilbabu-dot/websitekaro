@@ -10,6 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { toast } from "sonner";
 import clinicImg from "@/assets/dental-hero.jpg";
 import { industryDesigns } from "@/features/industries";
+import { GENERATION_MODES, generationModeInfo, type GenerationMode } from "@/features/ai";
 
 export const Route = createFileRoute("/")({
   head: () => ({
