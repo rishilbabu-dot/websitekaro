@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { buildBlueprint, getIndustryDesign } from "@/features/industries";
-import { cacheKey, readCachedBlueprint, writeCachedBlueprint } from "./blueprint-cache";
+import { cacheKey, cacheSize, readCachedBlueprint, writeCachedBlueprint } from "./blueprint-cache";
 import { estimateCredits, GENERATION_LIMITS } from "./generation.limits";
 import { getGenerationMode, type GenerationOutcome, type GenerationUsage } from "./generation.types";
 import { dailyCapReached, recordGeneration, usageSummary } from "./usage-ledger";
@@ -188,7 +188,7 @@ export const generateBlueprint = createServerFn({ method: "POST" })
     }
   });
 
-export const getUsageSummary = createServerFn({ method: "GET" }).handler(async () => {
-  const { cacheSize } = await import("./blueprint-cache");
-  return { ...usageSummary(), cachedBlueprints: cacheSize() };
-});
+export const getUsageSummary = createServerFn({ method: "GET" }).handler(async () => ({
+  ...usageSummary(),
+  cachedBlueprints: cacheSize(),
+}));
