@@ -1,13 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   ArrowRight, Sparkles, Link2, Wand2, Rocket, ShieldCheck, Gauge, Search, Star, Check,
+  MapPin, Brain, Palette, LayoutTemplate, Bot, MonitorSmartphone, ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import clinicImg from "@/assets/dental-hero.jpg";
+import { industryDesigns } from "@/features/industries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -28,15 +30,22 @@ const features = [
   { icon: ShieldCheck, title: "Trust on every screen", body: "Google ratings, credentials and clear calls to action placed where patients actually look." },
 ];
 
-const steps = [
-  { n: "01", title: "Paste your link", body: "Your Google Maps listing, or just business name and city." },
-  { n: "02", title: "We research", body: "We assemble a structured Business Blueprint — services, team, hours, reviews, positioning." },
-  { n: "03", title: "Your site appears", body: "A complete, production-ready website you can review on desktop, tablet and mobile." },
-  { n: "04", title: "You decide", body: "Love it? Publish. Don't? You've paid nothing." },
+const pipeline = [
+  { icon: MapPin, title: "Google Maps", body: "One link is the entire brief." },
+  { icon: Search, title: "Business research", body: "Listing, reviews, photos and category signals." },
+  { icon: Brain, title: "Understanding", body: "Services, audience and positioning extracted." },
+  { icon: Palette, title: "Brand identity", body: "Palette, type and tone matched to your industry." },
+  { icon: LayoutTemplate, title: "Website generation", body: "Pages composed from your Business Blueprint." },
+  { icon: Gauge, title: "SEO optimisation", body: "Schema, metadata and local keywords baked in." },
+  { icon: Bot, title: "AI search readiness", body: "Structured so AI assistants can quote you." },
+  { icon: MonitorSmartphone, title: "Preview", body: "Desktop, tablet and mobile, side by side." },
+  { icon: Rocket, title: "Launch", body: "Approve it and go live. Not before." },
 ];
 
 function Landing() {
   const [link, setLink] = useState("");
+  const [industry, setIndustry] = useState("dental");
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-dvh">
