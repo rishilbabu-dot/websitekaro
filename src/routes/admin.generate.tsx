@@ -26,6 +26,7 @@ function GeneratePage() {
   const [industry, setIndustry] = useState("dental");
   const [url, setUrl] = useState("");
   const [name, setName] = useState("");
+  const [mode, setMode] = useState<GenerationMode>("draft");
   const navigate = useNavigate();
 
   const run = (e: React.FormEvent) => {
@@ -70,6 +71,26 @@ function GeneratePage() {
                   }`}
                 >
                   {p.label}{!p.ready && " · soon"}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+          <fieldset className="mt-6">
+            <legend className="text-sm font-medium">Generation quality</legend>
+            <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              {GENERATION_MODES.map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => setMode(m.id)}
+                  aria-pressed={mode === m.id}
+                  className={`rounded-xl border p-3 text-left transition-colors ${mode === m.id ? "border-primary bg-primary/5" : "border-border hover:bg-secondary"}`}
+                >
+                  <span className="flex items-center justify-between text-sm font-medium">
+                    {m.label}
+                    <span className="text-[11px] font-normal text-muted-foreground">{m.costLabel}</span>
+                  </span>
+                  <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">{m.blurb}</span>
                 </button>
               ))}
             </div>
