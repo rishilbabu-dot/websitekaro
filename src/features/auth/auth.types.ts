@@ -1,4 +1,4 @@
-export type UserRole = "super-admin" | "business-owner";
+export type UserRole = "guest" | "super-admin" | "business-owner";
 
 export interface AuthUser {
   id: string;
@@ -6,9 +6,16 @@ export interface AuthUser {
   email: string;
   role: UserRole;
   businessId?: string;
+  avatarUrl?: string;
 }
 
 export interface AuthSession {
   user: AuthUser | null;
   isAuthenticated: boolean;
+}
+
+/** Storage seam — swap for a server-backed implementation later. */
+export interface SessionStorageAdapter {
+  read(): AuthSession | null;
+  write(session: AuthSession | null): void;
 }
