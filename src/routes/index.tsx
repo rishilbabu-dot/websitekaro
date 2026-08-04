@@ -155,6 +155,26 @@ function Landing() {
               </Link>
               <span className="flex items-center gap-1.5"><Star className="size-3.5 fill-accent text-accent" /> No payment until you approve</span>
             </div>
+            {isGuest ? (
+              blocked ? (
+                <div className="rise-3 mt-5 max-w-xl rounded-2xl border border-primary/25 bg-primary/5 p-5">
+                  <p className="text-sm font-medium">You've used all 3 free website generations for this week</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                    Sign in with Google to continue editing your existing website or contact WebsiteKaro to launch your business online.
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Button size="sm" onClick={() => setSignIn(true)}>Sign in with Google</Button>
+                    <Button size="sm" variant="outline" asChild><a href="#pricing">Contact WebsiteKaro</a></Button>
+                  </div>
+                </div>
+              ) : (
+                <p className="rise-3 mt-4 text-xs text-muted-foreground">
+                  {quota.remaining} of {quota.limit} free generations left this week — no account needed.
+                </p>
+              )
+            ) : (
+              <p className="rise-3 mt-4 text-xs text-muted-foreground">Signed in as {user?.email} · unlimited generations</p>
+            )}
           </div>
           <div className="rise-2 relative">
             <div className="overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-[var(--shadow-lift)]">
