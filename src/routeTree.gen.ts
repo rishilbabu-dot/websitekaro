@@ -32,8 +32,11 @@ import { Route as OwnerDoctorsRouteImport } from './routes/owner.doctors'
 import { Route as OwnerGalleryRouteImport } from './routes/owner.gallery'
 import { Route as OwnerLeadsRouteImport } from './routes/owner.leads'
 import { Route as OwnerPagesRouteImport } from './routes/owner.pages'
+import { Route as OwnerPreviewRouteImport } from './routes/owner.preview'
 import { Route as OwnerSeoRouteImport } from './routes/owner.seo'
 import { Route as OwnerServicesRouteImport } from './routes/owner.services'
+import { Route as OwnerSettingsRouteImport } from './routes/owner.settings'
+import { Route as PreviewSlugRouteImport } from './routes/preview.$slug'
 import { Route as SiteSlugRouteImport } from './routes/site.$slug'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as AdminBusinessesIndexRouteImport } from './routes/admin.businesses.index'
@@ -157,6 +160,11 @@ const OwnerPagesRoute = OwnerPagesRouteImport.update({
   path: '/pages',
   getParentRoute: () => OwnerRoute,
 } as any)
+const OwnerPreviewRoute = OwnerPreviewRouteImport.update({
+  id: '/preview',
+  path: '/preview',
+  getParentRoute: () => OwnerRoute,
+} as any)
 const OwnerSeoRoute = OwnerSeoRouteImport.update({
   id: '/seo',
   path: '/seo',
@@ -166,6 +174,16 @@ const OwnerServicesRoute = OwnerServicesRouteImport.update({
   id: '/services',
   path: '/services',
   getParentRoute: () => OwnerRoute,
+} as any)
+const OwnerSettingsRoute = OwnerSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => OwnerRoute,
+} as any)
+const PreviewSlugRoute = PreviewSlugRouteImport.update({
+  id: '/preview/$slug',
+  path: '/preview/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SiteSlugRoute = SiteSlugRouteImport.update({
   id: '/site/$slug',
@@ -216,8 +234,11 @@ export interface FileRoutesByFullPath {
   '/owner/gallery': typeof OwnerGalleryRoute
   '/owner/leads': typeof OwnerLeadsRoute
   '/owner/pages': typeof OwnerPagesRoute
+  '/owner/preview': typeof OwnerPreviewRoute
   '/owner/seo': typeof OwnerSeoRoute
   '/owner/services': typeof OwnerServicesRoute
+  '/owner/settings': typeof OwnerSettingsRoute
+  '/preview/$slug': typeof PreviewSlugRoute
   '/site/$slug': typeof SiteSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/owner/': typeof OwnerIndexRoute
@@ -246,8 +267,11 @@ export interface FileRoutesByTo {
   '/owner/gallery': typeof OwnerGalleryRoute
   '/owner/leads': typeof OwnerLeadsRoute
   '/owner/pages': typeof OwnerPagesRoute
+  '/owner/preview': typeof OwnerPreviewRoute
   '/owner/seo': typeof OwnerSeoRoute
   '/owner/services': typeof OwnerServicesRoute
+  '/owner/settings': typeof OwnerSettingsRoute
+  '/preview/$slug': typeof PreviewSlugRoute
   '/site/$slug': typeof SiteSlugRoute
   '/admin': typeof AdminIndexRoute
   '/owner': typeof OwnerIndexRoute
@@ -279,8 +303,11 @@ export interface FileRoutesById {
   '/owner/gallery': typeof OwnerGalleryRoute
   '/owner/leads': typeof OwnerLeadsRoute
   '/owner/pages': typeof OwnerPagesRoute
+  '/owner/preview': typeof OwnerPreviewRoute
   '/owner/seo': typeof OwnerSeoRoute
   '/owner/services': typeof OwnerServicesRoute
+  '/owner/settings': typeof OwnerSettingsRoute
+  '/preview/$slug': typeof PreviewSlugRoute
   '/site/$slug': typeof SiteSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/owner/': typeof OwnerIndexRoute
@@ -313,8 +340,11 @@ export interface FileRouteTypes {
     | '/owner/gallery'
     | '/owner/leads'
     | '/owner/pages'
+    | '/owner/preview'
     | '/owner/seo'
     | '/owner/services'
+    | '/owner/settings'
+    | '/preview/$slug'
     | '/site/$slug'
     | '/admin/'
     | '/owner/'
@@ -343,8 +373,11 @@ export interface FileRouteTypes {
     | '/owner/gallery'
     | '/owner/leads'
     | '/owner/pages'
+    | '/owner/preview'
     | '/owner/seo'
     | '/owner/services'
+    | '/owner/settings'
+    | '/preview/$slug'
     | '/site/$slug'
     | '/admin'
     | '/owner'
@@ -375,8 +408,11 @@ export interface FileRouteTypes {
     | '/owner/gallery'
     | '/owner/leads'
     | '/owner/pages'
+    | '/owner/preview'
     | '/owner/seo'
     | '/owner/services'
+    | '/owner/settings'
+    | '/preview/$slug'
     | '/site/$slug'
     | '/admin/'
     | '/owner/'
@@ -395,6 +431,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  PreviewSlugRoute: typeof PreviewSlugRoute
   SiteSlugRoute: typeof SiteSlugRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
@@ -562,6 +599,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OwnerPagesRouteImport
       parentRoute: typeof OwnerRoute
     }
+    '/owner/preview': {
+      id: '/owner/preview'
+      path: '/preview'
+      fullPath: '/owner/preview'
+      preLoaderRoute: typeof OwnerPreviewRouteImport
+      parentRoute: typeof OwnerRoute
+    }
     '/owner/seo': {
       id: '/owner/seo'
       path: '/seo'
@@ -575,6 +619,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/owner/services'
       preLoaderRoute: typeof OwnerServicesRouteImport
       parentRoute: typeof OwnerRoute
+    }
+    '/owner/settings': {
+      id: '/owner/settings'
+      path: '/settings'
+      fullPath: '/owner/settings'
+      preLoaderRoute: typeof OwnerSettingsRouteImport
+      parentRoute: typeof OwnerRoute
+    }
+    '/preview/$slug': {
+      id: '/preview/$slug'
+      path: '/preview/$slug'
+      fullPath: '/preview/$slug'
+      preLoaderRoute: typeof PreviewSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/site/$slug': {
       id: '/site/$slug'
@@ -651,8 +709,10 @@ interface OwnerRouteChildren {
   OwnerGalleryRoute: typeof OwnerGalleryRoute
   OwnerLeadsRoute: typeof OwnerLeadsRoute
   OwnerPagesRoute: typeof OwnerPagesRoute
+  OwnerPreviewRoute: typeof OwnerPreviewRoute
   OwnerSeoRoute: typeof OwnerSeoRoute
   OwnerServicesRoute: typeof OwnerServicesRoute
+  OwnerSettingsRoute: typeof OwnerSettingsRoute
   OwnerIndexRoute: typeof OwnerIndexRoute
 }
 
@@ -663,8 +723,10 @@ const OwnerRouteChildren: OwnerRouteChildren = {
   OwnerGalleryRoute: OwnerGalleryRoute,
   OwnerLeadsRoute: OwnerLeadsRoute,
   OwnerPagesRoute: OwnerPagesRoute,
+  OwnerPreviewRoute: OwnerPreviewRoute,
   OwnerSeoRoute: OwnerSeoRoute,
   OwnerServicesRoute: OwnerServicesRoute,
+  OwnerSettingsRoute: OwnerSettingsRoute,
   OwnerIndexRoute: OwnerIndexRoute,
 }
 
@@ -680,6 +742,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  PreviewSlugRoute: PreviewSlugRoute,
   SiteSlugRoute: SiteSlugRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }

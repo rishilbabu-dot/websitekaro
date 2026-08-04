@@ -1,8 +1,10 @@
-import { Link, useRouterState } from "@tanstack/react-router";
-import { Bell, ChevronsUpDown, Search, Sparkles } from "lucide-react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Bell, LogOut, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { BrandMark } from "@/components/brand";
+import { useAuth } from "@/features/auth";
 
 export interface NavItem {
   to: string;
@@ -22,23 +24,15 @@ export function AppShell({
   children: ReactNode;
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="flex min-h-dvh w-full bg-secondary/40">
       <aside className="sticky top-0 hidden h-dvh w-[248px] shrink-0 flex-col border-r border-border bg-sidebar px-3 py-4 lg:flex">
-        <Link
-          to="/"
-          className="flex items-center gap-2.5 rounded-xl border border-transparent px-2 py-2 transition-colors hover:border-border hover:bg-sidebar-accent/60"
-        >
-          <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Sparkles className="size-4" />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-semibold tracking-tight">WebsiteKaro</span>
-            <span className="block truncate text-[11px] text-muted-foreground">Mumbai workspace</span>
-          </span>
-          <ChevronsUpDown className="size-3.5 text-muted-foreground" />
-        </Link>
+        <div className="rounded-xl border border-transparent px-2 py-2 transition-colors hover:border-border hover:bg-sidebar-accent/60">
+          <BrandMark />
+        </div>
         <p className="mt-6 px-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{roleLabel}</p>
         <nav className="mt-2 grid gap-0.5" aria-label="Sidebar">
           {nav.map((item) => {
@@ -95,8 +89,18 @@ export function AppShell({
             </Button>
             <div className="flex items-center gap-2 rounded-full border border-border bg-card py-1 pl-1 pr-3">
               <span className="flex size-7 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">WK</span>
-              <span className="text-xs font-medium">{roleLabel}</span>
+              <span className="text-xs font-medium">{user?.name ?? roleLabel}</span>
             </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                signOut();
+                navigate({ to: "/" });
+              }}
+            >
+              <LogOut className="size-4" /> Logout
+            </Button>
           </div>
         </header>
         <nav className="flex gap-1 overflow-x-auto border-b border-border bg-background px-4 py-2 lg:hidden" aria-label="Sections">

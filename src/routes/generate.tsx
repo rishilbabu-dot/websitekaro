@@ -1,11 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Sparkles, ArrowLeft, Info } from "lucide-react";
+import { ArrowLeft, Info } from "lucide-react";
 import { toast } from "sonner";
 import { buildBlueprint, getIndustryDesign } from "@/features/industries";
 import { generateBlueprint, generationModeInfo, getGenerationMode, type GenerationMode, type GenerationOutcome } from "@/features/ai";
 import { GenerationComplete, GenerationProgress } from "@/features/website-generation/components/GenerationExperience";
+import { BrandMark } from "@/components/brand";
+import { Button } from "@/components/ui/button";
+import { GoogleSignInDialog, recordGuestGeneration, readGuestQuota, useAuth } from "@/features/auth";
 
 interface GenerateSearch {
   url: string;
@@ -52,6 +55,20 @@ function GeneratePage() {
   const [outcome, setOutcome] = useState<GenerationOutcome | null>(null);
   const requestedRef = useRef(false);
   const runGeneration = useServerFn(generateBlueprint);
+  const { isGuest } = useAuth();
+  const [blocked, setBlocked] = useState(false);
+  const [signIn, setSignIn] = useState(false);
+  const quotaRef = useRef(false);
+  const blockedRef = useRef(false);
+
+  // Guests get 3 generations per rolling 7 days; the counter lives in browser
+  // storage behind the quota module so it can move server-side later.
+  useEffect(() => {
+    if (!isGuest || quotaRef.current) return;
+    quotaRef.current = true;
+    if (readGuestQuota().exhausted) { blockedRef.current = true; setBlocked(true); }
+    else recordGuestGeneration();
+  }, [isGuest]);
 
   const design = getIndustryDesign(industry);
   const businessName = name.trim() || nameFromUrl(url, `${design.label} Studio`);
@@ -64,7 +81,7 @@ function GeneratePage() {
   // Draft costs nothing and resolves locally. Standard/Deep go through the
   // credit-aware server function while the progress animation plays.
   useEffect(() => {
-    if (mode === "draft" || requestedRef.current) return;
+    if (mode === "draft" || requestedRef.current || blockedRef.current) return;
     requestedRef.current = true;
     let active = true;
     runGeneration({ data: { name: businessName, city: "Mumbai", industry, mode, sourceUrl: url } })
@@ -80,17 +97,26 @@ function GeneratePage() {
     <div className="min-h-dvh bg-background">
       <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5 sm:px-8">
-          <Link to="/" className="flex items-center gap-2.5">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground"><Sparkles className="size-4" /></span>
-            <span className="text-sm font-semibold tracking-tight">WebsiteKaro</span>
-          </Link>
+          <BrandMark />
           <Link to="/" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="size-4" /> Start over
           </Link>
         </div>
       </header>
 
-      {done ? (
+      {blocked ? (
+        <div className="mx-auto mt-20 w-full max-w-xl rounded-2xl border border-primary/25 bg-primary/5 p-8 text-center">
+          <h1 className="text-2xl">You've used all 3 free website generations for this week</h1>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Sign in with Google to continue editing your existing website or contact WebsiteKaro to launch your business online.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <Button onClick={() => setSignIn(true)}>Sign in with Google</Button>
+            <Button variant="outline" asChild><Link to="/">Back to home</Link></Button>
+          </div>
+          <GoogleSignInDialog open={signIn} onOpenChange={setSignIn} onSignedIn={() => navigate({ to: "/owner" })} />
+        </div>
+      ) : done ? (
         <>
           {notice ? (
             <div className="mx-auto mt-6 flex w-full max-w-3xl items-start gap-2.5 rounded-xl border border-border bg-secondary/50 px-4 py-3 text-sm text-muted-foreground">

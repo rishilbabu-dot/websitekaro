@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import clinicImg from "@/assets/dental-hero.jpg";
 import { industryDesigns } from "@/features/industries";
 import { GENERATION_MODES, generationModeInfo, type GenerationMode } from "@/features/ai";
+import { BrandMark } from "@/components/brand";
+import { GoogleSignInDialog, QUOTA_EXHAUSTED_MESSAGE, useAuth, useGuestQuota } from "@/features/auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -48,23 +50,36 @@ function Landing() {
   const [industry, setIndustry] = useState("dental");
   const [mode, setMode] = useState<GenerationMode>("draft");
   const navigate = useNavigate();
+  const { isGuest, isOwner, isSuperAdmin, user } = useAuth();
+  const quota = useGuestQuota();
+  const [signIn, setSignIn] = useState(false);
+  const blocked = isGuest && quota.exhausted;
 
   return (
     <div className="min-h-dvh">
       <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5 sm:px-8">
-          <Link to="/" className="flex items-center gap-2.5">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground"><Sparkles className="size-4" /></span>
-            <span className="text-sm font-semibold tracking-tight">WebsiteKaro</span>
-          </Link>
+          <BrandMark />
           <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
+            <a href="#start" className="text-sm text-muted-foreground hover:text-foreground">Generate website</a>
             <a href="#how" className="text-sm text-muted-foreground hover:text-foreground">How it works</a>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground">Pricing</a>
-            <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground">FAQ</a>
+            {isSuperAdmin ? <Link to="/admin" className="text-sm text-muted-foreground hover:text-foreground">Admin</Link> : null}
           </nav>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" asChild><Link to="/admin">Sign in</Link></Button>
-            <Button size="sm" asChild><a href="#start">Generate my website</a></Button>
+            {isOwner || isSuperAdmin ? (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to={isSuperAdmin ? "/admin" : "/owner"}>Dashboard</Link>
+                </Button>
+                <Button size="sm" asChild><a href="#start">Generate my website</a></Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" onClick={() => setSignIn(true)}>Login</Button>
+                <Button size="sm" asChild><a href="#start">Generate my website</a></Button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -85,6 +100,11 @@ function Landing() {
               className="rise-2 mt-9 max-w-xl rounded-[1.5rem] border border-border bg-card p-2 shadow-[var(--shadow-lift)]"
               onSubmit={(e) => {
                 e.preventDefault();
+                if (blocked) {
+                  toast.error("Free generations used up", { description: QUOTA_EXHAUSTED_MESSAGE });
+                  setSignIn(true);
+                  return;
+                }
                 navigate({ to: "/generate", search: { url: link, industry, name: "", mode } });
               }}
             >
@@ -135,6 +155,26 @@ function Landing() {
               </Link>
               <span className="flex items-center gap-1.5"><Star className="size-3.5 fill-accent text-accent" /> No payment until you approve</span>
             </div>
+            {isGuest ? (
+              blocked ? (
+                <div className="rise-3 mt-5 max-w-xl rounded-2xl border border-primary/25 bg-primary/5 p-5">
+                  <p className="text-sm font-medium">You've used all 3 free website generations for this week</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                    Sign in with Google to continue editing your existing website or contact WebsiteKaro to launch your business online.
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Button size="sm" onClick={() => setSignIn(true)}>Sign in with Google</Button>
+                    <Button size="sm" variant="outline" asChild><a href="#pricing">Contact WebsiteKaro</a></Button>
+                  </div>
+                </div>
+              ) : (
+                <p className="rise-3 mt-4 text-xs text-muted-foreground">
+                  {quota.remaining} of {quota.limit} free generations left this week — no account needed.
+                </p>
+              )
+            ) : (
+              <p className="rise-3 mt-4 text-xs text-muted-foreground">Signed in as {user?.email} · unlimited generations</p>
+            )}
           </div>
           <div className="rise-2 relative">
             <div className="overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-[var(--shadow-lift)]">
@@ -346,14 +386,19 @@ function Landing() {
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p className="flex items-center gap-2 font-medium text-foreground"><Sparkles className="size-4 text-primary" /> WebsiteKaro</p>
           <div className="flex flex-wrap gap-5">
-            <Link to="/admin">Super Admin</Link>
-            <Link to="/owner">Business Owner</Link>
+            {isOwner || isSuperAdmin ? (
+              <Link to={isSuperAdmin ? "/admin" : "/owner"}>Dashboard</Link>
+            ) : (
+              <button type="button" onClick={() => setSignIn(true)}>Login</button>
+            )}
             <a href="#pricing">Pricing</a>
             <a href="#faq">FAQ</a>
           </div>
           <p>© {new Date().getFullYear()} WebsiteKaro, Mumbai</p>
         </div>
       </footer>
+
+      <GoogleSignInDialog open={signIn} onOpenChange={setSignIn} />
     </div>
   );
 }

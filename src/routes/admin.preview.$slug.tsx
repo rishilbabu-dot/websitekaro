@@ -52,6 +52,9 @@ function PreviewPage() {
           <Button variant="outline" size="sm" asChild>
             <Link to="/site/$slug" params={{ slug: business.slug }} target="_blank"><ExternalLink className="size-4" /> Open</Link>
           </Button>
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/preview/$slug" params={{ slug: business.slug }} target="_blank"><ExternalLink className="size-4" /> Full preview</Link>
+          </Button>
           <Button size="sm" onClick={() => toast.success("Publish queued")}><Globe className="size-4" /> Publish</Button>
         </div>
       </header>
