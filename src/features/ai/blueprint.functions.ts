@@ -75,7 +75,7 @@ export const generateBlueprint = createServerFn({ method: "POST" })
       const [{ generateText, Output, NoObjectGeneratedError }, { createLovableAiGatewayProvider }] =
         await Promise.all([import("ai"), import("@/lib/ai-gateway.server")]);
 
-      const gateway = createLovableAiGatewayProvider(apiKey);
+      const gateway = createLovableAiGatewayProvider(apiKey, undefined, { structuredOutputs: true });
       const model = gateway(MODEL);
 
       let inputTokens = 0;
