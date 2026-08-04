@@ -3,23 +3,21 @@ import {
   Phone, MessageCircle, MapPin, Clock, Star, Check, ArrowRight, Mail, Menu, X, ShieldCheck,
 } from "lucide-react";
 import type { BusinessBlueprint } from "@/features/businesses";
+import type { IndustryDesign, SectionId } from "@/features/industries";
+import { getIndustryDesign, industryCssVars } from "@/features/industries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import heroImg from "@/assets/dental-hero.jpg";
-import { galleryImages, doctorPhotos } from "@/features/website-generation";
+import { galleryImages, doctorPhotos } from "@/features/website-generation/media";
 
-const nav = [
-  { id: "about", label: "About" },
-  { id: "services", label: "Services" },
-  { id: "team", label: "Doctors" },
-  { id: "gallery", label: "Gallery" },
-  { id: "reviews", label: "Reviews" },
-  { id: "faq", label: "FAQ" },
-  { id: "contact", label: "Contact" },
-];
+interface Ctx {
+  data: BusinessBlueprint;
+  design: IndustryDesign;
+  tone: boolean;
+}
 
 function Section({ id, children, className = "" }: { id?: string; children: React.ReactNode; className?: string }) {
   return (
@@ -38,15 +36,354 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
+/* ---------------------------------------------------------------- heroes */
+
+function HeroSplit({ data, image }: { data: BusinessBlueprint; image: string }) {
+  return (
+    <div id="top" className="aura relative overflow-hidden">
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-2">
+        <div className="rise">
+          <Eyebrow>{data.category} · {data.city}</Eyebrow>
+          <h1 className="display text-balance text-4xl leading-[1.05] sm:text-5xl md:text-[4rem]">{data.tagline}</h1>
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">{data.description}</p>
+          <div className="rise-2 mt-8 flex flex-wrap gap-3">
+            <Button size="lg" asChild><a href="#contact">{data.cta.primary} <ArrowRight className="size-4" /></a></Button>
+            <Button size="lg" variant="outline" asChild><a href={`tel:${data.phone}`}><Phone className="size-4" /> {data.phone}</a></Button>
+          </div>
+          <TrustRow data={data} className="rise-3 mt-12 border-t border-border pt-8" />
+        </div>
+        <div className="rise-2 relative">
+          <div className="absolute -right-4 -top-4 hidden size-40 rounded-full bg-sand/60 blur-2xl md:block" aria-hidden />
+          <img
+            src={image}
+            alt={`Inside ${data.name} in ${data.city}`}
+            width={1600}
+            height={1000}
+            className="relative aspect-4/5 w-full rounded-[calc(var(--radius)+1rem)] object-cover shadow-[var(--shadow-lift)] sm:aspect-4/3"
+          />
+          <div className="absolute -bottom-6 left-6 hidden rounded-2xl border border-border bg-card/95 p-4 shadow-[var(--shadow-lift)] backdrop-blur sm:block">
+            <div className="flex items-center gap-2">
+              <Star className="size-4 fill-accent text-accent" />
+              <span className="text-sm font-semibold">{data.reviews.rating}</span>
+              <span className="text-sm text-muted-foreground">· {data.reviews.count} Google reviews</span>
+            </div>
+          </div>
+          <div className="absolute -left-5 top-8 hidden rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur lg:block">
+            <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Today</p>
+            <p className="mt-1 flex items-center gap-2 text-sm font-medium">
+              <span className="size-1.5 rounded-full bg-success" /> Slots available
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HeroFull({ data, image }: { data: BusinessBlueprint; image: string }) {
+  return (
+    <div id="top" className="relative isolate overflow-hidden">
+      <img src={image} alt={`${data.name} in ${data.city}`} width={2000} height={1200} className="absolute inset-0 -z-10 size-full object-cover" />
+      <div className="absolute inset-0 -z-10 bg-linear-to-b from-ink/85 via-ink/70 to-ink/95" aria-hidden />
+      <div className="mx-auto w-full max-w-6xl px-5 py-28 sm:px-8 md:py-40">
+        <div className="rise max-w-3xl text-ink-foreground">
+          <p className="eyebrow mb-5 opacity-80">{data.category} · {data.city}</p>
+          <h1 className="display text-balance text-5xl leading-[1.02] sm:text-6xl md:text-[5rem]">{data.tagline}</h1>
+          <p className="mt-7 max-w-xl text-base leading-relaxed opacity-80">{data.description}</p>
+          <div className="rise-2 mt-9 flex flex-wrap gap-3">
+            <Button size="lg" asChild><a href="#contact">{data.cta.primary} <ArrowRight className="size-4" /></a></Button>
+            <Button size="lg" variant="outline" asChild className="border-current/30 bg-transparent text-ink-foreground hover:bg-white/10">
+              <a href={`tel:${data.phone}`}><Phone className="size-4" /> {data.cta.secondary}</a>
+            </Button>
+          </div>
+        </div>
+        <dl className="rise-3 mt-16 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-white/15 pt-8 text-ink-foreground sm:grid-cols-4">
+          {data.trust.map((t) => (
+            <div key={t.label}>
+              <dd className="display text-3xl leading-none">{t.value}</dd>
+              <dt className="mt-2 text-[11px] uppercase tracking-[0.12em] opacity-70">{t.label}</dt>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  );
+}
+
+function HeroEditorial({ data, image }: { data: BusinessBlueprint; image: string }) {
+  return (
+    <div id="top" className="aura relative overflow-hidden">
+      <div className="mx-auto w-full max-w-6xl px-5 pb-10 pt-20 text-center sm:px-8 md:pt-28">
+        <p className="eyebrow rise mb-5 text-primary">{data.category} · {data.city}</p>
+        <h1 className="display rise mx-auto max-w-4xl text-balance text-5xl leading-[1.02] sm:text-6xl md:text-[5.25rem]">
+          {data.tagline}
+        </h1>
+        <p className="rise-2 mx-auto mt-7 max-w-2xl text-base leading-relaxed text-muted-foreground">{data.description}</p>
+        <div className="rise-2 mt-9 flex flex-wrap justify-center gap-3">
+          <Button size="lg" asChild><a href="#contact">{data.cta.primary} <ArrowRight className="size-4" /></a></Button>
+          <Button size="lg" variant="outline" asChild><a href={`tel:${data.phone}`}><Phone className="size-4" /> {data.cta.secondary}</a></Button>
+        </div>
+      </div>
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
+        <img
+          src={image}
+          alt={`${data.name} in ${data.city}`}
+          width={2000}
+          height={1000}
+          className="rise-3 aspect-16/9 w-full rounded-[calc(var(--radius)+1rem)] object-cover shadow-[var(--shadow-lift)]"
+        />
+        <TrustRow data={data} className="mt-10 border-t border-border pt-8" />
+      </div>
+    </div>
+  );
+}
+
+function TrustRow({ data, className = "" }: { data: BusinessBlueprint; className?: string }) {
+  return (
+    <dl className={`grid grid-cols-2 gap-x-6 gap-y-7 sm:grid-cols-4 ${className}`}>
+      {data.trust.map((t) => (
+        <div key={t.label}>
+          <dd className="display text-2xl leading-none">{t.value}</dd>
+          <dt className="mt-2 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{t.label}</dt>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+/* -------------------------------------------------------------- sections */
+
+const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.ReactNode> = {
+  about: ({ data, design }, tinted) => (
+    <Section id="about" key="about" className={tinted ? "bg-secondary/60" : "border-t border-border/70"}>
+      <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+        <div>
+          <Eyebrow>About us</Eyebrow>
+          <h2 className="text-3xl sm:text-4xl">{design.words.aboutTitle}</h2>
+        </div>
+        <div>
+          <p className="text-lg leading-relaxed text-muted-foreground">{data.audience}</p>
+          <ul className="mt-8 grid gap-4 sm:grid-cols-2">
+            {data.usp.map((u) => (
+              <li key={u} className="flex items-start gap-3 rounded-[calc(var(--radius)+0.5rem)] border border-border bg-card p-4">
+                <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+                <span className="text-sm font-medium">{u}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Section>
+  ),
+
+  services: ({ data, design }, tinted) => (
+    <Section id="services" key="services" className={tinted ? "bg-secondary/60" : ""}>
+      <Eyebrow>{design.words.servicesEyebrow}</Eyebrow>
+      <h2 className="max-w-2xl text-3xl sm:text-4xl">{design.words.servicesTitle}</h2>
+      <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {data.services.map((s) => (
+          <article key={s.id} className="card-quiet group p-7">
+            <h3 className="text-xl">{s.name}</h3>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.description}</p>
+            <div className="mt-6 flex items-center justify-between border-t border-border pt-4 text-sm">
+              <span className="font-semibold">{s.priceFrom ? (s.priceFrom.startsWith("₹") ? `From ${s.priceFrom}` : s.priceFrom) : "On request"}</span>
+              <span className="text-muted-foreground">{s.duration}</span>
+            </div>
+            <a href="#contact" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+              Enquire <ArrowRight className="size-3.5" />
+            </a>
+          </article>
+        ))}
+      </div>
+    </Section>
+  ),
+
+  team: ({ data, design }, tinted) => (
+    <Section id="team" key="team" className={tinted ? "bg-secondary/60" : ""}>
+      <Eyebrow>{design.words.teamEyebrow}</Eyebrow>
+      <h2 className="max-w-2xl text-3xl sm:text-4xl">{design.words.teamTitle}</h2>
+      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {data.team.map((m, i) => (
+          <article key={m.id} className="card-quiet overflow-hidden">
+            <img
+              src={doctorPhotos[i % doctorPhotos.length]}
+              alt={`${m.name}, ${m.role}`}
+              loading="lazy"
+              width={1024}
+              height={1024}
+              className="aspect-4/5 w-full object-cover"
+            />
+            <div className="p-7">
+              <h3 className="text-xl">{m.name}</h3>
+              <p className="text-sm text-primary">{m.role}</p>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{m.bio}</p>
+              <p className="mt-4 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{m.qualification} · {m.experience}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </Section>
+  ),
+
+  gallery: ({ data, design }, tinted) => (
+    <Section id="gallery" key="gallery" className={tinted ? "bg-secondary/60" : ""}>
+      <Eyebrow>{design.words.galleryNav}</Eyebrow>
+      <h2 className="text-3xl sm:text-4xl">{design.words.galleryTitle}</h2>
+      <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {galleryImages.map((g, i) => (
+          <figure
+            key={g.caption}
+            className={`group relative overflow-hidden rounded-[calc(var(--radius)+0.75rem)] ${i === 0 ? "lg:col-span-2 lg:row-span-2" : ""}`}
+          >
+            <img
+              src={g.src}
+              alt={`${design.seed.gallery[i] ?? g.caption} at ${data.name}`}
+              loading="lazy"
+              width={1200}
+              height={1200}
+              className={`w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] ${i === 0 ? "aspect-square lg:h-full" : "aspect-4/3"}`}
+            />
+            <figcaption className="absolute inset-x-0 bottom-0 bg-linear-to-t from-ink/70 to-transparent p-4 text-xs font-medium text-ink-foreground">
+              {design.seed.gallery[i] ?? g.caption}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </Section>
+  ),
+
+  reviews: ({ data }, tinted) => (
+    <Section id="reviews" key="reviews" className={tinted ? "bg-secondary/60" : ""}>
+      <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+        <div>
+          <Eyebrow>Google reviews</Eyebrow>
+          <h2 className="text-3xl sm:text-4xl">{data.reviews.rating} out of 5</h2>
+          <p className="mt-3 text-sm text-muted-foreground">Based on {data.reviews.count} verified Google reviews</p>
+          <p className="mt-6 text-base leading-relaxed text-muted-foreground">{data.reviews.summary}</p>
+        </div>
+        <div className="grid gap-4">
+          {data.reviews.items.map((r) => (
+            <figure key={r.id} className="rounded-[calc(var(--radius)+0.75rem)] border border-border bg-card p-6">
+              <div className="flex gap-0.5" aria-label={`${r.rating} out of 5 stars`}>
+                {Array.from({ length: r.rating }).map((_, i) => (
+                  <Star key={i} className="size-4 fill-accent text-accent" />
+                ))}
+              </div>
+              <blockquote className="mt-4 text-sm leading-relaxed">{r.text}</blockquote>
+              <figcaption className="mt-4 text-xs text-muted-foreground">{r.author} · {r.source} · {r.date}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </Section>
+  ),
+
+  faq: ({ data }, tinted) => (
+    <Section id="faq" key="faq" className={tinted ? "bg-secondary/60" : ""}>
+      <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+        <div>
+          <Eyebrow>FAQ</Eyebrow>
+          <h2 className="text-3xl sm:text-4xl">Good to know</h2>
+        </div>
+        <Accordion type="single" collapsible className="w-full">
+          {data.faqs.map((f) => (
+            <AccordionItem key={f.id} value={f.id}>
+              <AccordionTrigger className="text-left text-base">{f.question}</AccordionTrigger>
+              <AccordionContent className="text-sm leading-relaxed text-muted-foreground">{f.answer}</AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
+    </Section>
+  ),
+
+  contact: ({ data, design }, tinted) => (
+    <Section id="contact" key="contact" className={tinted ? "bg-secondary/60" : ""}>
+      <div className="grid gap-10 lg:grid-cols-2">
+        <div>
+          <Eyebrow>{design.words.contactEyebrow}</Eyebrow>
+          <h2 className="text-3xl sm:text-4xl">{design.words.contactTitle}</h2>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            Tell us when suits you. We reply within business hours, usually in minutes.
+          </p>
+          <form
+            className="mt-8 grid gap-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              toast.success("Request received", { description: `${data.name} will get back to you shortly.` });
+              (e.target as HTMLFormElement).reset();
+            }}
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-2">
+                <label htmlFor="ap-name" className="text-sm font-medium">Full name</label>
+                <Input id="ap-name" name="name" required placeholder="Your name" />
+              </div>
+              <div className="grid gap-2">
+                <label htmlFor="ap-phone" className="text-sm font-medium">Phone</label>
+                <Input id="ap-phone" name="phone" type="tel" required placeholder="+91" />
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <label htmlFor="ap-msg" className="text-sm font-medium">What do you need help with?</label>
+              <Textarea id="ap-msg" name="message" rows={4} placeholder="A line or two is plenty" />
+            </div>
+            <Button type="submit" size="lg" className="justify-self-start">{design.words.ctaPrimary}</Button>
+          </form>
+        </div>
+        <div className="grid content-start gap-4">
+          <div className="rounded-[calc(var(--radius)+0.75rem)] border border-border bg-card p-7">
+            <h3 className="text-xl">Visit us</h3>
+            <ul className="mt-5 grid gap-4 text-sm">
+              <li className="flex gap-3"><MapPin className="mt-0.5 size-4 shrink-0 text-primary" /><span>{data.address}<br /><span className="text-muted-foreground">{data.landmarks.join(" · ")}</span></span></li>
+              <li className="flex gap-3"><Phone className="mt-0.5 size-4 shrink-0 text-primary" /><a href={`tel:${data.phone}`}>{data.phone}</a></li>
+              <li className="flex gap-3"><Mail className="mt-0.5 size-4 shrink-0 text-primary" /><a href={`mailto:${data.email}`}>{data.email}</a></li>
+              <li className="flex gap-3">
+                <Clock className="mt-0.5 size-4 shrink-0 text-primary" />
+                <span>{data.hours.map((h) => <span key={h.day} className="block">{h.day}: <span className="text-muted-foreground">{h.open}</span></span>)}</span>
+              </li>
+            </ul>
+          </div>
+          <iframe
+            title={`Map showing ${data.name}`}
+            loading="lazy"
+            className="h-64 w-full rounded-[calc(var(--radius)+0.75rem)] border border-border"
+            src={`https://www.google.com/maps?q=${encodeURIComponent(data.mapEmbedQuery)}&output=embed`}
+          />
+        </div>
+      </div>
+    </Section>
+  ),
+};
+
+/* ----------------------------------------------------------------- shell */
+
 export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
   const [open, setOpen] = useState(false);
+  const design = getIndustryDesign(data.industry);
+  const heroImage = data.industry === "dental" ? heroImg : galleryImages[0]!.src;
+
+  const nav = design.sections
+    .filter((s) => s !== "contact")
+    .map((s) => ({
+      id: s,
+      label:
+        s === "services" ? design.words.servicesNav
+        : s === "team" ? design.words.teamNav
+        : s === "gallery" ? design.words.galleryNav
+        : s === "about" ? "About"
+        : s === "reviews" ? "Reviews"
+        : "FAQ",
+    }));
+
+  const ctx: Ctx = { data, design, tone: true };
 
   return (
-    <div className="bg-background text-foreground">
+    <div className="bg-background text-foreground" style={industryCssVars(design)}>
       <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5 sm:px-8">
           <a href="#top" className="flex items-center gap-3">
-            <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-sm font-semibold text-primary-foreground">
+            <span className="flex size-9 items-center justify-center rounded-[calc(var(--radius)-0.125rem)] bg-primary text-sm font-semibold text-primary-foreground">
               {data.logoMark}
             </span>
             <span className="text-sm font-semibold tracking-tight">{data.name}</span>
@@ -67,7 +404,7 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
             </Button>
           </div>
           <button
-            className="lg:hidden sm:hidden inline-flex size-10 items-center justify-center rounded-lg border border-border"
+            className="inline-flex size-10 items-center justify-center rounded-lg border border-border sm:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
             onClick={() => setOpen(!open)}
           >
@@ -85,65 +422,20 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
         )}
       </header>
 
-      {/* Hero */}
-      <div id="top" className="aura relative overflow-hidden">
-        <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-2">
-          <div className="rise">
-            <Eyebrow>{data.category} · {data.city}</Eyebrow>
-            <h1 className="display text-balance text-4xl leading-[1.05] sm:text-5xl md:text-[4rem]">{data.tagline}</h1>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">{data.description}</p>
-            <div className="mt-8 flex flex-wrap gap-3 rise-2">
-              <Button size="lg" asChild><a href="#contact">{data.cta.primary} <ArrowRight className="size-4" /></a></Button>
-              <Button size="lg" variant="outline" asChild><a href={`tel:${data.phone}`}><Phone className="size-4" /> {data.phone}</a></Button>
-            </div>
-            <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-7 border-t border-border pt-8 sm:grid-cols-4 rise-3">
-              {data.trust.map((t) => (
-                <div key={t.label}>
-                  <dd className="display text-2xl leading-none">{t.value}</dd>
-                  <dt className="mt-2 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{t.label}</dt>
-                </div>
-              ))}
-            </dl>
-          </div>
-          <div className="relative rise-2">
-            <div className="absolute -right-4 -top-4 hidden size-40 rounded-full bg-sand/60 blur-2xl md:block" aria-hidden />
-            <img
-              src={heroImg}
-              alt={`Interior of ${data.name} in ${data.city}`}
-              width={1600}
-              height={1000}
-              className="relative aspect-4/5 w-full rounded-[2rem] object-cover shadow-[var(--shadow-lift)] sm:aspect-4/3"
-            />
-            <div className="absolute -bottom-6 left-6 hidden rounded-2xl border border-border bg-card/95 p-4 shadow-[var(--shadow-lift)] backdrop-blur sm:block">
-              <div className="flex items-center gap-2">
-                <Star className="size-4 fill-accent text-accent" />
-                <span className="text-sm font-semibold">{data.reviews.rating}</span>
-                <span className="text-sm text-muted-foreground">· {data.reviews.count} Google reviews</span>
-              </div>
-            </div>
-            <div className="absolute -left-5 top-8 hidden rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur lg:block">
-              <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Today</p>
-              <p className="mt-1 flex items-center gap-2 text-sm font-medium">
-                <span className="size-1.5 rounded-full bg-success" /> Slots available
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      {design.heroVariant === "full" ? (
+        <HeroFull data={data} image={heroImage} />
+      ) : design.heroVariant === "editorial" ? (
+        <HeroEditorial data={data} image={heroImage} />
+      ) : (
+        <HeroSplit data={data} image={heroImage} />
+      )}
 
       {/* Credibility strip */}
       <div className="overflow-hidden border-y border-border bg-secondary/50 py-4">
         <div className="marquee-track gap-12 px-6">
           {[0, 1].map((dup) => (
             <div key={dup} className="flex shrink-0 items-center gap-12 pr-12" aria-hidden={dup === 1}>
-              {[
-                "ISO-certified sterilisation",
-                "Digital OPG on site",
-                "Zero-cost EMI",
-                "Same-day emergency slots",
-                "Indian Dental Association member",
-                "Wheelchair accessible",
-              ].map((c) => (
+              {design.credibility.map((c) => (
                 <span key={c} className="flex items-center gap-2 whitespace-nowrap text-sm text-muted-foreground">
                   <ShieldCheck className="size-4 text-primary" /> {c}
                 </span>
@@ -153,206 +445,14 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
         </div>
       </div>
 
-      {/* About */}
-      <Section id="about" className="border-t border-border/70">
-        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <Eyebrow>About us</Eyebrow>
-            <h2 className="text-3xl sm:text-4xl">Why patients choose {data.name}</h2>
-          </div>
-          <div>
-            <p className="text-lg leading-relaxed text-muted-foreground">{data.audience}</p>
-            <ul className="mt-8 grid gap-4 sm:grid-cols-2">
-              {data.usp.map((u) => (
-                <li key={u} className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
-                  <Check className="mt-0.5 size-4 shrink-0 text-primary" />
-                  <span className="text-sm font-medium">{u}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </Section>
-
-      {/* Services */}
-      <Section id="services" className="bg-secondary/60">
-        <Eyebrow>Treatments</Eyebrow>
-        <h2 className="max-w-2xl text-3xl sm:text-4xl">Care planned before it begins</h2>
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {data.services.map((s) => (
-            <article key={s.id} className="card-quiet group p-7">
-              <h3 className="text-xl">{s.name}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.description}</p>
-              <div className="mt-6 flex items-center justify-between border-t border-border pt-4 text-sm">
-                <span className="font-semibold">{s.priceFrom ? `From ${s.priceFrom}` : "On consultation"}</span>
-                <span className="text-muted-foreground">{s.duration}</span>
-              </div>
-              <a href="#contact" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                Book this <ArrowRight className="size-3.5" />
-              </a>
-            </article>
-          ))}
-        </div>
-      </Section>
-
-      {/* Team */}
-      <Section id="team">
-        <Eyebrow>The team</Eyebrow>
-        <h2 className="max-w-2xl text-3xl sm:text-4xl">Specialists you'll actually meet</h2>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {data.team.map((m, i) => (
-            <article key={m.id} className="card-quiet overflow-hidden">
-              <img
-                src={doctorPhotos[i % doctorPhotos.length]}
-                alt={`${m.name}, ${m.role}`}
-                loading="lazy"
-                width={1024}
-                height={1024}
-                className="aspect-4/5 w-full object-cover"
-              />
-              <div className="p-7">
-                <h3 className="text-xl">{m.name}</h3>
-                <p className="text-sm text-primary">{m.role}</p>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{m.bio}</p>
-                <p className="mt-4 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{m.qualification} · {m.experience}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </Section>
-
-      {/* Gallery */}
-      <Section id="gallery" className="bg-secondary/60">
-        <Eyebrow>Gallery</Eyebrow>
-        <h2 className="text-3xl sm:text-4xl">Inside the clinic</h2>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {galleryImages.map((g, i) => (
-            <figure
-              key={g.caption}
-              className={`group relative overflow-hidden rounded-[1.5rem] ${i === 0 ? "lg:col-span-2 lg:row-span-2" : ""}`}
-            >
-              <img
-                src={g.src}
-                alt={`${g.caption} at ${data.name}`}
-                loading="lazy"
-                width={1200}
-                height={1200}
-                className={`w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] ${i === 0 ? "aspect-square lg:h-full" : "aspect-4/3"}`}
-              />
-              <figcaption className="absolute inset-x-0 bottom-0 bg-linear-to-t from-ink/70 to-transparent p-4 text-xs font-medium text-ink-foreground">
-                {g.caption}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </Section>
-
-      {/* Reviews */}
-      <Section id="reviews">
-        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <Eyebrow>Google reviews</Eyebrow>
-            <h2 className="text-3xl sm:text-4xl">{data.reviews.rating} out of 5</h2>
-            <p className="mt-3 text-sm text-muted-foreground">Based on {data.reviews.count} verified Google reviews</p>
-            <p className="mt-6 text-base leading-relaxed text-muted-foreground">{data.reviews.summary}</p>
-          </div>
-          <div className="grid gap-4">
-            {data.reviews.items.map((r) => (
-              <figure key={r.id} className="rounded-3xl border border-border bg-card p-6">
-                <div className="flex gap-0.5" aria-label={`${r.rating} out of 5 stars`}>
-                  {Array.from({ length: r.rating }).map((_, i) => (
-                    <Star key={i} className="size-4 fill-accent text-accent" />
-                  ))}
-                </div>
-                <blockquote className="mt-4 text-sm leading-relaxed">{r.text}</blockquote>
-                <figcaption className="mt-4 text-xs text-muted-foreground">{r.author} · {r.source} · {r.date}</figcaption>
-              </figure>
-            ))}
-          </div>
-        </div>
-      </Section>
-
-      {/* FAQ */}
-      <Section id="faq" className="bg-secondary/60">
-        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <Eyebrow>FAQ</Eyebrow>
-            <h2 className="text-3xl sm:text-4xl">Good to know</h2>
-          </div>
-          <Accordion type="single" collapsible className="w-full">
-            {data.faqs.map((f) => (
-              <AccordionItem key={f.id} value={f.id}>
-                <AccordionTrigger className="text-left text-base">{f.question}</AccordionTrigger>
-                <AccordionContent className="text-sm leading-relaxed text-muted-foreground">{f.answer}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </Section>
-
-      {/* Contact / appointment */}
-      <Section id="contact">
-        <div className="grid gap-10 lg:grid-cols-2">
-          <div>
-            <Eyebrow>Appointments</Eyebrow>
-            <h2 className="text-3xl sm:text-4xl">{data.cta.primary}</h2>
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              Tell us when suits you. We confirm within business hours, usually in minutes.
-            </p>
-            <form
-              className="mt-8 grid gap-4"
-              onSubmit={(e) => {
-                e.preventDefault();
-                toast.success("Request received", { description: "The clinic will confirm your slot shortly." });
-                (e.target as HTMLFormElement).reset();
-              }}
-            >
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="grid gap-2">
-                  <label htmlFor="ap-name" className="text-sm font-medium">Full name</label>
-                  <Input id="ap-name" name="name" required placeholder="Your name" />
-                </div>
-                <div className="grid gap-2">
-                  <label htmlFor="ap-phone" className="text-sm font-medium">Phone</label>
-                  <Input id="ap-phone" name="phone" type="tel" required placeholder="+91" />
-                </div>
-              </div>
-              <div className="grid gap-2">
-                <label htmlFor="ap-msg" className="text-sm font-medium">What do you need help with?</label>
-                <Textarea id="ap-msg" name="message" rows={4} placeholder="Briefly describe your concern" />
-              </div>
-              <Button type="submit" size="lg" className="justify-self-start">Request appointment</Button>
-            </form>
-          </div>
-          <div className="grid content-start gap-4">
-            <div className="rounded-3xl border border-border bg-card p-7">
-              <h3 className="text-xl">Visit us</h3>
-              <ul className="mt-5 grid gap-4 text-sm">
-                <li className="flex gap-3"><MapPin className="mt-0.5 size-4 shrink-0 text-primary" /><span>{data.address}<br /><span className="text-muted-foreground">{data.landmarks.join(" · ")}</span></span></li>
-                <li className="flex gap-3"><Phone className="mt-0.5 size-4 shrink-0 text-primary" /><a href={`tel:${data.phone}`}>{data.phone}</a></li>
-                <li className="flex gap-3"><Mail className="mt-0.5 size-4 shrink-0 text-primary" /><a href={`mailto:${data.email}`}>{data.email}</a></li>
-                <li className="flex gap-3">
-                  <Clock className="mt-0.5 size-4 shrink-0 text-primary" />
-                  <span>{data.hours.map((h) => <span key={h.day} className="block">{h.day}: <span className="text-muted-foreground">{h.open}</span></span>)}</span>
-                </li>
-              </ul>
-            </div>
-            <iframe
-              title={`Map showing ${data.name}`}
-              loading="lazy"
-              className="h-64 w-full rounded-3xl border border-border"
-              src={`https://www.google.com/maps?q=${encodeURIComponent(data.mapEmbedQuery)}&output=embed`}
-            />
-          </div>
-        </div>
-      </Section>
+      {design.sections.map((s, i) => sectionRenderers[s](ctx, i % 2 === 1))}
 
       {/* Newsletter */}
       <Section className="pb-10">
-        <div className="surface-ink flex flex-col gap-6 rounded-3xl p-8 md:flex-row md:items-center md:justify-between md:p-12">
+        <div className="surface-ink flex flex-col gap-6 rounded-[calc(var(--radius)+0.75rem)] p-8 md:flex-row md:items-center md:justify-between md:p-12">
           <div>
-            <h2 className="text-2xl text-ink-foreground sm:text-3xl">Dental care notes, twice a month</h2>
-            <p className="mt-2 text-sm opacity-70">Practical advice from our specialists. No spam, unsubscribe anytime.</p>
+            <h2 className="text-2xl text-ink-foreground sm:text-3xl">{design.words.newsletterTitle}</h2>
+            <p className="mt-2 text-sm opacity-70">Written by our team. No spam, unsubscribe anytime.</p>
           </div>
           <form
             className="flex w-full max-w-md gap-2"
@@ -368,7 +468,7 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
       <footer className="border-t border-border px-5 py-14 sm:px-8">
         <div className="mx-auto grid w-full max-w-6xl gap-10 md:grid-cols-4">
           <div>
-            <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-sm font-semibold text-primary-foreground">{data.logoMark}</span>
+            <span className="flex size-9 items-center justify-center rounded-[calc(var(--radius)-0.125rem)] bg-primary text-sm font-semibold text-primary-foreground">{data.logoMark}</span>
             <p className="mt-4 text-sm font-semibold">{data.name}</p>
             <p className="mt-2 text-sm text-muted-foreground">{data.address}</p>
           </div>
@@ -379,7 +479,7 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
             </ul>
           </div>
           <div>
-            <h3 className="text-sm font-semibold">Treatments</h3>
+            <h3 className="text-sm font-semibold">{design.words.servicesNav}</h3>
             <ul className="mt-4 grid gap-2 text-sm text-muted-foreground">
               {data.services.slice(0, 5).map((s) => <li key={s.id}><a className="hover:text-foreground" href="#services">{s.name}</a></li>)}
             </ul>
@@ -412,7 +512,7 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
         </a>
         <a
           href={`tel:${data.phone}`}
-          aria-label="Call the clinic"
+          aria-label={`Call ${data.name}`}
           className="flex size-13 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-lift)] transition-transform hover:scale-105 sm:hidden"
         >
           <Phone className="size-5" />
