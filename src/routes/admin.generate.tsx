@@ -1,29 +1,36 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Link2, Wand2, Check, Loader2 } from "lucide-react";
+import { Link2, Wand2 } from "lucide-react";
 import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { industryPresets } from "@/features/businesses";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/generate")({ component: GeneratePage });
 
-const stages = ["Reading listing", "Building blueprint", "Writing copy", "Composing pages", "Optimising SEO"];
+const stages = [
+  "Finding your business",
+  "Analyzing reviews",
+  "Understanding services",
+  "Researching competitors",
+  "Creating brand identity",
+  "Writing website content",
+  "Designing website",
+  "Optimizing SEO",
+  "Optimizing AI Search",
+  "Generating responsive layouts",
+  "Final quality checks",
+];
 
 function GeneratePage() {
   const [industry, setIndustry] = useState("dental");
-  const [stage, setStage] = useState(-1);
+  const [url, setUrl] = useState("");
+  const [name, setName] = useState("");
   const navigate = useNavigate();
 
   const run = (e: React.FormEvent) => {
     e.preventDefault();
-    setStage(0);
-    stages.forEach((_, i) => setTimeout(() => setStage(i + 1), (i + 1) * 700));
-    setTimeout(() => {
-      toast.success("Website generated", { description: "Opening preview." });
-      navigate({ to: "/admin/preview/$slug", params: { slug: "smilecraft-dental-bandra" } });
-    }, stages.length * 700 + 500);
+    navigate({ to: "/generate", search: { url, industry, name } });
   };
 
   return (
@@ -35,14 +42,14 @@ function GeneratePage() {
             <label htmlFor="gmaps" className="text-sm font-medium">Google Maps business link</label>
             <div className="relative">
               <Link2 className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input id="gmaps" required placeholder="https://maps.app.goo.gl/…" className="h-11 pl-10" />
+              <Input id="gmaps" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://maps.app.goo.gl/…" className="h-11 pl-10" />
             </div>
           </div>
           <p className="my-4 text-xs uppercase tracking-wide text-muted-foreground">or</p>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="grid gap-2">
               <label htmlFor="bname" className="text-sm font-medium">Business name</label>
-              <Input id="bname" placeholder="SmileCraft Dental Studio" />
+              <Input id="bname" value={name} onChange={(e) => setName(e.target.value)} placeholder="SmileCraft Dental Studio" />
             </div>
             <div className="grid gap-2">
               <label htmlFor="bcity" className="text-sm font-medium">City</label>
@@ -67,26 +74,22 @@ function GeneratePage() {
               ))}
             </div>
           </fieldset>
-          <Button type="submit" size="lg" className="mt-7" disabled={stage >= 0}>
-            {stage >= 0 ? <Loader2 className="size-4 animate-spin" /> : <Wand2 className="size-4" />} Generate website
+          <Button type="submit" size="lg" className="mt-7">
+            <Wand2 className="size-4" /> Generate website
           </Button>
         </form>
 
         <section className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
           <h2 className="text-lg">Generation pipeline</h2>
-          <ol className="mt-5 grid gap-4">
-            {stages.map((s, i) => {
-              const done = stage > i;
-              const active = stage === i;
-              return (
-                <li key={s} className="flex items-center gap-3 text-sm">
-                  <span className={`flex size-6 items-center justify-center rounded-full border text-xs ${done ? "border-success bg-success text-success-foreground" : active ? "border-primary text-primary" : "border-border text-muted-foreground"}`}>
-                    {done ? <Check className="size-3.5" /> : i + 1}
-                  </span>
-                  <span className={done || active ? "" : "text-muted-foreground"}>{s}</span>
-                </li>
-              );
-            })}
+          <ol className="mt-5 grid gap-3">
+            {stages.map((s, i) => (
+              <li key={s} className="flex items-center gap-3 text-sm">
+                <span className="flex size-6 items-center justify-center rounded-full border border-border text-[11px] text-muted-foreground">
+                  {i + 1}
+                </span>
+                <span className="text-muted-foreground">{s}</span>
+              </li>
+            ))}
           </ol>
           <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
             The pipeline outputs a Business Blueprint object. Any future AI research engine that emits this shape can plug in without touching the renderer.
