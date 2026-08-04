@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Search, MessageSquareQuote, Sparkles, Users, Palette, PenLine, LayoutTemplate,
   Gauge, Bot, MonitorSmartphone, ShieldCheck, Check, Loader2, PartyPopper,
-  Monitor, Tablet, Smartphone, ArrowRight, TrendingUp, AlertTriangle,
+  Monitor, Tablet, Smartphone, ArrowRight, TrendingUp, AlertTriangle, ExternalLink, AppWindow,
 } from "lucide-react";
 import type { BusinessBlueprint } from "@/features/businesses";
 import { Button } from "@/components/ui/button";
 import { GeneratedSite } from "./GeneratedSite";
+import { savePreviewBlueprint } from "../preview-store";
 
 export const generationStages = [
   { icon: Search, label: "Finding your business" },
@@ -169,9 +170,20 @@ const devices = {
 
 export function DevicePreview({ data }: { data: BusinessBlueprint }) {
   const [device, setDevice] = useState<keyof typeof devices>("desktop");
+  const path = `/site/${data.slug}`;
+
+  // Persist the blueprint so the standalone tab/popup can render it even
+  // though it is not stored in the business service yet.
+  useEffect(() => { savePreviewBlueprint(data); }, [data]);
+
+  const openPopup = () => {
+    savePreviewBlueprint(data);
+    window.open(path, `wk_${data.slug}`, "popup=yes,width=1200,height=860,noopener");
+  };
+
   return (
     <div>
-      <div className="mb-5 flex justify-center">
+      <div className="mb-5 flex flex-wrap items-center justify-center gap-3">
         <div className="flex gap-1 rounded-full border border-border bg-card p-1 shadow-[var(--shadow-soft)]">
           {(Object.keys(devices) as (keyof typeof devices)[]).map((k) => {
             const D = devices[k];
@@ -189,6 +201,16 @@ export function DevicePreview({ data }: { data: BusinessBlueprint }) {
               </button>
             );
           })}
+        </div>
+        <div className="flex flex-wrap justify-center gap-2">
+          <Button variant="outline" size="sm" asChild onClick={() => savePreviewBlueprint(data)}>
+            <a href={path} target="_blank" rel="noreferrer">
+              <ExternalLink className="size-4" /> Open in new tab
+            </a>
+          </Button>
+          <Button variant="outline" size="sm" onClick={openPopup}>
+            <AppWindow className="size-4" /> Open popup window
+          </Button>
         </div>
       </div>
       <div className="flex justify-center">
