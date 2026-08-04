@@ -32,6 +32,7 @@ import { Route as OwnerDoctorsRouteImport } from './routes/owner.doctors'
 import { Route as OwnerGalleryRouteImport } from './routes/owner.gallery'
 import { Route as OwnerLeadsRouteImport } from './routes/owner.leads'
 import { Route as OwnerPagesRouteImport } from './routes/owner.pages'
+import { Route as OwnerPreviewRouteImport } from './routes/owner.preview'
 import { Route as OwnerSeoRouteImport } from './routes/owner.seo'
 import { Route as OwnerServicesRouteImport } from './routes/owner.services'
 import { Route as OwnerSettingsRouteImport } from './routes/owner.settings'
@@ -159,6 +160,11 @@ const OwnerPagesRoute = OwnerPagesRouteImport.update({
   path: '/pages',
   getParentRoute: () => OwnerRoute,
 } as any)
+const OwnerPreviewRoute = OwnerPreviewRouteImport.update({
+  id: '/preview',
+  path: '/preview',
+  getParentRoute: () => OwnerRoute,
+} as any)
 const OwnerSeoRoute = OwnerSeoRouteImport.update({
   id: '/seo',
   path: '/seo',
@@ -228,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/owner/gallery': typeof OwnerGalleryRoute
   '/owner/leads': typeof OwnerLeadsRoute
   '/owner/pages': typeof OwnerPagesRoute
+  '/owner/preview': typeof OwnerPreviewRoute
   '/owner/seo': typeof OwnerSeoRoute
   '/owner/services': typeof OwnerServicesRoute
   '/owner/settings': typeof OwnerSettingsRoute
@@ -260,6 +267,7 @@ export interface FileRoutesByTo {
   '/owner/gallery': typeof OwnerGalleryRoute
   '/owner/leads': typeof OwnerLeadsRoute
   '/owner/pages': typeof OwnerPagesRoute
+  '/owner/preview': typeof OwnerPreviewRoute
   '/owner/seo': typeof OwnerSeoRoute
   '/owner/services': typeof OwnerServicesRoute
   '/owner/settings': typeof OwnerSettingsRoute
@@ -295,6 +303,7 @@ export interface FileRoutesById {
   '/owner/gallery': typeof OwnerGalleryRoute
   '/owner/leads': typeof OwnerLeadsRoute
   '/owner/pages': typeof OwnerPagesRoute
+  '/owner/preview': typeof OwnerPreviewRoute
   '/owner/seo': typeof OwnerSeoRoute
   '/owner/services': typeof OwnerServicesRoute
   '/owner/settings': typeof OwnerSettingsRoute
@@ -331,6 +340,7 @@ export interface FileRouteTypes {
     | '/owner/gallery'
     | '/owner/leads'
     | '/owner/pages'
+    | '/owner/preview'
     | '/owner/seo'
     | '/owner/services'
     | '/owner/settings'
@@ -363,6 +373,7 @@ export interface FileRouteTypes {
     | '/owner/gallery'
     | '/owner/leads'
     | '/owner/pages'
+    | '/owner/preview'
     | '/owner/seo'
     | '/owner/services'
     | '/owner/settings'
@@ -397,6 +408,7 @@ export interface FileRouteTypes {
     | '/owner/gallery'
     | '/owner/leads'
     | '/owner/pages'
+    | '/owner/preview'
     | '/owner/seo'
     | '/owner/services'
     | '/owner/settings'
@@ -587,6 +599,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OwnerPagesRouteImport
       parentRoute: typeof OwnerRoute
     }
+    '/owner/preview': {
+      id: '/owner/preview'
+      path: '/preview'
+      fullPath: '/owner/preview'
+      preLoaderRoute: typeof OwnerPreviewRouteImport
+      parentRoute: typeof OwnerRoute
+    }
     '/owner/seo': {
       id: '/owner/seo'
       path: '/seo'
@@ -690,6 +709,7 @@ interface OwnerRouteChildren {
   OwnerGalleryRoute: typeof OwnerGalleryRoute
   OwnerLeadsRoute: typeof OwnerLeadsRoute
   OwnerPagesRoute: typeof OwnerPagesRoute
+  OwnerPreviewRoute: typeof OwnerPreviewRoute
   OwnerSeoRoute: typeof OwnerSeoRoute
   OwnerServicesRoute: typeof OwnerServicesRoute
   OwnerSettingsRoute: typeof OwnerSettingsRoute
@@ -703,6 +723,7 @@ const OwnerRouteChildren: OwnerRouteChildren = {
   OwnerGalleryRoute: OwnerGalleryRoute,
   OwnerLeadsRoute: OwnerLeadsRoute,
   OwnerPagesRoute: OwnerPagesRoute,
+  OwnerPreviewRoute: OwnerPreviewRoute,
   OwnerSeoRoute: OwnerSeoRoute,
   OwnerServicesRoute: OwnerServicesRoute,
   OwnerSettingsRoute: OwnerSettingsRoute,
