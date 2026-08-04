@@ -45,6 +45,7 @@ const pipeline = [
 function Landing() {
   const [link, setLink] = useState("");
   const [industry, setIndustry] = useState("dental");
+  const [mode, setMode] = useState<GenerationMode>("draft");
   const navigate = useNavigate();
 
   return (
@@ -83,7 +84,7 @@ function Landing() {
               className="rise-2 mt-9 max-w-xl rounded-[1.5rem] border border-border bg-card p-2 shadow-[var(--shadow-lift)]"
               onSubmit={(e) => {
                 e.preventDefault();
-                navigate({ to: "/generate", search: { url: link, industry, name: "" } });
+                navigate({ to: "/generate", search: { url: link, industry, name: "", mode } });
               }}
             >
               <div className="flex flex-col gap-2 sm:flex-row">
@@ -108,7 +109,23 @@ function Landing() {
                   </select>
                   <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-3 -translate-y-1/2" />
                 </div>
-                <span className="hidden sm:inline">· 19 industries, each with its own design system</span>
+                <span aria-hidden className="hidden text-border sm:inline">·</span>
+                <span className="hidden sm:inline">Quality</span>
+                <div className="flex items-center gap-1 rounded-full border border-border bg-secondary/60 p-0.5" role="group" aria-label="Generation quality">
+                  {GENERATION_MODES.map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => setMode(m.id)}
+                      aria-pressed={mode === m.id}
+                      title={`${m.blurb} (${m.costLabel})`}
+                      className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${mode === m.id ? "bg-card text-foreground shadow-[var(--shadow-soft)]" : "text-muted-foreground hover:text-foreground"}`}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+                <span className="hidden lg:inline">{generationModeInfo(mode).costLabel}</span>
               </div>
             </form>
             <div className="rise-3 mt-5 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
