@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { AppShell } from "@/components/layout";
 import { adminNav } from "@/features/admin";
+import { RequireRole } from "@/features/auth";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -13,8 +14,10 @@ export const Route = createFileRoute("/admin")({
     ],
   }),
   component: () => (
-    <AppShell nav={adminNav} role="/admin" roleLabel="Super Admin">
-      <Outlet />
-    </AppShell>
+    <RequireRole role="super-admin">
+      <AppShell nav={adminNav} role="/admin" roleLabel="Super Admin">
+        <Outlet />
+      </AppShell>
+    </RequireRole>
   ),
 });

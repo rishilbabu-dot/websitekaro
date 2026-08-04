@@ -11,12 +11,10 @@ const WINDOW_MS = 5000;
  * Five clicks within five seconds opens the hidden Super Admin passcode gate.
  */
 export function BrandMark({
-  to = "/",
   tagline = true,
   size = "md",
   subtitle,
 }: {
-  to?: string;
   tagline?: boolean;
   size?: "sm" | "md";
   subtitle?: string;
@@ -37,7 +35,7 @@ export function BrandMark({
 
   return (
     <>
-      <Link to={to} onClick={registerClick} className="group flex items-center gap-2.5">
+      <Link to="/" onClick={registerClick} className="group flex items-center gap-2.5">
         <span
           className={`${box} flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-secondary/70 p-1 ring-1 ring-border transition-all duration-500 group-hover:-rotate-6 group-hover:scale-105 group-hover:ring-primary/40`}
         >
@@ -47,7 +45,7 @@ export function BrandMark({
             width={512}
             height={512}
             loading="lazy"
-            className="size-full object-contain transition-transform duration-700 group-hover:scale-110 motion-safe:animate-[rise_0.8s_ease-out]"
+            className="size-full object-contain transition-transform duration-700 group-hover:scale-110 motion-safe:animate-[rise-in_0.8s_cubic-bezier(0.16,1,0.3,1)]"
           />
         </span>
         <span className="min-w-0 leading-tight">
