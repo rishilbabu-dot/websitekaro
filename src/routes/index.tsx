@@ -1,13 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   ArrowRight, Sparkles, Link2, Wand2, Rocket, ShieldCheck, Gauge, Search, Star, Check,
+  MapPin, Brain, Palette, LayoutTemplate, Bot, MonitorSmartphone, ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import clinicImg from "@/assets/dental-hero.jpg";
+import { industryDesigns } from "@/features/industries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -28,15 +30,22 @@ const features = [
   { icon: ShieldCheck, title: "Trust on every screen", body: "Google ratings, credentials and clear calls to action placed where patients actually look." },
 ];
 
-const steps = [
-  { n: "01", title: "Paste your link", body: "Your Google Maps listing, or just business name and city." },
-  { n: "02", title: "We research", body: "We assemble a structured Business Blueprint — services, team, hours, reviews, positioning." },
-  { n: "03", title: "Your site appears", body: "A complete, production-ready website you can review on desktop, tablet and mobile." },
-  { n: "04", title: "You decide", body: "Love it? Publish. Don't? You've paid nothing." },
+const pipeline = [
+  { icon: MapPin, title: "Google Maps", body: "One link is the entire brief." },
+  { icon: Search, title: "Business research", body: "Listing, reviews, photos and category signals." },
+  { icon: Brain, title: "Understanding", body: "Services, audience and positioning extracted." },
+  { icon: Palette, title: "Brand identity", body: "Palette, type and tone matched to your industry." },
+  { icon: LayoutTemplate, title: "Website generation", body: "Pages composed from your Business Blueprint." },
+  { icon: Gauge, title: "SEO optimisation", body: "Schema, metadata and local keywords baked in." },
+  { icon: Bot, title: "AI search readiness", body: "Structured so AI assistants can quote you." },
+  { icon: MonitorSmartphone, title: "Preview", body: "Desktop, tablet and mobile, side by side." },
+  { icon: Rocket, title: "Launch", body: "Approve it and go live. Not before." },
 ];
 
 function Landing() {
   const [link, setLink] = useState("");
+  const [industry, setIndustry] = useState("dental");
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-dvh">
@@ -62,28 +71,45 @@ function Landing() {
         <div className="mx-auto grid w-full max-w-6xl items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="rise">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium shadow-[var(--shadow-soft)]">
-              <span className="size-1.5 rounded-full bg-success" /> Now building for dental clinics in Mumbai
+              <span className="size-1.5 rounded-full bg-success" /> 19 industries · each with its own design system
             </span>
             <h1 className="mt-6 text-balance text-4xl leading-[1.03] sm:text-6xl md:text-7xl">
               Paste your Google Maps <span className="italic text-primary">business link</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              We'll build your professional business website before you pay. Not a builder, not a template — an AI digital agency that delivers finished work.
+              Our AI digital agency researches your business and delivers a finished, premium website — before you pay a rupee.
             </p>
             <form
-              className="rise-2 mt-9 flex max-w-xl flex-col gap-3 rounded-2xl border border-border bg-card p-2 shadow-[var(--shadow-lift)] sm:flex-row"
+              className="rise-2 mt-9 max-w-xl rounded-[1.5rem] border border-border bg-card p-2 shadow-[var(--shadow-lift)]"
               onSubmit={(e) => {
                 e.preventDefault();
-                toast.success("Blueprint queued", { description: "We'll research this business and generate a preview." });
-                setLink("");
+                navigate({ to: "/generate", search: { url: link, industry, name: "" } });
               }}
             >
-              <div className="relative flex-1">
-                <Link2 className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <label htmlFor="maps" className="sr-only">Google Maps business link</label>
-                <Input id="maps" required value={link} onChange={(e) => setLink(e.target.value)} placeholder="maps.app.goo.gl/… or business name + city" className="h-12 border-0 bg-transparent pl-10 shadow-none focus-visible:ring-0" />
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="relative flex-1">
+                  <Link2 className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <label htmlFor="maps" className="sr-only">Google Maps business link</label>
+                  <Input id="maps" required value={link} onChange={(e) => setLink(e.target.value)} placeholder="maps.app.goo.gl/… or business name + city" className="h-12 border-0 bg-transparent pl-10 shadow-none focus-visible:ring-0" />
+                </div>
+                <Button type="submit" size="lg" className="h-12">Generate my website <ArrowRight className="size-4" /></Button>
               </div>
-              <Button type="submit" size="lg" className="h-12">Generate my website <ArrowRight className="size-4" /></Button>
+              <div className="flex items-center gap-2 px-3 pb-1 pt-2.5 text-xs text-muted-foreground">
+                <span>Business type</span>
+                <div className="relative">
+                  <label htmlFor="ind" className="sr-only">Business type</label>
+                  <select
+                    id="ind"
+                    value={industry}
+                    onChange={(e) => setIndustry(e.target.value)}
+                    className="appearance-none rounded-full border border-border bg-secondary/60 py-1 pl-3 pr-7 text-xs font-medium text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {industryDesigns.map((d) => <option key={d.id} value={d.id}>{d.label}</option>)}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-3 -translate-y-1/2" />
+                </div>
+                <span className="hidden sm:inline">· 19 industries, each with its own design system</span>
+              </div>
             </form>
             <div className="rise-3 mt-5 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               <Link to="/site/$slug" params={{ slug: "smilecraft-dental-bandra" }} className="font-medium text-foreground underline underline-offset-4">
@@ -153,9 +179,7 @@ function Landing() {
         <div className="marquee-track gap-10 px-6">
           {[0, 1].map((dup) => (
             <div key={dup} className="flex shrink-0 items-center gap-10 pr-10" aria-hidden={dup === 1}>
-              {[
-                "Dental clinics", "Restaurants", "Salons", "Law firms", "Gyms", "Interior studios", "Chartered accountants", "Real estate",
-              ].map((c) => (
+              {industryDesigns.map((d) => d.label).map((c) => (
                 <span key={c} className="eyebrow whitespace-nowrap text-muted-foreground">{c}</span>
               ))}
             </div>
@@ -183,17 +207,27 @@ function Landing() {
 
       <section id="how" className="px-5 py-20 sm:px-8 md:py-28">
         <div className="mx-auto w-full max-w-6xl">
-          <p className="eyebrow mb-4 text-primary">How it works</p>
-          <h2 className="max-w-2xl text-balance text-3xl sm:text-4xl">Four steps. Nothing for you to configure.</h2>
-          <ol className="mt-14 grid gap-10 md:grid-cols-4">
-            {steps.map((s) => (
-              <li key={s.n} className="relative">
-                <span className="absolute left-0 top-4 hidden h-px w-full bg-border md:block" aria-hidden />
-                <span className="relative flex size-9 items-center justify-center rounded-full border border-border bg-card text-xs font-semibold">
-                  {s.n}
+          <p className="eyebrow mb-4 text-primary">The AI workflow</p>
+          <h2 className="max-w-2xl text-balance text-3xl sm:text-4xl">One link in. A finished agency website out.</h2>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
+            Nine stages run automatically. You don't configure anything — you review the result.
+          </p>
+          <ol className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {pipeline.map((s, i) => (
+              <li
+                key={s.title}
+                className="group relative flex gap-4 rounded-2xl border border-border bg-card p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]"
+              >
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                  <s.icon className="size-5" />
                 </span>
-                <h3 className="mt-5 text-xl">{s.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                    Step {String(i + 1).padStart(2, "0")}
+                  </p>
+                  <h3 className="mt-1 text-lg leading-tight">{s.title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+                </div>
               </li>
             ))}
           </ol>
