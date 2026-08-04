@@ -77,22 +77,39 @@ function Landing() {
               Paste your Google Maps <span className="italic text-primary">business link</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              We'll build your professional business website before you pay. Not a builder, not a template — an AI digital agency that delivers finished work.
+              Our AI digital agency researches your business and delivers a finished, premium website — before you pay a rupee.
             </p>
             <form
-              className="rise-2 mt-9 flex max-w-xl flex-col gap-3 rounded-2xl border border-border bg-card p-2 shadow-[var(--shadow-lift)] sm:flex-row"
+              className="rise-2 mt-9 max-w-xl rounded-[1.5rem] border border-border bg-card p-2 shadow-[var(--shadow-lift)]"
               onSubmit={(e) => {
                 e.preventDefault();
-                toast.success("Blueprint queued", { description: "We'll research this business and generate a preview." });
-                setLink("");
+                navigate({ to: "/generate", search: { url: link, industry, name: "" } });
               }}
             >
-              <div className="relative flex-1">
-                <Link2 className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <label htmlFor="maps" className="sr-only">Google Maps business link</label>
-                <Input id="maps" required value={link} onChange={(e) => setLink(e.target.value)} placeholder="maps.app.goo.gl/… or business name + city" className="h-12 border-0 bg-transparent pl-10 shadow-none focus-visible:ring-0" />
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="relative flex-1">
+                  <Link2 className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <label htmlFor="maps" className="sr-only">Google Maps business link</label>
+                  <Input id="maps" required value={link} onChange={(e) => setLink(e.target.value)} placeholder="maps.app.goo.gl/… or business name + city" className="h-12 border-0 bg-transparent pl-10 shadow-none focus-visible:ring-0" />
+                </div>
+                <Button type="submit" size="lg" className="h-12">Generate my website <ArrowRight className="size-4" /></Button>
               </div>
-              <Button type="submit" size="lg" className="h-12">Generate my website <ArrowRight className="size-4" /></Button>
+              <div className="flex items-center gap-2 px-3 pb-1 pt-2.5 text-xs text-muted-foreground">
+                <span>Business type</span>
+                <div className="relative">
+                  <label htmlFor="ind" className="sr-only">Business type</label>
+                  <select
+                    id="ind"
+                    value={industry}
+                    onChange={(e) => setIndustry(e.target.value)}
+                    className="appearance-none rounded-full border border-border bg-secondary/60 py-1 pl-3 pr-7 text-xs font-medium text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {industryDesigns.map((d) => <option key={d.id} value={d.id}>{d.label}</option>)}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-3 -translate-y-1/2" />
+                </div>
+                <span className="hidden sm:inline">· 19 industries, each with its own design system</span>
+              </div>
             </form>
             <div className="rise-3 mt-5 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               <Link to="/site/$slug" params={{ slug: "smilecraft-dental-bandra" }} className="font-medium text-foreground underline underline-offset-4">
