@@ -1,19 +1,17 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
-import { Monitor, Tablet, Smartphone, ExternalLink, Copy, Rocket, ArrowLeft } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Monitor, Tablet, Smartphone, ExternalLink, Copy, Rocket, ArrowLeft, AppWindow } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BrandMark } from "@/components/brand";
 import { getBusiness } from "@/features/businesses";
+import type { BusinessBlueprint } from "@/features/businesses";
+import { loadPreviewBlueprint } from "@/features/website-generation";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/preview/$slug")({
-  loader: ({ params }) => {
-    const business = getBusiness(params.slug);
-    if (!business) throw notFound();
-    return { business };
-  },
+  loader: ({ params }) => ({ business: getBusiness(params.slug) ?? null }),
   head: ({ loaderData }) => {
-    const name = loaderData?.business.name ?? "Website";
+    const name = loaderData?.business?.name ?? "Website";
     return {
       meta: [
         { title: `${name} — Full preview | WebsiteKaro` },
@@ -37,8 +35,12 @@ const devices = {
 
 function FullPreview() {
   const { business } = Route.useLoaderData();
+  const { slug } = Route.useParams();
+  const [local, setLocal] = useState<BusinessBlueprint | null>(null);
+  useEffect(() => { if (!business) setLocal(loadPreviewBlueprint(slug) ?? null); }, [business, slug]);
   const [device, setDevice] = useState<keyof typeof devices>("desktop");
-  const path = `/site/${business.slug}`;
+  const data = business ?? local;
+  const path = `/site/${slug}`;
 
   const copyLink = async () => {
     const url = typeof window === "undefined" ? path : new URL(path, window.location.origin).toString();
@@ -55,7 +57,7 @@ function FullPreview() {
       <header className="sticky top-0 z-40 flex flex-wrap items-center gap-3 border-b border-border bg-background/90 px-4 py-3 backdrop-blur-xl sm:px-6">
         <BrandMark size="sm" tagline={false} />
         <div className="hidden min-w-0 sm:block">
-          <p className="truncate text-sm font-medium">{business.name}</p>
+          <p className="truncate text-sm font-medium">{data?.name ?? "Website preview"}</p>
           <p className="text-[11px] text-muted-foreground">Simulated deployment · not live yet</p>
         </div>
         <div className="mx-auto flex gap-1 rounded-full border border-border bg-card p-1">
@@ -78,6 +80,13 @@ function FullPreview() {
           <Button variant="outline" size="sm" asChild>
             <a href={path} target="_blank" rel="noreferrer"><ExternalLink className="size-4" /> New window</a>
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.open(path, `wk_${slug}`, "popup=yes,width=1200,height=860,noopener")}
+          >
+            <AppWindow className="size-4" /> Popup
+          </Button>
           <Button size="sm" onClick={() => toast("Deployment arrives with hosting", { description: "We'll connect your domain and publish for you." })}>
             <Rocket className="size-4" /> Deploy
           </Button>
@@ -89,7 +98,7 @@ function FullPreview() {
           className="h-[82dvh] w-full overflow-hidden rounded-2xl border border-border bg-background shadow-[var(--shadow-lift)] transition-all duration-500"
           style={{ maxWidth: devices[device].w }}
         >
-          <iframe title={`${business.name} full website preview`} src={path} className="size-full" />
+          <iframe title={`${data?.name ?? "Website"} full website preview`} src={path} className="size-full" />
         </div>
       </div>
 
