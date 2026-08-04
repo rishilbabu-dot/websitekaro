@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.1",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "website-builder-pro",
+      "version": "0.1.0",
+      "title": "Website Builder Pro"
+    },
+    "tools": [
+      {
+        "name": "list_industries",
+        "title": "List supported industries",
+        "description": "List every business vertical WebsiteKaro can generate a website for, with the design system (palette, fonts, hero style, section order) assigned to each one.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_sample_businesses",
+        "title": "List sample businesses",
+        "description": "List the demo businesses that already have a generated WebsiteKaro website, with their slug, industry, city and publish status.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_business_blueprint",
+        "title": "Get a business blueprint",
+        "description": "Return the full Business Blueprint (services, team, hours, reviews, FAQs, SEO copy) for one sample business, addressed by its slug from list_sample_businesses.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "slug": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Business slug, e.g. smilecraft-dental-bandra."
+            }
+          },
+          "required": [
+            "slug"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "generate_website_blueprint",
+        "title": "Generate a website blueprint",
+        "description": "Run WebsiteKaro's generator for a business name, city and industry, and return the Business Blueprint the website is rendered from, plus the in-app preview URL.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Business name, e.g. Aurora Banquets."
+            },
+            "city": {
+              "default": "Mumbai",
+              "type": "string",
+              "minLength": 1,
+              "description": "City, e.g. Mumbai."
+            },
+            "industry": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Industry id from list_industries, e.g. dental or banquet."
+            }
+          },
+          "required": [
+            "name",
+            "industry"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
