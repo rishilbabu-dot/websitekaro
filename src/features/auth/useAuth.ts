@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 import type { UserRole } from "./auth.types";
 import { getServerSessionSnapshot, getSessionSnapshot, subscribeSession } from "./auth.store";
-import { signInWithGoogle, signOut, unlockSuperAdmin } from "./auth.service";
+import { signInWithGoogle, signOut, unlockWithPasscode } from "./auth.service";
 
 /** Reads the live session. Swap the service implementation to go live. */
 export const useAuth = () => {
@@ -11,10 +11,12 @@ export const useAuth = () => {
     ...session,
     role,
     isGuest: role === "guest",
+    isAdmin: role === "admin",
     isOwner: role === "business-owner",
     isSuperAdmin: role === "super-admin",
+    isStaff: role === "admin" || role === "super-admin",
     signInWithGoogle,
-    unlockSuperAdmin,
+    unlockWithPasscode,
     signOut,
   };
 };
