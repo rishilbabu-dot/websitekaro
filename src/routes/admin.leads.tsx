@@ -20,7 +20,6 @@ export const Route = createFileRoute("/admin/leads")({
   component: LeadsPage,
 });
 
-const emailTone = (status: string) => (status === "sent" ? "success" : status === "failed" ? "danger" : "neutral");
 
 function LeadsPage() {
   const load = useServerFn(listLaunchLeads);
@@ -74,7 +73,7 @@ function LeadsPage() {
                     ) : "—"}
                   </td>
                   <td className="px-6 py-4 text-muted-foreground">{new Date(lead.createdAt).toLocaleString()}</td>
-                  <td className="px-6 py-4"><StatusPill tone={emailTone(lead.emailStatus)}>{lead.emailStatus}</StatusPill></td>
+                  <td className="px-6 py-4"><StatusPill status={lead.emailStatus} /></td>
                 </tr>
               ))
             )}
