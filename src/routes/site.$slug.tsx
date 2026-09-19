@@ -4,6 +4,7 @@ import { GeneratedSite, loadPreviewBlueprint } from "@/features/website-generati
 import type { BusinessBlueprint } from "@/features/businesses";
 import { getBusiness } from "@/features/businesses";
 import { getGeneratedWebsite } from "@/features/website-generation";
+import { siteImages } from "@/features/website-generation/media";
 
 export const Route = createFileRoute("/site/$slug")({
   // A freshly generated site is not in the business service yet, so the
@@ -21,10 +22,24 @@ export const Route = createFileRoute("/site/$slug")({
     const b = loaderData.business;
     const path = `/site/${params.slug}`;
     const verified = Boolean(b.verifiedIdentity);
+    // The verified Google Maps name is the primary identity: never let AI copy
+    // replace it in the browser title or social previews.
+    const rawTitle = b.seo.title?.trim() || `${b.name} | ${b.city}`;
+    const title = rawTitle.toLowerCase().includes(b.name.toLowerCase())
+      ? rawTitle
+      : `${b.name} | ${rawTitle}`.slice(0, 70);
+    const heroImage = siteImages(b).hero;
+    const ogImage = /^https:\/\//.test(heroImage ?? "") ? heroImage : null;
+    const sameAs = [
+      b.websiteResearch?.url,
+      ...(b.social ?? []).map((s) => s.url),
+    ].filter((u): u is string => typeof u === "string" && /^https?:\/\//.test(u));
     const localBusiness = {
       "@type": b.industry === "dental" ? "Dentist" : "LocalBusiness",
       name: b.name,
       description: b.description,
+      ...(sameAs.length ? { sameAs } : {}),
+      ...(ogImage ? { image: ogImage } : {}),
       ...(verified && b.phone ? { telephone: b.phone } : {}),
       ...(verified && b.email ? { email: b.email } : {}),
       ...(verified && b.address ? {
@@ -55,14 +70,23 @@ export const Route = createFileRoute("/site/$slug")({
     });
     return {
       meta: [
-        { title: b.seo.title },
+        { title },
         { name: "description", content: b.seo.metaDescription },
         { name: "keywords", content: b.seo.keywords.join(", ") },
-        { property: "og:title", content: b.seo.title },
+        { property: "og:site_name", content: b.name },
+        { property: "og:title", content: title },
         { property: "og:description", content: b.seo.metaDescription },
         { property: "og:url", content: path },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: b.seo.metaDescription },
+        ...(ogImage
+          ? [
+              { property: "og:image", content: ogImage },
+              { name: "twitter:image", content: ogImage },
+            ]
+          : []),
       ],
       links: [{ rel: "canonical", href: path }],
       scripts: [
@@ -84,6 +108,30 @@ function SitePage() {
   const { slug } = Route.useParams();
   const [local, setLocal] = useState<BusinessBlueprint | null>(null);
   useEffect(() => { if (!business) setLocal(loadPreviewBlueprint(slug) ?? null); }, [business, slug]);
+
+  // Browser-stored previews are invisible to the server render, so keep the
+  // verified business name in the tab title and social preview tags client-side.
+  useEffect(() => {
+    if (!local) return;
+    const raw = local.seo.title?.trim() || `${local.name} | ${local.city}`;
+    const title = raw.toLowerCase().includes(local.name.toLowerCase())
+      ? raw
+      : `${local.name} | ${raw}`.slice(0, 70);
+    document.title = title;
+    const setMeta = (attr: "name" | "property", key: string, content: string) => {
+      let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+    setMeta("name", "description", local.seo.metaDescription);
+    setMeta("property", "og:title", title);
+    setMeta("property", "og:site_name", local.name);
+    setMeta("property", "og:description", local.seo.metaDescription);
+  }, [local]);
 
   const data = business ?? local;
   if (!data) {
