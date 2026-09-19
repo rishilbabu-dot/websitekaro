@@ -7,6 +7,7 @@ import { getGenerationMode, type GenerationOutcome, type GenerationUsage } from 
 import { dailyCapReached, recordGeneration, usageSummary } from "./usage-ledger";
 import { aiCopySchema, aiLongFormSchema } from "./blueprint.schema";
 import type { VerifiedPlace } from "@/features/website-generation/place-research.types";
+import type { WebsiteResearch } from "@/features/website-generation/website-research.types";
 
 const MODEL = "google/gemini-3.6-flash";
 
@@ -19,6 +20,7 @@ const inputSchema = z.object({
   /** AI imagery is opt-in and off by default; it is the most expensive step. */
   withImages: z.boolean().optional(),
   verifiedPlace: z.custom<VerifiedPlace>().optional(),
+  websiteResearch: z.custom<WebsiteResearch>().optional(),
 });
 
 export const generateBlueprint = createServerFn({ method: "POST" })

@@ -4,6 +4,7 @@
  * generator only ever consumes it. Adding an industry = adding a vertical
  * preset + template, never touching the renderer contract.
  */
+import type { WebsiteResearch } from "@/features/website-generation/website-research.types";
 
 export type Industry =
   | "dental"
