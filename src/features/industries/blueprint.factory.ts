@@ -61,23 +61,23 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     name,
     tagline: verified ? `${verified.category}${city ? ` in ${city}` : ""}` : s.tagline,
     category: design.category,
-    description: verified ? `${name} is a ${verified.category.toLowerCase()}${city ? ` in ${city}` : ""}.` : `${name} is a ${design.category.toLowerCase()} in ${city}.`,
+    description: site?.description || (verified ? `${name} is a ${verified.category.toLowerCase()}${city ? ` in ${city}` : ""}.` : `${name} is a ${design.category.toLowerCase()} in ${city}.`),
     address: verified?.formattedAddress ?? "",
     landmarks: [],
     city,
     phone: verified?.phone ?? "",
     whatsapp: verified?.phone.replace(/\D/g, "") ?? "",
-    email: "",
+    email: site?.emails[0] ?? "",
     mapEmbedQuery: verified?.latitude != null && verified.longitude != null ? `${verified.latitude},${verified.longitude}` : `${name}, ${city}`,
     hours: verified?.hours ?? [],
     logoMark: initials(name) || "WK",
     brand: { primary: design.theme.primary, accent: design.theme.accent },
     photos: verified?.photos.map((photo) => photo.url) ?? [],
     // Business-specific services, people, prices and FAQs must come from an
-    // attributed source or an owner edit. Category presets are visual only.
-    services: [],
+    // attributed source (official website extraction) or an owner edit.
+    services: site?.services.slice(0, 6).map((s, i) => ({ id: `site-service-${i + 1}`, name: s.name, description: s.description ?? "" })) ?? [],
     team: [],
-    faqs: [],
+    faqs: site?.faqs.slice(0, 4).map((f, i) => ({ id: `site-faq-${i + 1}`, question: f.question, answer: f.answer })) ?? [],
     // Sample wording only. Nothing here is presented as a real Google review —
     // verified reviews arrive with the live Google Business source.
     reviews: verified ? {
