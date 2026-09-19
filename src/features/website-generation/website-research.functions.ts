@@ -192,6 +192,8 @@ export const extractPage = (html: string, pageUrl: string): ExtractedPage => {
     if (!contentLinks.includes(absolute)) contentLinks.push(absolute);
   }
 
+  const logoAbsolute = logoLink ? absolutize(logoLink, pageUrl) : null;
+
   return {
     title,
     description: metaDesc,
@@ -200,7 +202,7 @@ export const extractPage = (html: string, pageUrl: string): ExtractedPage => {
     services: services.slice(0, 8),
     faqs: faqs.slice(0, 6),
     emails,
-    ...(logoLink ? { logoUrl: absolutize(logoLink, pageUrl) ?? undefined } : {}),
+    ...(logoAbsolute ? { logoUrl: logoAbsolute } : {}),
     ...(themeColor ? { themeColor } : {}),
     text,
     contentLinks: contentLinks.slice(0, MAX_EXTRA_PAGES),
