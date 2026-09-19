@@ -35,6 +35,7 @@ export const generateBlueprint = createServerFn({ method: "POST" })
       industry: data.industry,
       ...(data.sourceUrl ? { sourceUrl: data.sourceUrl } : {}),
       ...(data.verifiedPlace ? { verifiedPlace: data.verifiedPlace } : {}),
+      ...(data.websiteResearch ? { websiteResearch: data.websiteResearch } : {}),
     });
 
     const finish = (
@@ -61,12 +62,15 @@ export const generateBlueprint = createServerFn({ method: "POST" })
 
     if (requestedMode === "draft") return finish(base, "draft");
 
+    // Source fingerprints keep different source sets from reusing stale copy.
+    const placeFp = data.verifiedPlace ? `${data.verifiedPlace.placeId}:${data.verifiedPlace.verifiedAt.slice(0, 10)}` : "unverified";
+    const webFp = data.websiteResearch ? `:web-${data.websiteResearch.url.slice(0, 60)}-${data.websiteResearch.fetchedAt.slice(0, 10)}` : "";
     const key = cacheKey({
       name: data.name,
       city,
       industry: design.id,
       mode: requestedMode,
-      sourceFingerprint: data.verifiedPlace ? `${data.verifiedPlace.placeId}:${data.verifiedPlace.verifiedAt.slice(0, 10)}:research-v1` : "unverified-v1",
+      sourceFingerprint: `${placeFp}${webFp}:research-v2`,
     });
     const cached = readCachedBlueprint(key);
     if (cached) return finish(cached, requestedMode, { cached: true });
