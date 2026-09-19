@@ -105,14 +105,11 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     trust: [],
     ...(verified ? {
       mapsUrl: verified.mapsUrl,
-      sources: [
-        { kind: "google-maps" as const, label: "Google Maps", url: verified.mapsUrl, confidence: "verified" as const, verifiedAt: verified.verifiedAt },
-        ...(verified.reviews.length ? [{ kind: "google-reviews" as const, label: "Google Reviews", url: verified.mapsUrl, confidence: "verified" as const, verifiedAt: verified.verifiedAt }] : []),
-        ...(verified.website ? [{ kind: "website" as const, label: "Official website", url: verified.website, confidence: "verified" as const, verifiedAt: verified.verifiedAt }] : []),
-      ],
       verifiedIdentity: { placeId: verified.placeId, name: verified.name, mapsUrl: verified.mapsUrl, verifiedAt: verified.verifiedAt },
       media,
-    } : {}),
+    } : media.length ? { media } : {}),
+    ...(sources.length ? { sources } : {}),
+    ...(site ? { websiteResearch: site } : {}),
     ...direction,
   };
 };
