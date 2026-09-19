@@ -70,16 +70,20 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
       photo: "",
     })),
     faqs: s.faqs.map(([question, answer], i) => ({ id: `f${i + 1}`, question, answer })),
+    // Sample wording only. Nothing here is presented as a real Google review —
+    // verified reviews arrive with the live Google Business source.
     reviews: {
       rating: 4.8,
       count: 120 + (digits % 400),
       summary: s.reviewSummary,
+      verified: false,
       items: s.reviews.map(([author, text], i) => ({
         id: `r${i + 1}`,
         author,
         rating: 5,
         text,
-        source: "Google",
+        source: "Sample",
+        verified: false,
         date: i === 0 ? "2 weeks ago" : "1 month ago",
       })),
     },
@@ -89,11 +93,9 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
       metaDescription: `${s.blurb} Visit ${name}, a ${design.category.toLowerCase()} in ${city}.`.slice(0, 155),
       keywords: [...s.keywords, `${design.label.toLowerCase()} in ${city.toLowerCase()}`],
     },
-    social: [
-      { label: "Instagram", url: "#" },
-      { label: "Facebook", url: "#" },
-      { label: "Google", url: "#" },
-    ],
+    // Social links only exist when the owner supplies them — we never guess
+    // that a profile belongs to this business.
+    social: [],
     personality: ["Premium", "Trustworthy", "Warm"],
     audience: s.audience,
     usp: s.usp,
