@@ -3,12 +3,17 @@ import { useEffect, useState } from "react";
 import { GeneratedSite, loadPreviewBlueprint } from "@/features/website-generation";
 import type { BusinessBlueprint } from "@/features/businesses";
 import { getBusiness } from "@/features/businesses";
+import { getGeneratedWebsite } from "@/features/website-generation";
 
 export const Route = createFileRoute("/site/$slug")({
   // A freshly generated site is not in the business service yet, so the
   // loader may legitimately return nothing and the component falls back to the
   // locally stored blueprint.
-  loader: ({ params }) => ({ business: getBusiness(params.slug) ?? null }),
+  loader: async ({ params }) => ({
+    business:
+      getBusiness(params.slug) ??
+      (await getGeneratedWebsite({ data: { slug: params.slug } }).catch(() => null)),
+  }),
   head: ({ params, loaderData }) => {
     if (!loaderData?.business) {
       return { meta: [{ title: "Website unavailable" }, { name: "robots", content: "noindex" }] };

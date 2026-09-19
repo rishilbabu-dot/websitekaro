@@ -8,6 +8,7 @@ import type { BusinessBlueprint } from "@/features/businesses";
 import { Button } from "@/components/ui/button";
 import { GeneratedSite } from "./GeneratedSite";
 import { savePreviewBlueprint } from "../preview-store";
+import { saveGeneratedWebsite } from "../website-store.functions";
 import { SourcesPanel } from "./SourcesPanel";
 
 export const generationStages = [
@@ -178,7 +179,23 @@ export function DevicePreview({ data }: { data: BusinessBlueprint }) {
 
   // Persist the blueprint so the standalone tab/popup can render it even
   // though it is not stored in the business service yet.
-  useEffect(() => { savePreviewBlueprint(data); }, [data]);
+  useEffect(() => {
+    savePreviewBlueprint(data);
+    // Also persist to the cloud so the link works on any device. Failure here
+    // is not fatal: the local copy still powers this browser's preview.
+    void saveGeneratedWebsite({
+      data: {
+        slug: data.slug,
+        name: data.name,
+        city: data.city,
+        industry: data.industry,
+        ...(data.sourceUrl ? { sourceUrl: data.sourceUrl } : {}),
+        ...(data.website ? { officialWebsite: data.website } : {}),
+        verified: Boolean(data.verifiedIdentity),
+        blueprint: data,
+      },
+    }).catch(() => undefined);
+  }, [data]);
 
   const openPopup = () => {
     savePreviewBlueprint(data);
