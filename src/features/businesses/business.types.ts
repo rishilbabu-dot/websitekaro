@@ -88,6 +88,21 @@ export interface BrandSource {
   label: string;
   url: string;
   confidence: SourceConfidence;
+  verifiedAt?: string;
+}
+
+export interface BusinessPhoto {
+  url: string;
+  source: "owner" | "website" | "google-maps" | "social" | "stock" | "ai-generated";
+  sourceUrl?: string;
+  attribution?: string;
+}
+
+export interface VerifiedBusinessIdentity {
+  placeId: string;
+  name: string;
+  mapsUrl: string;
+  verifiedAt: string;
 }
 
 export interface BusinessBlueprint {
@@ -135,6 +150,10 @@ export interface BusinessBlueprint {
   mapsUrl?: string;
   /** Every source that fed this website. Internal provenance, shown as a summary. */
   sources?: BrandSource[];
+  /** Present only when Google Places resolved the submitted listing. */
+  verifiedIdentity?: VerifiedBusinessIdentity;
+  /** Source-aware media used by the renderer. Legacy `photos` remains supported. */
+  media?: BusinessPhoto[];
 }
 
 export interface Lead {
