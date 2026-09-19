@@ -399,6 +399,7 @@ function Landing() {
       </footer>
 
       <GoogleSignInDialog open={signIn} onOpenChange={setSignIn} />
+      <StaffPasscodeDialog open={staffGate} onOpenChange={setStaffGate} />
     </div>
   );
 }
