@@ -48,6 +48,15 @@ const url = (id: string, w: number, h: number) =>
 export const industryPhotoIds = (industry: string): string[] =>
   industryPhotos[industry] ?? industryPhotos["retail"]!;
 
+/**
+ * A reliable stock fallback for a vertical, used when a sourced image
+ * (official website, listing) refuses to load in the browser.
+ */
+export const stockImageUrl = (industry: string, index: number, w = 1400, h = 1200): string => {
+  const pool = industryPhotoIds(industry);
+  return url(pool[((index % pool.length) + pool.length) % pool.length]!, w, h);
+};
+
 export interface SiteImages {
   hero: string;
   gallery: string[];
@@ -60,7 +69,9 @@ export interface SiteImages {
  */
 export const siteImages = (data: BusinessBlueprint, galleryCount = 4): SiteImages => {
   const sourced = (data.media ?? []).sort((a, b) => {
-    const priority = { owner: 0, website: 1, "google-maps": 2, social: 3, stock: 4, "ai-generated": 5 } as const;
+    // Google-hosted photos load most reliably; official-website images can
+    // refuse hotlinking, so they rank just behind (with renderer fallback).
+    const priority = { owner: 0, "google-maps": 1, website: 2, social: 3, stock: 4, "ai-generated": 5 } as const;
     return priority[a.source] - priority[b.source];
   }).map((photo) => photo.url);
   const own = [...sourced, ...(data.photos ?? [])].filter((value, index, all) => Boolean(value) && all.indexOf(value) === index);

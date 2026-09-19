@@ -7,6 +7,7 @@ import { getGenerationMode, type GenerationOutcome, type GenerationUsage } from 
 import { dailyCapReached, recordGeneration, usageSummary } from "./usage-ledger";
 import { aiCopySchema, aiLongFormSchema } from "./blueprint.schema";
 import type { VerifiedPlace } from "@/features/website-generation/place-research.types";
+import type { WebsiteResearch } from "@/features/website-generation/website-research.types";
 
 const MODEL = "google/gemini-3.6-flash";
 
@@ -19,6 +20,7 @@ const inputSchema = z.object({
   /** AI imagery is opt-in and off by default; it is the most expensive step. */
   withImages: z.boolean().optional(),
   verifiedPlace: z.custom<VerifiedPlace>().optional(),
+  websiteResearch: z.custom<WebsiteResearch>().optional(),
 });
 
 export const generateBlueprint = createServerFn({ method: "POST" })
@@ -33,6 +35,7 @@ export const generateBlueprint = createServerFn({ method: "POST" })
       industry: data.industry,
       ...(data.sourceUrl ? { sourceUrl: data.sourceUrl } : {}),
       ...(data.verifiedPlace ? { verifiedPlace: data.verifiedPlace } : {}),
+      ...(data.websiteResearch ? { websiteResearch: data.websiteResearch } : {}),
     });
 
     const finish = (
@@ -59,12 +62,15 @@ export const generateBlueprint = createServerFn({ method: "POST" })
 
     if (requestedMode === "draft") return finish(base, "draft");
 
+    // Source fingerprints keep different source sets from reusing stale copy.
+    const placeFp = data.verifiedPlace ? `${data.verifiedPlace.placeId}:${data.verifiedPlace.verifiedAt.slice(0, 10)}` : "unverified";
+    const webFp = data.websiteResearch ? `:web-${data.websiteResearch.url.slice(0, 60)}-${data.websiteResearch.fetchedAt.slice(0, 10)}` : "";
     const key = cacheKey({
       name: data.name,
       city,
       industry: design.id,
       mode: requestedMode,
-      sourceFingerprint: data.verifiedPlace ? `${data.verifiedPlace.placeId}:${data.verifiedPlace.verifiedAt.slice(0, 10)}:research-v1` : "unverified-v1",
+      sourceFingerprint: `${placeFp}${webFp}:research-v2`,
     });
     const cached = readCachedBlueprint(key);
     if (cached) return finish(cached, requestedMode, { cached: true });

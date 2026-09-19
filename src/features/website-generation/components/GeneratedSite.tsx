@@ -10,8 +10,20 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
-import { siteImages } from "@/features/website-generation/media";
+import { siteImages, stockImageUrl } from "@/features/website-generation/media";
 import { youtubeEmbed } from "@/features/website-generation/brand-links";
+
+/**
+ * Sourced images (official website, listing) can refuse to hotlink. Fall back
+ * to the industry's validated stock set instead of ever rendering a blank.
+ */
+const imageFallback = (data: BusinessBlueprint) => (e: React.SyntheticEvent<HTMLImageElement>) => {
+  const el = e.currentTarget;
+  const next = el.dataset["fb"] ? Number(el.dataset["fb"]) + 1 : 0;
+  if (next > 6) { el.onerror = null; return; }
+  el.dataset["fb"] = String(next);
+  el.src = stockImageUrl(data.industry, next);
+};
 
 interface Ctx {
   data: BusinessBlueprint;
@@ -60,6 +72,7 @@ function HeroSplit({ data, image }: { data: BusinessBlueprint; image: string }) 
             alt={`Inside ${data.name} in ${data.city}`}
             width={1600}
             height={1000}
+            onError={imageFallback(data)}
             className="relative aspect-4/5 w-full rounded-[calc(var(--radius)+1rem)] object-cover shadow-[var(--shadow-lift)] sm:aspect-4/3"
           />
           {data.reviews.verified ? (
@@ -80,7 +93,7 @@ function HeroSplit({ data, image }: { data: BusinessBlueprint; image: string }) 
 function HeroFull({ data, image }: { data: BusinessBlueprint; image: string }) {
   return (
     <div id="top" className="relative isolate overflow-hidden">
-      <img src={image} alt={`${data.name} in ${data.city}`} width={2000} height={1200} className="absolute inset-0 -z-10 size-full object-cover" />
+      <img src={image} alt={`${data.name} in ${data.city}`} width={2000} height={1200} onError={imageFallback(data)} className="absolute inset-0 -z-10 size-full object-cover" />
       <div className="absolute inset-0 -z-10 bg-linear-to-b from-ink/85 via-ink/70 to-ink/95" aria-hidden />
       <div className="mx-auto w-full max-w-6xl px-5 py-28 sm:px-8 md:py-40">
         <div className="rise max-w-3xl text-ink-foreground">
@@ -129,6 +142,7 @@ function HeroEditorial({ data, image }: { data: BusinessBlueprint; image: string
           alt={`${data.name} in ${data.city}`}
           width={2000}
           height={1000}
+          onError={imageFallback(data)}
           className="rise-3 aspect-16/9 w-full rounded-[calc(var(--radius)+1rem)] object-cover shadow-[var(--shadow-lift)]"
         />
         <TrustRow data={data} className="mt-10 border-t border-border pt-8" />
@@ -210,6 +224,7 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
               loading="lazy"
               width={1024}
               height={1024}
+              onError={imageFallback(data)}
               className="aspect-4/5 w-full object-cover"
             />
             <div className="p-7">
@@ -240,6 +255,7 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
               loading="lazy"
               width={1200}
               height={1200}
+              onError={imageFallback(data)}
               className={`w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] ${i === 0 ? "aspect-square lg:h-full" : "aspect-4/3"}`}
             />
             <figcaption className="absolute inset-x-0 bottom-0 bg-linear-to-t from-ink/70 to-transparent p-4 text-xs font-medium text-ink-foreground">
@@ -417,6 +433,20 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
   const youtubeSrc = youtubeSource ? youtubeEmbed(youtubeSource.url) : null;
   const video = youtubeSource && youtubeSrc ? { src: youtubeSrc, href: youtubeSource.url } : null;
 
+  // Category-aware social section copy — the section only renders when the
+  // owner actually supplied official channels.
+  const socialCopy: Record<string, { title: string; blurb: string }> = {
+    wedding: { title: "Real weddings & celebrations", blurb: "Recent weddings, decor and behind-the-scenes moments from our official channels." },
+    event: { title: "Events we've brought to life", blurb: "Recent setups, themes and celebrations from our official channels." },
+    restaurant: { title: "Fresh from the kitchen", blurb: "New dishes, specials and moments from our official channels." },
+    salon: { title: "Latest looks & transformations", blurb: "Recent styles and client transformations from our official channels." },
+    gym: { title: "Training in action", blurb: "Workouts, transformations and community moments from our official channels." },
+    photographer: { title: "Recent shoots", blurb: "Fresh work and behind-the-scenes from our official channels." },
+    hotel: { title: "Moments from the property", blurb: "Rooms, dining and guest experiences from our official channels." },
+    resort: { title: "Moments from the property", blurb: "Rooms, dining and guest experiences from our official channels." },
+  };
+  const social = socialCopy[data.industry] ?? { title: "Follow us", blurb: "Latest work, offers and updates from our official channels." };
+
   const available = (section: SectionId) =>
     section === "services" ? data.services.length > 0
     : section === "team" ? data.team.length > 0
@@ -550,8 +580,8 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
         <Section className="py-14">
           <div className="flex flex-col items-start justify-between gap-5 rounded-[calc(var(--radius)+0.75rem)] border border-border bg-card p-8 sm:flex-row sm:items-center">
             <div>
-              <h2 className="text-2xl">Follow us</h2>
-              <p className="mt-1.5 text-sm text-muted-foreground">Latest work, offers and updates from our official channels.</p>
+              <h2 className="text-2xl">{social.title}</h2>
+              <p className="mt-1.5 text-sm text-muted-foreground">{social.blurb}</p>
             </div>
             <div className="flex flex-wrap gap-2">
               {data.social.map((s) => (

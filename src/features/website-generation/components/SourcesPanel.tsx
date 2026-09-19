@@ -13,6 +13,7 @@ export function SourcesPanel({ data }: { data: BusinessBlueprint }) {
     { label: "Reviews sourced from Google", ok: data.reviews.verified === true },
     { label: "Google Maps linked", ok: data.sources?.some((source) => source.kind === "google-maps" && source.confidence === "verified") === true },
     { label: "Official brand channels linked", ok: data.social.length > 0 },
+    { label: "Official website analysed", ok: Boolean(data.websiteResearch) },
     { label: "Mobile responsive", ok: true },
     { label: "Local SEO ready", ok: data.seo.keywords.length > 0 },
   ];

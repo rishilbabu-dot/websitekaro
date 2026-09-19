@@ -105,6 +105,12 @@ export const decodeBrandSources = (raw: string): BrandSource[] => {
 };
 
 /** YouTube channel/video URL → embeddable src, or null when we can't be sure. */
+/**
+ * Official YouTube embeds only. Bare @handle/channel pages are deliberately
+ * NOT embedded — YouTube retired the user_uploads playlist endpoint, so a
+ * channel link cannot produce a reliable embed and would render a broken
+ * player. Channels still appear as linked social buttons.
+ */
 export const youtubeEmbed = (url: string): string | null => {
   try {
     const u = new URL(url);
@@ -114,8 +120,10 @@ export const youtubeEmbed = (url: string): string | null => {
     const v = u.searchParams.get("v");
     if (v) return `https://www.youtube.com/embed/${v}`;
     if (u.pathname.startsWith("/embed/")) return `https://www.youtube.com${u.pathname}`;
-    const handle = u.pathname.match(/^\/@([^/]+)/)?.[1];
-    if (handle) return `https://www.youtube.com/embed?listType=user_uploads&list=${handle}`;
+    if (u.pathname.startsWith("/playlist")) {
+      const list = u.searchParams.get("list");
+      if (list) return `https://www.youtube.com/embed/videoseries?list=${list}`;
+    }
     return null;
   } catch {
     return null;

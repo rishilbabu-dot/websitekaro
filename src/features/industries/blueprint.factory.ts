@@ -5,6 +5,7 @@
  */
 import type { BusinessBlueprint, Industry } from "@/features/businesses";
 import type { VerifiedPlace } from "@/features/website-generation/place-research.types";
+import type { WebsiteResearch } from "@/features/website-generation/website-research.types";
 import { deriveBrandDirection } from "@/features/website-generation/brand-dna";
 import { getIndustryDesign } from "./industry.config";
 
@@ -14,6 +15,7 @@ export interface BlueprintSeedInput {
   industry: string;
   sourceUrl?: string;
   verifiedPlace?: VerifiedPlace;
+  websiteResearch?: WebsiteResearch;
 }
 
 const slugify = (s: string) =>
@@ -31,7 +33,10 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
   const slug = `${slugify(name)}-${slugify(city)}`;
   const digits = Array.from(slug).reduce((a, c) => a + c.charCodeAt(0), 0);
 
-  const media = verified?.photos.map((photo) => ({ url: photo.url, source: "google-maps" as const, sourceUrl: photo.sourceUrl, ...(photo.attribution ? { attribution: photo.attribution } : {}) })) ?? [];
+  const site = input.websiteResearch;
+  const mapsMedia = verified?.photos.map((photo) => ({ url: photo.url, source: "google-maps" as const, sourceUrl: photo.sourceUrl, ...(photo.attribution ? { attribution: photo.attribution } : {}) })) ?? [];
+  const websiteMedia = site?.images.map((image) => ({ url: image.url, source: "website" as const, sourceUrl: image.sourcePage, ...(image.alt ? { attribution: image.alt } : {}) })) ?? [];
+  const media = [...mapsMedia, ...websiteMedia];
   const direction = deriveBrandDirection({
     name,
     city,
@@ -47,6 +52,20 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     media,
   }, design.heroVariant, design.sections);
 
+  // Source records: verified Google data, then the official website (from the
+  // listing or the owner) — user-provided links are merged later at render time.
+  const sources: NonNullable<BusinessBlueprint["sources"]> = [
+    ...(verified ? [
+      { kind: "google-maps" as const, label: "Google Maps", url: verified.mapsUrl, confidence: "verified" as const, verifiedAt: verified.verifiedAt },
+      ...(verified.reviews.length ? [{ kind: "google-reviews" as const, label: "Google Reviews", url: verified.mapsUrl, confidence: "verified" as const, verifiedAt: verified.verifiedAt }] : []),
+    ] : []),
+    ...(site
+      ? [{ kind: "website" as const, label: "Official website", url: site.url, confidence: site.confidence, verifiedAt: site.fetchedAt }]
+      : verified?.website
+        ? [{ kind: "website" as const, label: "Official website", url: verified.website, confidence: "verified" as const, verifiedAt: verified.verifiedAt }]
+        : []),
+  ];
+
   return {
     id: `gen_${slug}`,
     slug,
@@ -56,23 +75,23 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     name,
     tagline: verified ? `${verified.category}${city ? ` in ${city}` : ""}` : s.tagline,
     category: design.category,
-    description: verified ? `${name} is a ${verified.category.toLowerCase()}${city ? ` in ${city}` : ""}.` : `${name} is a ${design.category.toLowerCase()} in ${city}.`,
+    description: site?.description || (verified ? `${name} is a ${verified.category.toLowerCase()}${city ? ` in ${city}` : ""}.` : `${name} is a ${design.category.toLowerCase()} in ${city}.`),
     address: verified?.formattedAddress ?? "",
     landmarks: [],
     city,
     phone: verified?.phone ?? "",
     whatsapp: verified?.phone.replace(/\D/g, "") ?? "",
-    email: "",
+    email: site?.emails[0] ?? "",
     mapEmbedQuery: verified?.latitude != null && verified.longitude != null ? `${verified.latitude},${verified.longitude}` : `${name}, ${city}`,
     hours: verified?.hours ?? [],
     logoMark: initials(name) || "WK",
     brand: { primary: design.theme.primary, accent: design.theme.accent },
     photos: verified?.photos.map((photo) => photo.url) ?? [],
     // Business-specific services, people, prices and FAQs must come from an
-    // attributed source or an owner edit. Category presets are visual only.
-    services: [],
+    // attributed source (official website extraction) or an owner edit.
+    services: site?.services.slice(0, 6).map((s, i) => ({ id: `site-service-${i + 1}`, name: s.name, description: s.description ?? "" })) ?? [],
     team: [],
-    faqs: [],
+    faqs: site?.faqs.slice(0, 4).map((f, i) => ({ id: `site-faq-${i + 1}`, question: f.question, answer: f.answer })) ?? [],
     // Sample wording only. Nothing here is presented as a real Google review —
     // verified reviews arrive with the live Google Business source.
     reviews: verified ? {
@@ -100,14 +119,11 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     trust: [],
     ...(verified ? {
       mapsUrl: verified.mapsUrl,
-      sources: [
-        { kind: "google-maps" as const, label: "Google Maps", url: verified.mapsUrl, confidence: "verified" as const, verifiedAt: verified.verifiedAt },
-        ...(verified.reviews.length ? [{ kind: "google-reviews" as const, label: "Google Reviews", url: verified.mapsUrl, confidence: "verified" as const, verifiedAt: verified.verifiedAt }] : []),
-        ...(verified.website ? [{ kind: "website" as const, label: "Official website", url: verified.website, confidence: "verified" as const, verifiedAt: verified.verifiedAt }] : []),
-      ],
       verifiedIdentity: { placeId: verified.placeId, name: verified.name, mapsUrl: verified.mapsUrl, verifiedAt: verified.verifiedAt },
       media,
-    } : {}),
+    } : media.length ? { media } : {}),
+    ...(sources.length ? { sources } : {}),
+    ...(site ? { websiteResearch: site } : {}),
     ...direction,
   };
 };
