@@ -122,6 +122,10 @@ export interface BusinessBlueprint {
   audience: string;
   usp: string[];
   trust: { label: string; value: string }[];
+  /** Official Google Maps listing URL, when the visitor supplied one. */
+  mapsUrl?: string;
+  /** Every source that fed this website. Internal provenance, shown as a summary. */
+  sources?: BrandSource[];
 }
 
 export interface Lead {
