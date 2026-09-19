@@ -48,6 +48,15 @@ const url = (id: string, w: number, h: number) =>
 export const industryPhotoIds = (industry: string): string[] =>
   industryPhotos[industry] ?? industryPhotos["retail"]!;
 
+/**
+ * A reliable stock fallback for a vertical, used when a sourced image
+ * (official website, listing) refuses to load in the browser.
+ */
+export const stockImageUrl = (industry: string, index: number, w = 1400, h = 1200): string => {
+  const pool = industryPhotoIds(industry);
+  return url(pool[((index % pool.length) + pool.length) % pool.length]!, w, h);
+};
+
 export interface SiteImages {
   hero: string;
   gallery: string[];
