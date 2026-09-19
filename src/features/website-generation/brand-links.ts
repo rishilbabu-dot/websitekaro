@@ -131,11 +131,19 @@ export const applyBrandSources = (
   sources: BrandSource[],
   mapsUrl?: string,
 ): BusinessBlueprint => {
-  const maps = mapsUrl && /^https?:\/\//i.test(mapsUrl.trim()) ? mapsUrl.trim() : undefined;
+  const submittedMaps = mapsUrl && /^https?:\/\//i.test(mapsUrl.trim()) ? mapsUrl.trim() : undefined;
+  const maps = blueprint.verifiedIdentity?.mapsUrl ?? blueprint.mapsUrl ?? submittedMaps;
+  const existing = blueprint.sources ?? [];
   const all: BrandSource[] = [
-    ...(maps ? [{ kind: "google-maps" as const, label: sourceLabel("google-maps"), url: maps, confidence: "verified" as const }] : []),
+    ...existing,
+    ...(maps && !existing.some((source) => source.kind === "google-maps") ? [{
+      kind: "google-maps" as const,
+      label: sourceLabel("google-maps"),
+      url: maps,
+      confidence: blueprint.verifiedIdentity ? "verified" as const : "user-provided" as const,
+    }] : []),
     ...sources,
-  ];
+  ].filter((source, index, list) => list.findIndex((item) => item.kind === source.kind && item.url === source.url) === index);
   return {
     ...blueprint,
     ...(maps ? { mapsUrl: maps } : {}),
