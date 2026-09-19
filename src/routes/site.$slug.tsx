@@ -4,6 +4,7 @@ import { GeneratedSite, loadPreviewBlueprint } from "@/features/website-generati
 import type { BusinessBlueprint } from "@/features/businesses";
 import { getBusiness } from "@/features/businesses";
 import { getGeneratedWebsite } from "@/features/website-generation";
+import { siteImages } from "@/features/website-generation/media";
 
 export const Route = createFileRoute("/site/$slug")({
   // A freshly generated site is not in the business service yet, so the
