@@ -10,8 +10,20 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
-import { siteImages } from "@/features/website-generation/media";
+import { siteImages, stockImageUrl } from "@/features/website-generation/media";
 import { youtubeEmbed } from "@/features/website-generation/brand-links";
+
+/**
+ * Sourced images (official website, listing) can refuse to hotlink. Fall back
+ * to the industry's validated stock set instead of ever rendering a blank.
+ */
+const imageFallback = (data: BusinessBlueprint) => (e: React.SyntheticEvent<HTMLImageElement>) => {
+  const el = e.currentTarget;
+  const next = el.dataset["fb"] ? Number(el.dataset["fb"]) + 1 : 0;
+  if (next > 6) { el.onerror = null; return; }
+  el.dataset["fb"] = String(next);
+  el.src = stockImageUrl(data.industry, next);
+};
 
 interface Ctx {
   data: BusinessBlueprint;
@@ -60,6 +72,7 @@ function HeroSplit({ data, image }: { data: BusinessBlueprint; image: string }) 
             alt={`Inside ${data.name} in ${data.city}`}
             width={1600}
             height={1000}
+            onError={imageFallback(data)}
             className="relative aspect-4/5 w-full rounded-[calc(var(--radius)+1rem)] object-cover shadow-[var(--shadow-lift)] sm:aspect-4/3"
           />
           {data.reviews.verified ? (
@@ -80,7 +93,7 @@ function HeroSplit({ data, image }: { data: BusinessBlueprint; image: string }) 
 function HeroFull({ data, image }: { data: BusinessBlueprint; image: string }) {
   return (
     <div id="top" className="relative isolate overflow-hidden">
-      <img src={image} alt={`${data.name} in ${data.city}`} width={2000} height={1200} className="absolute inset-0 -z-10 size-full object-cover" />
+      <img src={image} alt={`${data.name} in ${data.city}`} width={2000} height={1200} onError={imageFallback(data)} className="absolute inset-0 -z-10 size-full object-cover" />
       <div className="absolute inset-0 -z-10 bg-linear-to-b from-ink/85 via-ink/70 to-ink/95" aria-hidden />
       <div className="mx-auto w-full max-w-6xl px-5 py-28 sm:px-8 md:py-40">
         <div className="rise max-w-3xl text-ink-foreground">
@@ -129,6 +142,7 @@ function HeroEditorial({ data, image }: { data: BusinessBlueprint; image: string
           alt={`${data.name} in ${data.city}`}
           width={2000}
           height={1000}
+          onError={imageFallback(data)}
           className="rise-3 aspect-16/9 w-full rounded-[calc(var(--radius)+1rem)] object-cover shadow-[var(--shadow-lift)]"
         />
         <TrustRow data={data} className="mt-10 border-t border-border pt-8" />
@@ -210,6 +224,7 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
               loading="lazy"
               width={1024}
               height={1024}
+              onError={imageFallback(data)}
               className="aspect-4/5 w-full object-cover"
             />
             <div className="p-7">
@@ -240,6 +255,7 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
               loading="lazy"
               width={1200}
               height={1200}
+              onError={imageFallback(data)}
               className={`w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] ${i === 0 ? "aspect-square lg:h-full" : "aspect-4/3"}`}
             />
             <figcaption className="absolute inset-x-0 bottom-0 bg-linear-to-t from-ink/70 to-transparent p-4 text-xs font-medium text-ink-foreground">
