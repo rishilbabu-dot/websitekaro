@@ -14,7 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      website_launch_leads: {
+        Row: {
+          business_name: string | null
+          business_type: string | null
+          created_at: string
+          email: string
+          email_error: string | null
+          email_status: string
+          generated_website_id: string | null
+          generated_website_url: string | null
+          google_maps_url: string | null
+          id: string
+          launch_status: string
+          name: string
+          phone: string
+          social_sources_used: string[]
+          source: string
+          user_agent: string | null
+        }
+        Insert: {
+          business_name?: string | null
+          business_type?: string | null
+          created_at?: string
+          email: string
+          email_error?: string | null
+          email_status?: string
+          generated_website_id?: string | null
+          generated_website_url?: string | null
+          google_maps_url?: string | null
+          id?: string
+          launch_status?: string
+          name: string
+          phone: string
+          social_sources_used?: string[]
+          source?: string
+          user_agent?: string | null
+        }
+        Update: {
+          business_name?: string | null
+          business_type?: string | null
+          created_at?: string
+          email?: string
+          email_error?: string | null
+          email_status?: string
+          generated_website_id?: string | null
+          generated_website_url?: string | null
+          google_maps_url?: string | null
+          id?: string
+          launch_status?: string
+          name?: string
+          phone?: string
+          social_sources_used?: string[]
+          source?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
