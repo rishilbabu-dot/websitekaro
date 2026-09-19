@@ -6,6 +6,7 @@ import { LaunchRequestDialog } from "@/features/leads";
 import { buildBlueprint, getIndustryDesign } from "@/features/industries";
 import { generateBlueprint, generationModeInfo, getGenerationMode, type GenerationMode, type GenerationOutcome } from "@/features/ai";
 import { GenerationComplete, GenerationProgress } from "@/features/website-generation/components/GenerationExperience";
+import { researchGoogleBusiness } from "@/features/website-generation";
 import { BrandMark } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import { applyBrandSources, decodeBrandSources } from "@/features/website-generation/brand-links";
@@ -58,6 +59,7 @@ function GeneratePage() {
   const [outcome, setOutcome] = useState<GenerationOutcome | null>(null);
   const requestedRef = useRef(false);
   const runGeneration = useServerFn(generateBlueprint);
+  const runResearch = useServerFn(researchGoogleBusiness);
   const { isGuest } = useAuth();
   const [blocked, setBlocked] = useState(false);
   const [signIn, setSignIn] = useState(false);
@@ -82,17 +84,32 @@ function GeneratePage() {
     [businessName, industry, url],
   );
 
-  // Draft costs nothing and resolves locally. Standard/Deep go through the
-  // credit-aware server function while the progress animation plays.
+  // Resolve the exact Google identity first. AI remains optional; Places
+  // research grounds every mode when the submitted listing can be verified.
   useEffect(() => {
-    if (mode === "draft" || requestedRef.current || blockedRef.current) return;
+    if (requestedRef.current || blockedRef.current) return;
     requestedRef.current = true;
     let active = true;
-    runGeneration({ data: { name: businessName, city: "Mumbai", industry, mode, sourceUrl: url } })
+    runResearch({ data: { input: url || businessName } })
+      .then(async (research) => {
+        const resolvedName = research.place?.name ?? businessName;
+        const resolvedCity = research.place?.city || "Mumbai";
+        if (mode === "draft") {
+          return {
+            blueprint: buildBlueprint({ name: resolvedName, city: resolvedCity, industry, sourceUrl: url, ...(research.place ? { verifiedPlace: research.place } : {}) }),
+            mode: "draft" as const,
+            requestedMode: "draft" as const,
+            cached: false,
+            ...(research.notice ? { notice: research.notice } : {}),
+          };
+        }
+        const generated = await runGeneration({ data: { name: resolvedName, city: resolvedCity, industry, mode, sourceUrl: url, ...(research.place ? { verifiedPlace: research.place } : {}) } });
+        return research.notice && !generated.notice ? { ...generated, notice: research.notice } : generated;
+      })
       .then((result) => { if (active) setOutcome(result); })
       .catch(() => { if (active) setOutcome(null); });
     return () => { active = false; };
-  }, [businessName, industry, mode, url, runGeneration]);
+  }, [businessName, industry, mode, url, runGeneration, runResearch]);
 
   // Optional brand links the owner supplied are merged in as attributed sources.
   const brandSources = useMemo(() => decodeBrandSources(links), [links]);

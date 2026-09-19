@@ -88,6 +88,43 @@ export interface BrandSource {
   label: string;
   url: string;
   confidence: SourceConfidence;
+  verifiedAt?: string;
+}
+
+export interface BusinessPhoto {
+  url: string;
+  source: "owner" | "website" | "google-maps" | "social" | "stock" | "ai-generated";
+  sourceUrl?: string;
+  attribution?: string;
+}
+
+export interface VerifiedBusinessIdentity {
+  placeId: string;
+  name: string;
+  mapsUrl: string;
+  verifiedAt: string;
+}
+
+export type BrandArchetype = "heritage" | "precision" | "vibrant" | "welcoming" | "editorial";
+export type BrandEnergy = "quiet" | "balanced" | "bold";
+export type BrandImageTreatment = "immersive" | "framed" | "gallery-led";
+export type BrandAlignment = "left" | "center";
+
+/** Internal creative direction derived from real business signals. */
+export interface BrandDNA {
+  archetype: BrandArchetype;
+  energy: BrandEnergy;
+  locality: string;
+  confidence: number;
+  signals: string[];
+}
+
+/** Business-level presentation choices layered over the category preset. */
+export interface WebsiteDesignStrategy {
+  heroVariant: "split" | "full" | "editorial";
+  imageTreatment: BrandImageTreatment;
+  alignment: BrandAlignment;
+  sectionOrder: ("about" | "services" | "team" | "gallery" | "reviews" | "faq" | "contact")[];
 }
 
 export interface BusinessBlueprint {
@@ -135,6 +172,13 @@ export interface BusinessBlueprint {
   mapsUrl?: string;
   /** Every source that fed this website. Internal provenance, shown as a summary. */
   sources?: BrandSource[];
+  /** Present only when Google Places resolved the submitted listing. */
+  verifiedIdentity?: VerifiedBusinessIdentity;
+  /** Source-aware media used by the renderer. Legacy `photos` remains supported. */
+  media?: BusinessPhoto[];
+  /** Additive internal design intelligence; older saved websites remain valid. */
+  brandDNA?: BrandDNA;
+  designStrategy?: WebsiteDesignStrategy;
 }
 
 export interface Lead {

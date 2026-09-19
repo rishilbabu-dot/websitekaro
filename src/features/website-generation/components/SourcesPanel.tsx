@@ -8,10 +8,10 @@ import type { BusinessBlueprint } from "@/features/businesses";
 export function SourcesPanel({ data }: { data: BusinessBlueprint }) {
   const sources = data.sources ?? [];
   const checks: { label: string; ok: boolean }[] = [
-    { label: "Business information verified", ok: Boolean(data.mapsUrl) },
+    { label: "Business information verified", ok: Boolean(data.verifiedIdentity) },
     { label: "Google rating verified", ok: data.reviews.verified === true },
     { label: "Reviews sourced from Google", ok: data.reviews.verified === true },
-    { label: "Google Maps linked", ok: Boolean(data.mapsUrl) },
+    { label: "Google Maps linked", ok: data.sources?.some((source) => source.kind === "google-maps" && source.confidence === "verified") === true },
     { label: "Official brand channels linked", ok: data.social.length > 0 },
     { label: "Mobile responsive", ok: true },
     { label: "Local SEO ready", ok: data.seo.keywords.length > 0 },

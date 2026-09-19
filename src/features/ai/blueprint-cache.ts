@@ -54,7 +54,8 @@ export const cacheKey = (input: {
   city: string;
   industry: string;
   mode: GenerationMode;
-}) => [norm(input.name), norm(input.city), norm(input.industry), input.mode].join("|");
+  sourceFingerprint?: string;
+}) => [norm(input.name), norm(input.city), norm(input.industry), input.mode, input.sourceFingerprint ?? "unverified-v1"].join("|");
 
 export const readCachedBlueprint = (key: string) => store.get(key)?.blueprint;
 

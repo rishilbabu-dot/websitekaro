@@ -6,6 +6,7 @@ import { estimateCredits, GENERATION_LIMITS } from "./generation.limits";
 import { getGenerationMode, type GenerationOutcome, type GenerationUsage } from "./generation.types";
 import { dailyCapReached, recordGeneration, usageSummary } from "./usage-ledger";
 import { aiCopySchema, aiLongFormSchema } from "./blueprint.schema";
+import type { VerifiedPlace } from "@/features/website-generation/place-research.types";
 
 const MODEL = "google/gemini-3.6-flash";
 
@@ -17,6 +18,7 @@ const inputSchema = z.object({
   sourceUrl: z.string().max(500).optional(),
   /** AI imagery is opt-in and off by default; it is the most expensive step. */
   withImages: z.boolean().optional(),
+  verifiedPlace: z.custom<VerifiedPlace>().optional(),
 });
 
 export const generateBlueprint = createServerFn({ method: "POST" })
@@ -30,6 +32,7 @@ export const generateBlueprint = createServerFn({ method: "POST" })
       city,
       industry: data.industry,
       ...(data.sourceUrl ? { sourceUrl: data.sourceUrl } : {}),
+      ...(data.verifiedPlace ? { verifiedPlace: data.verifiedPlace } : {}),
     });
 
     const finish = (
@@ -56,7 +59,13 @@ export const generateBlueprint = createServerFn({ method: "POST" })
 
     if (requestedMode === "draft") return finish(base, "draft");
 
-    const key = cacheKey({ name: data.name, city, industry: design.id, mode: requestedMode });
+    const key = cacheKey({
+      name: data.name,
+      city,
+      industry: design.id,
+      mode: requestedMode,
+      sourceFingerprint: data.verifiedPlace ? `${data.verifiedPlace.placeId}:${data.verifiedPlace.verifiedAt.slice(0, 10)}:research-v1` : "unverified-v1",
+    });
     const cached = readCachedBlueprint(key);
     if (cached) return finish(cached, requestedMode, { cached: true });
 

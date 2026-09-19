@@ -15,6 +15,39 @@ export const Route = createFileRoute("/site/$slug")({
     }
     const b = loaderData.business;
     const path = `/site/${params.slug}`;
+    const verified = Boolean(b.verifiedIdentity);
+    const localBusiness = {
+      "@type": b.industry === "dental" ? "Dentist" : "LocalBusiness",
+      name: b.name,
+      description: b.description,
+      ...(verified && b.phone ? { telephone: b.phone } : {}),
+      ...(verified && b.email ? { email: b.email } : {}),
+      ...(verified && b.address ? {
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: b.address,
+          addressLocality: b.city,
+          addressCountry: "IN",
+        },
+      } : {}),
+      ...(verified && b.hours.length ? { openingHours: b.hours.map((h) => `${h.day} ${h.open}`) } : {}),
+      ...(b.reviews.verified && b.reviews.rating > 0 && b.reviews.count > 0 ? {
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: b.reviews.rating,
+          reviewCount: b.reviews.count,
+        },
+      } : {}),
+    };
+    const graph: object[] = [localBusiness];
+    if (b.faqs.length) graph.push({
+      "@type": "FAQPage",
+      mainEntity: b.faqs.map((f) => ({
+        "@type": "Question",
+        name: f.question,
+        acceptedAnswer: { "@type": "Answer", text: f.answer },
+      })),
+    });
     return {
       meta: [
         { title: b.seo.title },
@@ -23,6 +56,8 @@ export const Route = createFileRoute("/site/$slug")({
         { property: "og:title", content: b.seo.title },
         { property: "og:description", content: b.seo.metaDescription },
         { property: "og:url", content: path },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
       links: [{ rel: "canonical", href: path }],
       scripts: [
@@ -30,35 +65,7 @@ export const Route = createFileRoute("/site/$slug")({
           type: "application/ld+json",
           children: JSON.stringify({
             "@context": "https://schema.org",
-            "@graph": [
-              {
-                "@type": b.industry === "dental" ? "Dentist" : "LocalBusiness",
-                name: b.name,
-                description: b.description,
-                telephone: b.phone,
-                email: b.email,
-                address: {
-                  "@type": "PostalAddress",
-                  streetAddress: b.address,
-                  addressLocality: b.city,
-                  addressCountry: "IN",
-                },
-                openingHours: b.hours.map((h) => `${h.day} ${h.open}`),
-                aggregateRating: {
-                  "@type": "AggregateRating",
-                  ratingValue: b.reviews.rating,
-                  reviewCount: b.reviews.count,
-                },
-              },
-              {
-                "@type": "FAQPage",
-                mainEntity: b.faqs.map((f) => ({
-                  "@type": "Question",
-                  name: f.question,
-                  acceptedAnswer: { "@type": "Answer", text: f.answer },
-                })),
-              },
-            ],
+            "@graph": graph,
           }),
         },
       ],

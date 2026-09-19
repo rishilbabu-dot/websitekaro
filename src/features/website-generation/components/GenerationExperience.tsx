@@ -11,16 +11,20 @@ import { savePreviewBlueprint } from "../preview-store";
 import { SourcesPanel } from "./SourcesPanel";
 
 export const generationStages = [
-  { icon: Search, label: "Reading your Google Maps listing" },
-  { icon: MessageSquareQuote, label: "Researching your business" },
-  { icon: Users, label: "Checking your brand channels" },
-  { icon: Sparkles, label: "Understanding what you offer" },
-  { icon: PenLine, label: "Writing authentic content" },
-  { icon: Palette, label: "Designing your website" },
-  { icon: Gauge, label: "Optimising local SEO" },
-  { icon: ShieldCheck, label: "Adding trust and proof" },
-  { icon: MonitorSmartphone, label: "Building your preview" },
-  { icon: Bot, label: "Final quality checks" },
+  { icon: Search, label: "Identifying your official business name" },
+  { icon: MessageSquareQuote, label: "Researching your Google Business listing" },
+  { icon: Users, label: "Checking your official brand channels" },
+  { icon: Search, label: "Analysing your official website" },
+  { icon: Sparkles, label: "Curating authentic images and media" },
+  { icon: MessageSquareQuote, label: "Verifying Google reviews" },
+  { icon: Palette, label: "Building your Brand DNA" },
+  { icon: PenLine, label: "Creating your business content blueprint" },
+  { icon: LayoutTemplate, label: "Selecting a unique visual direction" },
+  { icon: Bot, label: "Generating your business-specific website" },
+  { icon: ShieldCheck, label: "Validating authenticity" },
+  { icon: Gauge, label: "Removing generic content" },
+  { icon: MonitorSmartphone, label: "Checking mobile and desktop layouts" },
+  { icon: Check, label: "Preparing your preview" },
 ];
 
 const STAGE_MS = 900;

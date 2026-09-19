@@ -44,11 +44,12 @@ function HeroSplit({ data, image }: { data: BusinessBlueprint; image: string }) 
       <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-2">
         <div className="rise">
           <Eyebrow>{data.category} · {data.city}</Eyebrow>
-          <h1 className="display text-balance text-4xl leading-[1.05] sm:text-5xl md:text-[4rem]">{data.tagline}</h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">{data.description}</p>
+          <h1 className="display text-balance text-4xl leading-[1.05] sm:text-5xl md:text-[4rem]">{data.name}</h1>
+          {data.tagline ? <p className="mt-5 text-xl font-medium">{data.tagline}</p> : null}
+          {data.description ? <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground">{data.description}</p> : null}
           <div className="rise-2 mt-8 flex flex-wrap gap-3">
             <Button size="lg" asChild><a href="#contact">{data.cta.primary} <ArrowRight className="size-4" /></a></Button>
-            <Button size="lg" variant="outline" asChild><a href={`tel:${data.phone}`}><Phone className="size-4" /> {data.phone}</a></Button>
+            {data.phone ? <Button size="lg" variant="outline" asChild><a href={`tel:${data.phone}`}><Phone className="size-4" /> {data.phone}</a></Button> : null}
           </div>
           <TrustRow data={data} className="rise-3 mt-12 border-t border-border pt-8" />
         </div>
@@ -90,13 +91,14 @@ function HeroFull({ data, image }: { data: BusinessBlueprint; image: string }) {
       <div className="mx-auto w-full max-w-6xl px-5 py-28 sm:px-8 md:py-40">
         <div className="rise max-w-3xl text-ink-foreground">
           <p className="eyebrow mb-5 opacity-80">{data.category} · {data.city}</p>
-          <h1 className="display text-balance text-5xl leading-[1.02] sm:text-6xl md:text-[5rem]">{data.tagline}</h1>
-          <p className="mt-7 max-w-xl text-base leading-relaxed opacity-80">{data.description}</p>
+          <h1 className="display text-balance text-5xl leading-[1.02] sm:text-6xl md:text-[5rem]">{data.name}</h1>
+          {data.tagline ? <p className="mt-5 text-xl font-medium">{data.tagline}</p> : null}
+          {data.description ? <p className="mt-5 max-w-xl text-base leading-relaxed opacity-80">{data.description}</p> : null}
           <div className="rise-2 mt-9 flex flex-wrap gap-3">
             <Button size="lg" asChild><a href="#contact">{data.cta.primary} <ArrowRight className="size-4" /></a></Button>
-            <Button size="lg" variant="outline" asChild className="border-current/30 bg-transparent text-ink-foreground hover:bg-white/10">
+            {data.phone ? <Button size="lg" variant="outline" asChild className="border-current/30 bg-transparent text-ink-foreground hover:bg-white/10">
               <a href={`tel:${data.phone}`}><Phone className="size-4" /> {data.cta.secondary}</a>
-            </Button>
+            </Button> : null}
           </div>
         </div>
         <dl className="rise-3 mt-16 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-white/15 pt-8 text-ink-foreground sm:grid-cols-4">
@@ -118,12 +120,13 @@ function HeroEditorial({ data, image }: { data: BusinessBlueprint; image: string
       <div className="mx-auto w-full max-w-6xl px-5 pb-10 pt-20 text-center sm:px-8 md:pt-28">
         <p className="eyebrow rise mb-5 text-primary">{data.category} · {data.city}</p>
         <h1 className="display rise mx-auto max-w-4xl text-balance text-5xl leading-[1.02] sm:text-6xl md:text-[5.25rem]">
-          {data.tagline}
+          {data.name}
         </h1>
-        <p className="rise-2 mx-auto mt-7 max-w-2xl text-base leading-relaxed text-muted-foreground">{data.description}</p>
+        {data.tagline ? <p className="rise-2 mx-auto mt-5 text-xl font-medium">{data.tagline}</p> : null}
+        {data.description ? <p className="rise-2 mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">{data.description}</p> : null}
         <div className="rise-2 mt-9 flex flex-wrap justify-center gap-3">
           <Button size="lg" asChild><a href="#contact">{data.cta.primary} <ArrowRight className="size-4" /></a></Button>
-          <Button size="lg" variant="outline" asChild><a href={`tel:${data.phone}`}><Phone className="size-4" /> {data.cta.secondary}</a></Button>
+          {data.phone ? <Button size="lg" variant="outline" asChild><a href={`tel:${data.phone}`}><Phone className="size-4" /> {data.cta.secondary}</a></Button> : null}
         </div>
       </div>
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
@@ -188,8 +191,8 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
             <h3 className="text-xl">{s.name}</h3>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.description}</p>
             <div className="mt-6 flex items-center justify-between border-t border-border pt-4 text-sm">
-              <span className="font-semibold">{s.priceFrom ? (s.priceFrom.startsWith("₹") ? `From ${s.priceFrom}` : s.priceFrom) : "On request"}</span>
-              <span className="text-muted-foreground">{s.duration}</span>
+               {s.priceFrom ? <span className="font-semibold">{s.priceFrom.startsWith("₹") ? `From ${s.priceFrom}` : s.priceFrom}</span> : <span />}
+               {s.duration ? <span className="text-muted-foreground">{s.duration}</span> : null}
             </div>
             <a href="#contact" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
               Enquire <ArrowRight className="size-3.5" />
@@ -283,11 +286,6 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
                 View reviews on Google <ArrowRight className="size-3.5" />
               </a>
             ) : null}
-            {!verified ? (
-              <p className="mt-6 rounded-xl border border-border bg-card px-4 py-3 text-xs leading-relaxed text-muted-foreground">
-                Sample wording shown for preview. Your real Google reviews replace this once your listing is connected — we never publish invented reviews.
-              </p>
-            ) : null}
           </div>
           <div className="grid gap-4">
             {data.reviews.items.map((r) => (
@@ -380,13 +378,13 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
           <div className="rounded-[calc(var(--radius)+0.75rem)] border border-border bg-card p-7">
             <h3 className="text-xl">Visit us</h3>
             <ul className="mt-5 grid gap-4 text-sm">
-              <li className="flex gap-3"><MapPin className="mt-0.5 size-4 shrink-0 text-primary" /><span>{data.address}<br /><span className="text-muted-foreground">{data.landmarks.join(" · ")}</span></span></li>
-              <li className="flex gap-3"><Phone className="mt-0.5 size-4 shrink-0 text-primary" /><a href={`tel:${data.phone}`}>{data.phone}</a></li>
-              <li className="flex gap-3"><Mail className="mt-0.5 size-4 shrink-0 text-primary" /><a href={`mailto:${data.email}`}>{data.email}</a></li>
-              <li className="flex gap-3">
+               {data.address ? <li className="flex gap-3"><MapPin className="mt-0.5 size-4 shrink-0 text-primary" /><span>{data.address}{data.landmarks.length ? <><br /><span className="text-muted-foreground">{data.landmarks.join(" · ")}</span></> : null}</span></li> : null}
+               {data.phone ? <li className="flex gap-3"><Phone className="mt-0.5 size-4 shrink-0 text-primary" /><a href={`tel:${data.phone}`}>{data.phone}</a></li> : null}
+               {data.email ? <li className="flex gap-3"><Mail className="mt-0.5 size-4 shrink-0 text-primary" /><a href={`mailto:${data.email}`}>{data.email}</a></li> : null}
+               {data.hours.length ? <li className="flex gap-3">
                 <Clock className="mt-0.5 size-4 shrink-0 text-primary" />
                 <span>{data.hours.map((h) => <span key={h.day} className="block">{h.day}: <span className="text-muted-foreground">{h.open}</span></span>)}</span>
-              </li>
+               </li> : null}
             </ul>
           </div>
           <iframe
@@ -413,14 +411,28 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
 
 export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
   const [open, setOpen] = useState(false);
-  const design = getIndustryDesign(data.industry);
+  const categoryDesign = getIndustryDesign(data.industry);
+  const design: IndustryDesign = {
+    ...categoryDesign,
+    heroVariant: data.designStrategy?.heroVariant ?? categoryDesign.heroVariant,
+    sections: data.designStrategy?.sectionOrder ?? categoryDesign.sections,
+  };
   const heroImage = siteImages(data).hero;
   // Official YouTube embed only — never re-hosted video.
   const youtubeSource = data.sources?.find((s) => s.kind === "youtube");
   const youtubeSrc = youtubeSource ? youtubeEmbed(youtubeSource.url) : null;
   const video = youtubeSource && youtubeSrc ? { src: youtubeSrc, href: youtubeSource.url } : null;
 
-  const nav = design.sections
+  const available = (section: SectionId) =>
+    section === "services" ? data.services.length > 0
+    : section === "team" ? data.team.length > 0
+    : section === "gallery" ? data.photos.length > 0 || (data.media?.length ?? 0) > 0 || !data.verifiedIdentity
+    : section === "reviews" ? data.reviews.verified === true && data.reviews.items.length > 0
+    : section === "faq" ? data.faqs.length > 0
+    : section === "about" ? Boolean(data.audience || data.usp.length)
+    : true;
+  const sections = design.sections.filter(available);
+  const nav = sections
     .filter((s) => s !== "contact")
     .map((s) => ({
       id: s,
@@ -436,7 +448,13 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
   const ctx: Ctx = { data, design, tone: true };
 
   return (
-    <div className="bg-background text-foreground" style={industryCssVars(design)}>
+    <div
+      className="bg-background text-foreground"
+      data-brand-archetype={data.brandDNA?.archetype}
+      data-brand-energy={data.brandDNA?.energy}
+      data-image-treatment={data.designStrategy?.imageTreatment}
+      style={industryCssVars(design)}
+    >
       <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5 sm:px-8">
           <a href="#top" className="flex items-center gap-3">
@@ -453,9 +471,9 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
             ))}
           </nav>
           <div className="hidden items-center gap-2 sm:flex">
-            <Button variant="outline" size="sm" asChild>
+             {data.phone ? <Button variant="outline" size="sm" asChild>
               <a href={`tel:${data.phone}`}><Phone className="size-4" /> Call</a>
-            </Button>
+             </Button> : null}
             <Button size="sm" asChild>
               <a href="#contact">{data.cta.primary}</a>
             </Button>
@@ -488,21 +506,21 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
       )}
 
       {/* Credibility strip */}
-      <div className="overflow-hidden border-y border-border bg-secondary/50 py-4">
+      {data.trust.length ? <div className="overflow-hidden border-y border-border bg-secondary/50 py-4">
         <div className="marquee-track gap-12 px-6">
           {[0, 1].map((dup) => (
             <div key={dup} className="flex shrink-0 items-center gap-12 pr-12" aria-hidden={dup === 1}>
-              {design.credibility.map((c) => (
-                <span key={c} className="flex items-center gap-2 whitespace-nowrap text-sm text-muted-foreground">
-                  <ShieldCheck className="size-4 text-primary" /> {c}
+               {data.trust.map((c) => (
+                 <span key={c.label} className="flex items-center gap-2 whitespace-nowrap text-sm text-muted-foreground">
+                   <ShieldCheck className="size-4 text-primary" /> {c.label}: {c.value}
                 </span>
               ))}
             </div>
           ))}
         </div>
-      </div>
+      </div> : null}
 
-      {design.sections.map((s, i) => sectionRenderers[s](ctx, i % 2 === 1))}
+      {sections.map((s, i) => sectionRenderers[s](ctx, i % 2 === 1))}
 
       {video ? (
         <Section id="video" className="bg-secondary/60">
@@ -558,24 +576,6 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
         </Section>
       ) : null}
 
-      {/* Newsletter */}
-      <Section className="pb-10">
-        <div className="surface-ink flex flex-col gap-6 rounded-[calc(var(--radius)+0.75rem)] p-8 md:flex-row md:items-center md:justify-between md:p-12">
-          <div>
-            <h2 className="text-2xl text-ink-foreground sm:text-3xl">{design.words.newsletterTitle}</h2>
-            <p className="mt-2 text-sm opacity-70">Written by our team. No spam, unsubscribe anytime.</p>
-          </div>
-          <form
-            className="flex w-full max-w-md gap-2"
-            onSubmit={(e) => { e.preventDefault(); toast.success("Subscribed"); (e.target as HTMLFormElement).reset(); }}
-          >
-            <label htmlFor="nl" className="sr-only">Email address</label>
-            <Input id="nl" type="email" required placeholder="you@email.com" className="bg-background text-foreground" />
-            <Button type="submit" variant="secondary">Subscribe</Button>
-          </form>
-        </div>
-      </Section>
-
       <footer className="border-t border-border px-5 py-14 sm:px-8">
         <div className="mx-auto grid w-full max-w-6xl gap-10 md:grid-cols-4">
           <div>
@@ -596,11 +596,7 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
             </ul>
           </div>
           <div>
-            <h3 className="text-sm font-semibold">Legal</h3>
-            <ul className="mt-4 grid gap-2 text-sm text-muted-foreground">
-              <li><a className="hover:text-foreground" href="#">Privacy policy</a></li>
-              <li><a className="hover:text-foreground" href="#">Terms of use</a></li>
-            </ul>
+            <h3 className="text-sm font-semibold">Official channels</h3>
             <div className="mt-5 flex gap-3 text-sm text-muted-foreground">
               {data.social.map((s) => <a key={s.label} href={s.url} className="hover:text-foreground">{s.label}</a>)}
             </div>
@@ -613,22 +609,22 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
       </footer>
 
       {/* Floating call / WhatsApp */}
-      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-3">
-        <a
+      {data.phone || data.whatsapp ? <div className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-5 z-50 flex flex-col gap-3">
+        {data.whatsapp ? <a
           href={`https://wa.me/${data.whatsapp}`}
           aria-label="Chat on WhatsApp"
           className="flex size-13 items-center justify-center rounded-full bg-success text-success-foreground shadow-[var(--shadow-lift)] transition-transform hover:scale-105"
         >
           <MessageCircle className="size-5" />
-        </a>
-        <a
+        </a> : null}
+        {data.phone ? <a
           href={`tel:${data.phone}`}
           aria-label={`Call ${data.name}`}
           className="flex size-13 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-lift)] transition-transform hover:scale-105 sm:hidden"
         >
           <Phone className="size-5" />
-        </a>
-      </div>
+        </a> : null}
+      </div> : null}
     </div>
   );
 }
