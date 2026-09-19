@@ -21,10 +21,24 @@ export const Route = createFileRoute("/site/$slug")({
     const b = loaderData.business;
     const path = `/site/${params.slug}`;
     const verified = Boolean(b.verifiedIdentity);
+    // The verified Google Maps name is the primary identity: never let AI copy
+    // replace it in the browser title or social previews.
+    const rawTitle = b.seo.title?.trim() || `${b.name} | ${b.city}`;
+    const title = rawTitle.toLowerCase().includes(b.name.toLowerCase())
+      ? rawTitle
+      : `${b.name} | ${rawTitle}`.slice(0, 70);
+    const heroImage = siteImages(b).hero;
+    const ogImage = /^https:\/\//.test(heroImage ?? "") ? heroImage : null;
+    const sameAs = [
+      b.websiteResearch?.url,
+      ...(b.socialLinks?.map((s: { url: string }) => s.url) ?? []),
+    ].filter((u): u is string => typeof u === "string" && /^https?:\/\//.test(u));
     const localBusiness = {
       "@type": b.industry === "dental" ? "Dentist" : "LocalBusiness",
       name: b.name,
       description: b.description,
+      ...(sameAs.length ? { sameAs } : {}),
+      ...(ogImage ? { image: ogImage } : {}),
       ...(verified && b.phone ? { telephone: b.phone } : {}),
       ...(verified && b.email ? { email: b.email } : {}),
       ...(verified && b.address ? {
