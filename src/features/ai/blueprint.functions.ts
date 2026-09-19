@@ -188,6 +188,62 @@ export const generateBlueprint = createServerFn({ method: "POST" })
         }
       }
 
+      // Uniqueness pass: if the copy still reads like a template, give the model
+      // one chance to rewrite only the flagged fields — no new facts allowed.
+      const findings = detectGenericCopy(blueprint, city);
+      if (findings.length) {
+        try {
+          const fixResult = await generateText({
+            model,
+            output: Output.object({ schema: aiCopySchema }),
+            system: SYSTEM,
+            prompt: [
+              context,
+              "",
+              "The draft copy below was flagged as generic. Rewrite it so it could only describe this business. Keep the same structure, service names and FAQ questions, and add no new facts.",
+              "",
+              "Flagged:",
+              refinementBrief(findings),
+              "",
+              `Current tagline: ${blueprint.tagline}`,
+              `Current description: ${blueprint.description}`,
+              `Current USPs: ${blueprint.usp.join(" | ")}`,
+              `Current service descriptions: ${blueprint.services.map((s) => `${s.name}: ${s.description}`).join(" | ")}`,
+              `Current FAQ answers: ${blueprint.faqs.map((f) => `${f.question}: ${f.answer}`).join(" | ")}`,
+            ].join("\n"),
+          });
+
+          inputTokens += fixResult.usage?.inputTokens ?? 0;
+          outputTokens += fixResult.usage?.outputTokens ?? 0;
+          const fixed = fixResult.output;
+
+          const candidate = {
+            ...blueprint,
+            tagline: clamp(fixed.tagline || blueprint.tagline, 90),
+            description: fixed.description || blueprint.description,
+            usp: fixed.usp.slice(0, 4).length ? fixed.usp.slice(0, 4) : blueprint.usp,
+            services: blueprint.services.map((s, i) => {
+              const next = fixed.services[i];
+              return next?.description ? { ...s, description: next.description } : s;
+            }),
+            faqs: blueprint.faqs.map((f, i) => {
+              const next = fixed.faqs[i];
+              return next?.answer ? { ...f, answer: next.answer } : f;
+            }),
+            seo: {
+              ...blueprint.seo,
+              metaDescription: clamp(fixed.seoDescription || blueprint.seo.metaDescription, 155),
+            },
+          };
+          // Only keep the rewrite if it actually improved specificity.
+          if (detectGenericCopy(candidate, city).length < findings.length) blueprint = candidate;
+        } catch (error) {
+          if (!NoObjectGeneratedError.isInstance(error)) throw error;
+          // Keep the flagged-but-valid copy rather than failing the generation.
+        }
+      }
+
+
       const usage: GenerationUsage = {
         inputTokens,
         outputTokens,
