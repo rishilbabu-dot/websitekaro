@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, Info } from "lucide-react";
-import { toast } from "sonner";
+import { LaunchRequestDialog } from "@/features/leads";
 import { buildBlueprint, getIndustryDesign } from "@/features/industries";
 import { generateBlueprint, generationModeInfo, getGenerationMode, type GenerationMode, type GenerationOutcome } from "@/features/ai";
 import { GenerationComplete, GenerationProgress } from "@/features/website-generation/components/GenerationExperience";
@@ -58,6 +58,7 @@ function GeneratePage() {
   const { isGuest } = useAuth();
   const [blocked, setBlocked] = useState(false);
   const [signIn, setSignIn] = useState(false);
+  const [launch, setLaunch] = useState(false);
   const quotaRef = useRef(false);
   const blockedRef = useRef(false);
 
@@ -133,12 +134,22 @@ function GeneratePage() {
               Served from cache — this business was already generated, so no credits were used.
             </div>
           ) : null}
-          <GenerationComplete
-          data={blueprint}
-          onPublish={() => {
-            toast.success("Launch requested", { description: "Our team will confirm your domain and go live." });
-            navigate({ to: "/owner" });
-          }}
+          <GenerationComplete data={blueprint} onPublish={() => setLaunch(true)} />
+          <LaunchRequestDialog
+            open={launch}
+            onOpenChange={setLaunch}
+            context={{
+              name: "",
+              phone: "",
+              email: "",
+              businessName: blueprint.name,
+              businessType: blueprint.category,
+              googleMapsUrl: url,
+              generatedWebsiteId: blueprint.slug,
+              generatedWebsiteUrl: typeof window === "undefined" ? `/site/${blueprint.slug}` : `${window.location.origin}/site/${blueprint.slug}`,
+              socialSourcesUsed: ["Google Maps"],
+            }}
+            onContinue={() => navigate({ to: "/" })}
           />
         </>
       ) : (

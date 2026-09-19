@@ -1,10 +1,11 @@
-import { BarChart3, Coins, Building2, CreditCard, LayoutDashboard, LayoutTemplate, Settings, Users, Wand2 } from "lucide-react";
+import { BarChart3, Coins, Building2, CreditCard, LayoutDashboard, LayoutTemplate, Rocket, Settings, Users, Wand2 } from "lucide-react";
 import type { NavItem } from "@/components/layout";
 import type { UserRole } from "@/features/auth/auth.types";
 
 export const adminNav: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { to: "/admin/businesses", label: "Businesses", icon: Building2 },
+  { to: "/admin/leads", label: "Launch requests", icon: Rocket },
   { to: "/admin/generate", label: "Generate website", icon: Wand2 },
   { to: "/admin/templates", label: "Templates", icon: LayoutTemplate },
   { to: "/admin/users", label: "Users", icon: Users },
@@ -18,6 +19,7 @@ export const adminNav: NavItem[] = [
 const ADMIN_ALLOWED_ROUTES = new Set([
   "/admin",
   "/admin/businesses",
+  "/admin/leads",
   "/admin/analytics",
   "/admin/usage",
 ]);

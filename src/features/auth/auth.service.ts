@@ -7,6 +7,7 @@
  */
 import type { AuthSession, AuthUser, UserRole } from "./auth.types";
 import { GUEST_SESSION, getSessionSnapshot, setSession } from "./auth.store";
+import { clearStaffToken, setStaffToken } from "./staff-token";
 
 /** Temporary MVP passcodes — replace with real admin auth. */
 export const SUPER_ADMIN_PASSCODE = "iamsuperadmin";
@@ -49,7 +50,11 @@ export const unlockWithPasscode = (passcode: string): UserRole | null => {
   }
   if (!user) return null;
   setSession({ user, isAuthenticated: true });
+  setStaffToken(code);
   return user.role;
 };
 
-export const signOut = () => setSession(GUEST_SESSION);
+export const signOut = () => {
+  clearStaffToken();
+  setSession(GUEST_SESSION);
+};
