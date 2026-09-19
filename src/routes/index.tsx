@@ -50,7 +50,7 @@ function Landing() {
   const [industry, setIndustry] = useState("dental");
   const [mode, setMode] = useState<GenerationMode>("draft");
   const navigate = useNavigate();
-  const { isGuest, isOwner, isSuperAdmin, user } = useAuth();
+  const { isGuest, isOwner, isStaff, user } = useAuth();
   const quota = useGuestQuota();
   const [signIn, setSignIn] = useState(false);
   const blocked = isGuest && quota.exhausted;
@@ -63,13 +63,13 @@ function Landing() {
           <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
             <a href="#how" className="text-sm text-muted-foreground hover:text-foreground">How it works</a>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground">Pricing</a>
-            {isSuperAdmin ? <Link to="/admin" className="text-sm text-muted-foreground hover:text-foreground">Admin</Link> : null}
+            {isStaff ? <Link to="/admin" className="text-sm text-muted-foreground hover:text-foreground">Admin</Link> : null}
           </nav>
           <div className="flex items-center gap-2">
-            {isOwner || isSuperAdmin ? (
+            {isOwner || isStaff ? (
               <>
                 <Button variant="ghost" size="sm" asChild>
-                  <Link to={isSuperAdmin ? "/admin" : "/owner"}>Dashboard</Link>
+                  <Link to={isStaff ? "/admin" : "/owner"}>Dashboard</Link>
                 </Button>
                 <Button size="sm" asChild><a href="#start">Generate my website</a></Button>
               </>
@@ -385,8 +385,8 @@ function Landing() {
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p className="flex items-center gap-2 font-medium text-foreground"><Sparkles className="size-4 text-primary" /> WebsiteKaro</p>
           <div className="flex flex-wrap gap-5">
-            {isOwner || isSuperAdmin ? (
-              <Link to={isSuperAdmin ? "/admin" : "/owner"}>Dashboard</Link>
+            {isOwner || isStaff ? (
+              <Link to={isStaff ? "/admin" : "/owner"}>Dashboard</Link>
             ) : (
               <button type="button" onClick={() => setSignIn(true)}>Login</button>
             )}

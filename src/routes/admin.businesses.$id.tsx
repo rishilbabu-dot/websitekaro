@@ -3,6 +3,7 @@ import { Eye, Globe, Mail, MapPin, Phone, RefreshCw, Trash2, UserCog } from "luc
 import { PageHeader, StatusPill } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { getBusiness } from "@/features/businesses";
+import { can, useAuth } from "@/features/auth";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/businesses/$id")({
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/admin/businesses/$id")({
 
 function BusinessDetail() {
   const { business: b } = Route.useLoaderData();
+  const { role } = useAuth();
 
   return (
     <>
@@ -73,14 +75,16 @@ function BusinessDetail() {
               {b.seo.keywords.map((k: string) => <span key={k} className="rounded-full border border-border px-2.5 py-1 text-xs">{k}</span>)}
             </div>
           </section>
-          <section className="rounded-2xl border border-destructive/25 bg-card p-6">
-            <h3 className="text-lg">Danger zone</h3>
-            <p className="mt-1 text-sm text-muted-foreground">Suspending hides the live site immediately. Deleting removes the blueprint.</p>
-            <div className="mt-4 flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => toast("Website suspended")}>Suspend website</Button>
-              <Button variant="destructive" size="sm" onClick={() => toast.error("Business deleted")}><Trash2 className="size-4" /> Delete</Button>
-            </div>
-          </section>
+          {can(role, "delete") ? (
+            <section className="rounded-2xl border border-destructive/25 bg-card p-6">
+              <h3 className="text-lg">Danger zone</h3>
+              <p className="mt-1 text-sm text-muted-foreground">Suspending hides the live site immediately. Deleting removes the blueprint.</p>
+              <div className="mt-4 flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => toast("Website suspended")}>Suspend website</Button>
+                <Button variant="destructive" size="sm" onClick={() => toast.error("Business deleted")}><Trash2 className="size-4" /> Delete</Button>
+              </div>
+            </section>
+          ) : null}
         </div>
       </div>
     </>

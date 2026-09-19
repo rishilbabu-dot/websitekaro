@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { industryPresets } from "@/features/businesses";
+import { RequireRole } from "@/features/auth";
 
 export const Route = createFileRoute("/admin/generate")({ component: GeneratePage });
 
@@ -36,6 +37,7 @@ function GeneratePage() {
   };
 
   return (
+    <RequireRole role="super-admin">
     <>
       <PageHeader title="Generate website" subtitle="One link in, a complete business website out. The generator consumes a structured blueprint, never Google Maps directly." />
       <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
@@ -119,5 +121,6 @@ function GeneratePage() {
         </section>
       </div>
     </>
+    </RequireRole>
   );
 }

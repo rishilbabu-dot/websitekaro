@@ -5,11 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import { RequireRole } from "@/features/auth";
 
 export const Route = createFileRoute("/admin/settings")({ component: SettingsPage });
 
 function SettingsPage() {
   return (
+    <RequireRole role="super-admin">
     <>
       <PageHeader title="Settings" subtitle="Global branding, generation defaults and feature flags." />
       <form
@@ -48,5 +50,6 @@ function SettingsPage() {
         <Button type="submit" className="justify-self-start">Save settings</Button>
       </form>
     </>
+    </RequireRole>
   );
 }

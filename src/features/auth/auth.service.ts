@@ -1,15 +1,16 @@
 /**
  * Authentication service — integration seam.
  *
- * The MVP has no backend: Google sign-in is simulated and the Super Admin is
- * unlocked with a temporary passcode. Wiring real auth later means replacing
+ * The MVP has no backend: Google sign-in is simulated and staff roles are
+ * unlocked with temporary passcodes. Wiring real auth later means replacing
  * this file, not the dashboards that consume it.
  */
-import type { AuthSession, AuthUser } from "./auth.types";
+import type { AuthSession, AuthUser, UserRole } from "./auth.types";
 import { GUEST_SESSION, getSessionSnapshot, setSession } from "./auth.store";
 
-/** Temporary MVP passcode — replace with real admin auth. */
+/** Temporary MVP passcodes — replace with real admin auth. */
 export const SUPER_ADMIN_PASSCODE = "iamsuperadmin";
+export const ADMIN_PASSCODE = "iamadmin";
 
 const ownerFromEmail = (email: string): AuthUser => ({
   id: `u_${email.split("@")[0]}`,
@@ -33,13 +34,22 @@ export const signInWithGoogle = async (email: string): Promise<AuthSession> => {
   return next;
 };
 
-export const unlockSuperAdmin = (passcode: string): boolean => {
-  if (passcode.trim() !== SUPER_ADMIN_PASSCODE) return false;
-  setSession({
-    user: { id: "u_admin", name: "WebsiteKaro Admin", email: "admin@websitekaro.in", role: "super-admin" },
-    isAuthenticated: true,
-  });
-  return true;
+/**
+ * Unlock a staff role with a passcode. The entered passcode decides which
+ * role is granted — Super Admin or Admin. Returns the granted role, or
+ * `null` if the passcode is not recognised.
+ */
+export const unlockWithPasscode = (passcode: string): UserRole | null => {
+  const code = passcode.trim();
+  let user: AuthUser | null = null;
+  if (code === SUPER_ADMIN_PASSCODE) {
+    user = { id: "u_admin", name: "WebsiteKaro Admin", email: "admin@websitekaro.in", role: "super-admin" };
+  } else if (code === ADMIN_PASSCODE) {
+    user = { id: "u_staff", name: "WebsiteKaro Staff", email: "staff@websitekaro.in", role: "admin" };
+  }
+  if (!user) return null;
+  setSession({ user, isAuthenticated: true });
+  return user.role;
 };
 
 export const signOut = () => setSession(GUEST_SESSION);
