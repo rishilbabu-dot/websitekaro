@@ -38,7 +38,7 @@ export const saveGeneratedWebsite = createServerFn({ method: "POST" })
         generation_mode: data.mode,
         verified: data.verified,
         owner_email: data.ownerEmail ?? null,
-        blueprint: data.blueprint as unknown as Record<string, unknown>,
+        blueprint: JSON.parse(JSON.stringify(data.blueprint)),
       },
       { onConflict: "slug" },
     );

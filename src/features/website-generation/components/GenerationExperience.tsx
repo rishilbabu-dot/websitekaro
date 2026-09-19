@@ -189,7 +189,6 @@ export function DevicePreview({ data }: { data: BusinessBlueprint }) {
         name: data.name,
         city: data.city,
         industry: data.industry,
-        ...(data.sourceUrl ? { sourceUrl: data.sourceUrl } : {}),
         ...(data.websiteResearch?.url ? { officialWebsite: data.websiteResearch.url } : {}),
         verified: Boolean(data.verifiedIdentity),
         blueprint: data,
