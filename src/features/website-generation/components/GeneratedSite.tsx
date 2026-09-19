@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import { siteImages } from "@/features/website-generation/media";
+import { youtubeEmbed } from "@/features/website-generation/brand-links";
 
 interface Ctx {
   data: BusinessBlueprint;
@@ -498,6 +499,60 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
       </div>
 
       {design.sections.map((s, i) => sectionRenderers[s](ctx, i % 2 === 1))}
+
+      {video ? (
+        <Section id="video" className="bg-secondary/60">
+          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <Eyebrow>Watch</Eyebrow>
+              <h2 className="text-3xl sm:text-4xl">See us in action</h2>
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                Straight from the official {data.name} YouTube channel.
+              </p>
+              <a
+                href={video.href}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary underline underline-offset-4"
+              >
+                Watch on YouTube <ArrowRight className="size-3.5" />
+              </a>
+            </div>
+            <iframe
+              title={`${data.name} on YouTube`}
+              src={video.src}
+              loading="lazy"
+              allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+              allowFullScreen
+              className="aspect-video w-full rounded-[calc(var(--radius)+0.75rem)] border border-border bg-card"
+            />
+          </div>
+        </Section>
+      ) : null}
+
+      {data.social.length ? (
+        <Section className="py-14">
+          <div className="flex flex-col items-start justify-between gap-5 rounded-[calc(var(--radius)+0.75rem)] border border-border bg-card p-8 sm:flex-row sm:items-center">
+            <div>
+              <h2 className="text-2xl">Follow us</h2>
+              <p className="mt-1.5 text-sm text-muted-foreground">Latest work, offers and updates from our official channels.</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {data.social.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.url}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="rounded-full border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary"
+                >
+                  {s.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </Section>
+      ) : null}
 
       {/* Newsletter */}
       <Section className="pb-10">
