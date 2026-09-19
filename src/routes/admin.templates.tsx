@@ -3,11 +3,13 @@ import { PageHeader } from "@/components/shared";
 import { industryPresets } from "@/features/businesses";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { RequireRole } from "@/features/auth";
 
 export const Route = createFileRoute("/admin/templates")({ component: TemplatesPage });
 
 function TemplatesPage() {
   return (
+    <RequireRole role="super-admin">
     <>
       <PageHeader title="Templates & prompts" subtitle="Each industry ships a section recipe and a generation prompt. Adding a vertical means adding a preset, not rebuilding the renderer." />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -29,5 +31,6 @@ function TemplatesPage() {
         ))}
       </div>
     </>
+    </RequireRole>
   );
 }

@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, StatusPill } from "@/components/shared";
 import { businesses } from "@/features/businesses";
+import { RequireRole } from "@/features/auth";
 
 export const Route = createFileRoute("/admin/subscriptions")({ component: SubscriptionsPage });
 
 function SubscriptionsPage() {
   return (
+    <RequireRole role="super-admin">
     <>
       <PageHeader title="Subscriptions" subtitle="Plan assignment per business. Payment collection is intentionally out of MVP scope." />
       <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-soft)]">
@@ -26,5 +28,6 @@ function SubscriptionsPage() {
         </table>
       </div>
     </>
+    </RequireRole>
   );
 }
