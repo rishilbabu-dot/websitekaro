@@ -6,7 +6,7 @@ import { LaunchRequestDialog } from "@/features/leads";
 import { buildBlueprint, getIndustryDesign } from "@/features/industries";
 import { generateBlueprint, generationModeInfo, getGenerationMode, type GenerationMode, type GenerationOutcome } from "@/features/ai";
 import { GenerationComplete, GenerationProgress } from "@/features/website-generation/components/GenerationExperience";
-import { researchGoogleBusiness } from "@/features/website-generation";
+import { researchGoogleBusiness, researchOfficialWebsite } from "@/features/website-generation";
 import { BrandMark } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import { applyBrandSources, decodeBrandSources } from "@/features/website-generation/brand-links";
@@ -60,6 +60,7 @@ function GeneratePage() {
   const requestedRef = useRef(false);
   const runGeneration = useServerFn(generateBlueprint);
   const runResearch = useServerFn(researchGoogleBusiness);
+  const runSiteResearch = useServerFn(researchOfficialWebsite);
   const { isGuest } = useAuth();
   const [blocked, setBlocked] = useState(false);
   const [signIn, setSignIn] = useState(false);
@@ -78,6 +79,9 @@ function GeneratePage() {
 
   const design = getIndustryDesign(industry);
   const businessName = name.trim() || nameFromUrl(url, `${design.label} Studio`);
+
+  // Optional brand links the owner supplied are merged in as attributed sources.
+  const brandSources = useMemo(() => decodeBrandSources(links), [links]);
 
   const draftBlueprint = useMemo(
     () => buildBlueprint({ name: businessName, city: "Mumbai", industry, sourceUrl: url }),
