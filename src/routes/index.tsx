@@ -12,7 +12,7 @@ import clinicImg from "@/assets/dental-hero.jpg";
 import { industryDesigns } from "@/features/industries";
 import { GENERATION_MODES, generationModeInfo, type GenerationMode } from "@/features/ai";
 import { BrandMark } from "@/components/brand";
-import { GoogleSignInDialog, QUOTA_EXHAUSTED_MESSAGE, useAuth, useGuestQuota } from "@/features/auth";
+import { GoogleSignInDialog, QUOTA_EXHAUSTED_MESSAGE, StaffPasscodeDialog, useAuth, useGuestQuota } from "@/features/auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -53,6 +53,7 @@ function Landing() {
   const { isGuest, isOwner, isStaff, user } = useAuth();
   const quota = useGuestQuota();
   const [signIn, setSignIn] = useState(false);
+  const [staffGate, setStaffGate] = useState(false);
   const blocked = isGuest && quota.exhausted;
 
   return (
@@ -392,12 +393,14 @@ function Landing() {
             )}
             <a href="#pricing">Pricing</a>
             <a href="#faq">FAQ</a>
+            <button type="button" onClick={() => setStaffGate(true)} className="transition-colors hover:text-foreground">Admin</button>
           </div>
           <p>© {new Date().getFullYear()} WebsiteKaro, Mumbai</p>
         </div>
       </footer>
 
       <GoogleSignInDialog open={signIn} onOpenChange={setSignIn} />
+      <StaffPasscodeDialog open={staffGate} onOpenChange={setStaffGate} />
     </div>
   );
 }
