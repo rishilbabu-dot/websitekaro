@@ -153,6 +153,7 @@ function Landing() {
                 <span className="hidden lg:inline">{generationModeInfo(mode).costLabel}</span>
               </div>
             </form>
+            <BrandLinksSection value={brandLinks} onChange={setBrandLinks} />
             <div className="rise-3 mt-5 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               <Link to="/site/$slug" params={{ slug: "smilecraft-dental-bandra" }} className="font-medium text-foreground underline underline-offset-4">
                 View sample website
