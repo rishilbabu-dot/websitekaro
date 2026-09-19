@@ -13,6 +13,8 @@ import { industryDesigns } from "@/features/industries";
 import { GENERATION_MODES, generationModeInfo, type GenerationMode } from "@/features/ai";
 import { BrandMark } from "@/components/brand";
 import { GoogleSignInDialog, QUOTA_EXHAUSTED_MESSAGE, StaffPasscodeDialog, useAuth, useGuestQuota } from "@/features/auth";
+import { BrandLinksSection } from "@/features/website-generation/components/BrandLinksSection";
+import { encodeBrandSources, type BrandLinkDraft } from "@/features/website-generation/brand-links";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -49,6 +51,7 @@ function Landing() {
   const [link, setLink] = useState("");
   const [industry, setIndustry] = useState("dental");
   const [mode, setMode] = useState<GenerationMode>("draft");
+  const [brandLinks, setBrandLinks] = useState<BrandLinkDraft>({});
   const navigate = useNavigate();
   const { isGuest, isOwner, isStaff, user } = useAuth();
   const quota = useGuestQuota();
@@ -105,7 +108,8 @@ function Landing() {
                   setSignIn(true);
                   return;
                 }
-                navigate({ to: "/generate", search: { url: link, industry, name: "", mode } });
+                const links = encodeBrandSources(brandLinks);
+                navigate({ to: "/generate", search: { url: link, industry, name: "", mode, ...(links ? { links } : {}) } });
               }}
             >
               <div className="flex flex-col gap-2 sm:flex-row">
