@@ -415,6 +415,10 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
   const [open, setOpen] = useState(false);
   const design = getIndustryDesign(data.industry);
   const heroImage = siteImages(data).hero;
+  // Official YouTube embed only — never re-hosted video.
+  const youtubeSource = data.sources?.find((s) => s.kind === "youtube");
+  const youtubeSrc = youtubeSource ? youtubeEmbed(youtubeSource.url) : null;
+  const video = youtubeSource && youtubeSrc ? { src: youtubeSrc, href: youtubeSource.url } : null;
 
   const nav = design.sections
     .filter((s) => s !== "contact")
