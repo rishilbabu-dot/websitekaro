@@ -14,12 +14,12 @@ export interface LaunchLeadInput {
   name: string;
   phone: string;
   email: string;
-  businessName?: string;
-  businessType?: string;
-  googleMapsUrl?: string;
-  generatedWebsiteId?: string;
-  generatedWebsiteUrl?: string;
-  socialSourcesUsed?: string[];
+  businessName?: string | undefined;
+  businessType?: string | undefined;
+  googleMapsUrl?: string | undefined;
+  generatedWebsiteId?: string | undefined;
+  generatedWebsiteUrl?: string | undefined;
+  socialSourcesUsed?: string[] | undefined;
 }
 
 export interface LaunchLead {
