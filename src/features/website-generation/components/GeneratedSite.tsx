@@ -394,6 +394,14 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
             className="h-64 w-full rounded-[calc(var(--radius)+0.75rem)] border border-border"
             src={`https://www.google.com/maps?q=${encodeURIComponent(data.mapEmbedQuery)}&output=embed`}
           />
+          <a
+            href={data.mapsUrl ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.mapEmbedQuery)}`}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary underline underline-offset-4"
+          >
+            View on Google Maps <ArrowRight className="size-3.5" />
+          </a>
         </div>
       </div>
     </Section>
