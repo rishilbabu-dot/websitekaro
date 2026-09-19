@@ -4,6 +4,7 @@
  * pipeline: same contract in, same contract out.
  */
 import type { BusinessBlueprint, Industry } from "@/features/businesses";
+import type { VerifiedPlace } from "@/features/website-generation/place-research.types";
 import { getIndustryDesign } from "./industry.config";
 
 export interface BlueprintSeedInput {
@@ -11,6 +12,7 @@ export interface BlueprintSeedInput {
   city: string;
   industry: string;
   sourceUrl?: string;
+  verifiedPlace?: VerifiedPlace;
 }
 
 const slugify = (s: string) =>
@@ -22,8 +24,9 @@ const initials = (s: string) =>
 export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => {
   const design = getIndustryDesign(input.industry);
   const s = design.seed;
-  const name = input.name.trim() || `${design.label} Studio`;
-  const city = input.city.trim() || "Mumbai";
+  const verified = input.verifiedPlace;
+  const name = verified?.name ?? input.name.trim() || `${design.label} Studio`;
+  const city = verified?.city || input.city.trim() || "Mumbai";
   const slug = `${slugify(name)}-${slugify(city)}`;
   const digits = Array.from(slug).reduce((a, c) => a + c.charCodeAt(0), 0);
   const phoneTail = String(10000 + (digits % 89999));
@@ -37,22 +40,18 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     name,
     tagline: s.tagline,
     category: design.category,
-    description: `${name} is a ${design.category.toLowerCase()} in ${city}. ${s.blurb}`,
-    address: `Ground Floor, Linking Road, ${city} 400050`,
-    landmarks: [`Near ${city} station`, "Ample parking on site"],
+    description: verified ? `${name} is a ${verified.category.toLowerCase()}${city ? ` in ${city}` : ""}.` : `${name} is a ${design.category.toLowerCase()} in ${city}.`,
+    address: verified?.formattedAddress ?? "",
+    landmarks: [],
     city,
-    phone: `+91 98${String(digits % 100).padStart(2, "0")}0 ${phoneTail}`,
-    whatsapp: `9198${String(digits % 100).padStart(2, "0")}0${phoneTail}`,
-    email: `hello@${slugify(name).replace(/-/g, "")}.in`,
-    mapEmbedQuery: `${name}, ${city}`,
-    hours: [
-      { day: "Monday – Friday", open: "10:00 – 20:00" },
-      { day: "Saturday", open: "10:00 – 18:00" },
-      { day: "Sunday", open: "By appointment" },
-    ],
+    phone: verified?.phone ?? "",
+    whatsapp: verified?.phone.replace(/\D/g, "") ?? "",
+    email: "",
+    mapEmbedQuery: verified?.latitude != null && verified.longitude != null ? `${verified.latitude},${verified.longitude}` : `${name}, ${city}`,
+    hours: verified?.hours ?? [],
     logoMark: initials(name) || "WK",
     brand: { primary: design.theme.primary, accent: design.theme.accent },
-    photos: [],
+    photos: verified?.photos.map((photo) => photo.url) ?? [],
     services: s.services.map(([sname, desc, priceFrom, duration], i) => ({
       id: `s${i + 1}`,
       name: sname,
@@ -60,7 +59,7 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
       priceFrom,
       duration,
     })),
-    team: s.team.map(([tname, role, qualification, experience, bio], i) => ({
+    team: verified ? [] : s.team.map(([tname, role, qualification, experience, bio], i) => ({
       id: `t${i + 1}`,
       name: tname,
       role,
@@ -72,25 +71,20 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     faqs: s.faqs.map(([question, answer], i) => ({ id: `f${i + 1}`, question, answer })),
     // Sample wording only. Nothing here is presented as a real Google review —
     // verified reviews arrive with the live Google Business source.
-    reviews: {
-      rating: 4.8,
-      count: 120 + (digits % 400),
-      summary: s.reviewSummary,
-      verified: false,
-      items: s.reviews.map(([author, text], i) => ({
-        id: `r${i + 1}`,
-        author,
-        rating: 5,
-        text,
-        source: "Sample",
-        verified: false,
-        date: i === 0 ? "2 weeks ago" : "1 month ago",
-      })),
-    },
+    reviews: verified ? {
+      rating: verified.rating ?? 0,
+      count: verified.reviewCount ?? 0,
+      summary: "",
+      verified: typeof verified.rating === "number" && typeof verified.reviewCount === "number",
+      url: verified.mapsUrl,
+      items: verified.reviews,
+    } : { rating: 0, count: 0, summary: "", verified: false, items: [] },
     cta: { primary: design.words.ctaPrimary, secondary: design.words.ctaSecondary },
     seo: {
       title: `${name} — ${design.category} in ${city}`,
-      metaDescription: `${s.blurb} Visit ${name}, a ${design.category.toLowerCase()} in ${city}.`.slice(0, 155),
+      metaDescription: verified
+        ? `${name}${city ? ` in ${city}` : ""}. View verified business details, services and contact information.`.slice(0, 155)
+        : `${name} is a ${design.category.toLowerCase()} in ${city}.`.slice(0, 155),
       keywords: [...s.keywords, `${design.label.toLowerCase()} in ${city.toLowerCase()}`],
     },
     // Social links only exist when the owner supplies them — we never guess
@@ -100,5 +94,15 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     audience: s.audience,
     usp: s.usp,
     trust: s.trust.map(([label, value]) => ({ label, value })),
+    ...(verified ? {
+      mapsUrl: verified.mapsUrl,
+      sources: [
+        { kind: "google-maps" as const, label: "Google Maps", url: verified.mapsUrl, confidence: "verified" as const, verifiedAt: verified.verifiedAt },
+        ...(verified.reviews.length ? [{ kind: "google-reviews" as const, label: "Google Reviews", url: verified.mapsUrl, confidence: "verified" as const, verifiedAt: verified.verifiedAt }] : []),
+        ...(verified.website ? [{ kind: "website" as const, label: "Official website", url: verified.website, confidence: "verified" as const, verifiedAt: verified.verifiedAt }] : []),
+      ],
+      verifiedIdentity: { placeId: verified.placeId, name: verified.name, mapsUrl: verified.mapsUrl, verifiedAt: verified.verifiedAt },
+      media: verified.photos.map((photo) => ({ url: photo.url, source: "google-maps" as const, sourceUrl: photo.sourceUrl, ...(photo.attribution ? { attribution: photo.attribution } : {}) })),
+    } : {}),
   };
 };
