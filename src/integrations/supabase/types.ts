@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      generated_websites: {
+        Row: {
+          blueprint: Json
+          city: string
+          created_at: string
+          generation_mode: string
+          id: string
+          industry: string
+          launch_status: string
+          name: string
+          official_website: string | null
+          owner_email: string | null
+          slug: string
+          source_url: string | null
+          updated_at: string
+          verified: boolean
+        }
+        Insert: {
+          blueprint: Json
+          city?: string
+          created_at?: string
+          generation_mode?: string
+          id?: string
+          industry?: string
+          launch_status?: string
+          name: string
+          official_website?: string | null
+          owner_email?: string | null
+          slug: string
+          source_url?: string | null
+          updated_at?: string
+          verified?: boolean
+        }
+        Update: {
+          blueprint?: Json
+          city?: string
+          created_at?: string
+          generation_mode?: string
+          id?: string
+          industry?: string
+          launch_status?: string
+          name?: string
+          official_website?: string | null
+          owner_email?: string | null
+          slug?: string
+          source_url?: string | null
+          updated_at?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
       website_launch_leads: {
         Row: {
           business_name: string | null
