@@ -88,8 +88,9 @@ function GeneratePage() {
     [businessName, industry, url],
   );
 
-  // Resolve the exact Google identity first. AI remains optional; Places
-  // research grounds every mode when the submitted listing can be verified.
+  // Resolve the exact Google identity first, then enrich from the official
+  // website when one is known. AI remains optional; both research steps ground
+  // every mode, and each fails soft into a plain-language notice.
   useEffect(() => {
     if (requestedRef.current || blockedRef.current) return;
     requestedRef.current = true;
@@ -98,25 +99,42 @@ function GeneratePage() {
       .then(async (research) => {
         const resolvedName = research.place?.name ?? businessName;
         const resolvedCity = research.place?.city || "Mumbai";
+        const officialUrl = research.place?.website || brandSources.find((s) => s.kind === "website")?.url || "";
+        let websiteResearch: WebsiteResearch | undefined;
+        const notices = [research.notice].filter(Boolean) as string[];
+        if (officialUrl) {
+          const site = await runSiteResearch({
+            data: { url: officialUrl, verified: Boolean(research.place?.website && research.place.website === officialUrl) },
+          }).catch(() => null);
+          if (site?.research) websiteResearch = site.research;
+          if (site?.notice) notices.push(site.notice);
+        }
+        const notice = notices.join(" ") || undefined;
+        const seed = {
+          name: resolvedName,
+          city: resolvedCity,
+          industry,
+          sourceUrl: url,
+          ...(research.place ? { verifiedPlace: research.place } : {}),
+          ...(websiteResearch ? { websiteResearch } : {}),
+        };
         if (mode === "draft") {
           return {
-            blueprint: buildBlueprint({ name: resolvedName, city: resolvedCity, industry, sourceUrl: url, ...(research.place ? { verifiedPlace: research.place } : {}) }),
+            blueprint: buildBlueprint(seed),
             mode: "draft" as const,
             requestedMode: "draft" as const,
             cached: false,
-            ...(research.notice ? { notice: research.notice } : {}),
+            ...(notice ? { notice } : {}),
           };
         }
-        const generated = await runGeneration({ data: { name: resolvedName, city: resolvedCity, industry, mode, sourceUrl: url, ...(research.place ? { verifiedPlace: research.place } : {}) } });
-        return research.notice && !generated.notice ? { ...generated, notice: research.notice } : generated;
+        const generated = await runGeneration({ data: { ...seed, mode } });
+        return notice && !generated.notice ? { ...generated, notice } : generated;
       })
       .then((result) => { if (active) setOutcome(result); })
       .catch(() => { if (active) setOutcome(null); });
     return () => { active = false; };
-  }, [businessName, industry, mode, url, runGeneration, runResearch]);
+  }, [businessName, industry, mode, url, brandSources, runGeneration, runResearch, runSiteResearch]);
 
-  // Optional brand links the owner supplied are merged in as attributed sources.
-  const brandSources = useMemo(() => decodeBrandSources(links), [links]);
   const blueprint = useMemo(
     () => applyBrandSources(outcome?.blueprint ?? draftBlueprint, brandSources, url),
     [outcome, draftBlueprint, brandSources, url],
