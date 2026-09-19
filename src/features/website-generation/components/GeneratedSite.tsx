@@ -60,13 +60,15 @@ function HeroSplit({ data, image }: { data: BusinessBlueprint; image: string }) 
             height={1000}
             className="relative aspect-4/5 w-full rounded-[calc(var(--radius)+1rem)] object-cover shadow-[var(--shadow-lift)] sm:aspect-4/3"
           />
-          <div className="absolute -bottom-6 left-6 hidden rounded-2xl border border-border bg-card/95 p-4 shadow-[var(--shadow-lift)] backdrop-blur sm:block">
-            <div className="flex items-center gap-2">
-              <Star className="size-4 fill-accent text-accent" />
-              <span className="text-sm font-semibold">{data.reviews.rating}</span>
-              <span className="text-sm text-muted-foreground">· {data.reviews.count} Google reviews</span>
+          {data.reviews.verified ? (
+            <div className="absolute -bottom-6 left-6 hidden rounded-2xl border border-border bg-card/95 p-4 shadow-[var(--shadow-lift)] backdrop-blur sm:block">
+              <div className="flex items-center gap-2">
+                <Star className="size-4 fill-accent text-accent" />
+                <span className="text-sm font-semibold">{data.reviews.rating}</span>
+                <span className="text-sm text-muted-foreground">· {data.reviews.count} Google reviews</span>
+              </div>
             </div>
-          </div>
+          ) : null}
           <div className="absolute -left-5 top-8 hidden rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur lg:block">
             <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Today</p>
             <p className="mt-1 flex items-center gap-2 text-sm font-medium">
@@ -251,31 +253,74 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
     </Section>
   ),
 
-  reviews: ({ data }, tinted) => (
-    <Section id="reviews" key="reviews" className={tinted ? "bg-secondary/60" : ""}>
-      <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-        <div>
-          <Eyebrow>Google reviews</Eyebrow>
-          <h2 className="text-3xl sm:text-4xl">{data.reviews.rating} out of 5</h2>
-          <p className="mt-3 text-sm text-muted-foreground">Based on {data.reviews.count} verified Google reviews</p>
-          <p className="mt-6 text-base leading-relaxed text-muted-foreground">{data.reviews.summary}</p>
+  // Reviews are only branded as Google reviews when they actually came from the
+  // business's Google listing. Otherwise they are labelled as sample wording.
+  reviews: ({ data }, tinted) => {
+    const verified = data.reviews.verified === true;
+    const reviewsUrl = data.reviews.url ?? data.mapsUrl;
+    return (
+      <Section id="reviews" key="reviews" className={tinted ? "bg-secondary/60" : ""}>
+        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <Eyebrow>{verified ? "Google reviews" : "What customers say"}</Eyebrow>
+            {verified ? (
+              <>
+                <h2 className="text-3xl sm:text-4xl">{data.reviews.rating} out of 5</h2>
+                <p className="mt-3 text-sm text-muted-foreground">Based on {data.reviews.count} Google reviews</p>
+              </>
+            ) : (
+              <h2 className="text-3xl sm:text-4xl">Loved by our customers</h2>
+            )}
+            <p className="mt-6 text-base leading-relaxed text-muted-foreground">{data.reviews.summary}</p>
+            {reviewsUrl ? (
+              <a
+                href={reviewsUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary underline underline-offset-4"
+              >
+                View reviews on Google <ArrowRight className="size-3.5" />
+              </a>
+            ) : null}
+            {!verified ? (
+              <p className="mt-6 rounded-xl border border-border bg-card px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+                Sample wording shown for preview. Your real Google reviews replace this once your listing is connected — we never publish invented reviews.
+              </p>
+            ) : null}
+          </div>
+          <div className="grid gap-4">
+            {data.reviews.items.map((r) => (
+              <figure key={r.id} className="rounded-[calc(var(--radius)+0.75rem)] border border-border bg-card p-6">
+                <div className="flex gap-0.5" aria-label={`${r.rating} out of 5 stars`}>
+                  {Array.from({ length: r.rating }).map((_, i) => (
+                    <Star key={i} className="size-4 fill-accent text-accent" />
+                  ))}
+                </div>
+                <blockquote className="mt-4 text-sm leading-relaxed">{r.text}</blockquote>
+                <figcaption className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+                  <span className="font-medium text-foreground">{r.author}</span>
+                  <span>·</span>
+                  <span>{r.verified ? "Google Review" : "Sample review"}</span>
+                  <span>·</span>
+                  <span>{r.date}</span>
+                  {r.verified && (r.url ?? reviewsUrl) ? (
+                    <a
+                      href={r.url ?? reviewsUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="ml-auto font-medium text-primary underline underline-offset-4"
+                    >
+                      View on Google →
+                    </a>
+                  ) : null}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
-        <div className="grid gap-4">
-          {data.reviews.items.map((r) => (
-            <figure key={r.id} className="rounded-[calc(var(--radius)+0.75rem)] border border-border bg-card p-6">
-              <div className="flex gap-0.5" aria-label={`${r.rating} out of 5 stars`}>
-                {Array.from({ length: r.rating }).map((_, i) => (
-                  <Star key={i} className="size-4 fill-accent text-accent" />
-                ))}
-              </div>
-              <blockquote className="mt-4 text-sm leading-relaxed">{r.text}</blockquote>
-              <figcaption className="mt-4 text-xs text-muted-foreground">{r.author} · {r.source} · {r.date}</figcaption>
-            </figure>
-          ))}
-        </div>
-      </div>
-    </Section>
-  ),
+      </Section>
+    );
+  },
 
   faq: ({ data }, tinted) => (
     <Section id="faq" key="faq" className={tinted ? "bg-secondary/60" : ""}>
