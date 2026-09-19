@@ -25,11 +25,10 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
   const design = getIndustryDesign(input.industry);
   const s = design.seed;
   const verified = input.verifiedPlace;
-  const name = verified?.name ?? input.name.trim() || `${design.label} Studio`;
+  const name = verified?.name ?? (input.name.trim() || `${design.label} Studio`);
   const city = verified?.city || input.city.trim() || "Mumbai";
   const slug = `${slugify(name)}-${slugify(city)}`;
   const digits = Array.from(slug).reduce((a, c) => a + c.charCodeAt(0), 0);
-  const phoneTail = String(10000 + (digits % 89999));
 
   return {
     id: `gen_${slug}`,
@@ -38,7 +37,7 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     status: "generated",
     generatedAt: new Date().toISOString().slice(0, 10),
     name,
-    tagline: s.tagline,
+    tagline: verified ? `${verified.category}${city ? ` in ${city}` : ""}` : s.tagline,
     category: design.category,
     description: verified ? `${name} is a ${verified.category.toLowerCase()}${city ? ` in ${city}` : ""}.` : `${name} is a ${design.category.toLowerCase()} in ${city}.`,
     address: verified?.formattedAddress ?? "",
@@ -52,7 +51,7 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     logoMark: initials(name) || "WK",
     brand: { primary: design.theme.primary, accent: design.theme.accent },
     photos: verified?.photos.map((photo) => photo.url) ?? [],
-    services: s.services.map(([sname, desc, priceFrom, duration], i) => ({
+    services: (verified ? [] : s.services).map(([sname, desc, priceFrom, duration], i) => ({
       id: `s${i + 1}`,
       name: sname,
       description: desc,
@@ -68,7 +67,7 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
       bio,
       photo: "",
     })),
-    faqs: s.faqs.map(([question, answer], i) => ({ id: `f${i + 1}`, question, answer })),
+    faqs: (verified ? [] : s.faqs).map(([question, answer], i) => ({ id: `f${i + 1}`, question, answer })),
     // Sample wording only. Nothing here is presented as a real Google review —
     // verified reviews arrive with the live Google Business source.
     reviews: verified ? {
@@ -90,10 +89,10 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     // Social links only exist when the owner supplies them — we never guess
     // that a profile belongs to this business.
     social: [],
-    personality: ["Premium", "Trustworthy", "Warm"],
-    audience: s.audience,
-    usp: s.usp,
-    trust: s.trust.map(([label, value]) => ({ label, value })),
+    personality: verified ? [] : ["Premium", "Trustworthy", "Warm"],
+    audience: verified ? "" : s.audience,
+    usp: verified ? [] : s.usp,
+    trust: verified ? [] : s.trust.map(([label, value]) => ({ label, value })),
     ...(verified ? {
       mapsUrl: verified.mapsUrl,
       sources: [
