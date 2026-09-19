@@ -1,35 +1,7 @@
-import { BarChart3, Coins, Building2, CreditCard, LayoutDashboard, LayoutTemplate, Settings, Users, Wand2 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import type { NavItem } from "@/components/layout";
 import type { UserRole } from "./auth.types";
 
-/** Source list of every admin nav item (Super Admin sees all). */
-export const adminNav: NavItem[] = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/admin/businesses", label: "Businesses", icon: Building2 },
-  { to: "/admin/generate", label: "Generate website", icon: Wand2 },
-  { to: "/admin/templates", label: "Templates", icon: LayoutTemplate },
-  { to: "/admin/users", label: "Users", icon: Users },
-  { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/admin/usage", label: "Usage & costs", icon: Coins },
-  { to: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard },
-  { to: "/admin/settings", label: "Settings", icon: Settings },
-];
-
-/** Routes visible to the Admin role. Super Admin sees all. */
-const ADMIN_ALLOWED_ROUTES = new Set([
-  "/admin",
-  "/admin/businesses",
-  "/admin/analytics",
-  "/admin/usage",
-]);
-
-/** Which nav items a given staff role can see. */
-export function adminNavForRole(role: UserRole | undefined): NavItem[] {
-  if (role === "super-admin") return adminNav;
-  if (role === "admin") return adminNav.filter((item) => ADMIN_ALLOWED_ROUTES.has(item.to));
-  return [];
-}
+/** Staff roles that can enter the /admin control room. */
+export const STAFF_ROLES: UserRole[] = ["admin", "super-admin"];
 
 export type StaffAction =
   | "generate"
@@ -40,6 +12,7 @@ export type StaffAction =
   | "delete"
   | "suspend";
 
+/** Actions reserved for the Super Admin only. Admins may not perform these. */
 const SUPER_ADMIN_ONLY: Record<StaffAction, boolean> = {
   generate: true,
   templates: true,
@@ -57,9 +30,6 @@ export function can(role: UserRole | undefined, action: StaffAction): boolean {
   return false;
 }
 
-/** Staff roles that can enter the /admin control room. */
-export const STAFF_ROLES: UserRole[] = ["admin", "super-admin"];
-
 /** Display label for a role, used in the app shell. */
 export function roleLabelFor(role: UserRole | undefined): string {
   switch (role) {
@@ -73,7 +43,3 @@ export function roleLabelFor(role: UserRole | undefined): string {
       return "Guest";
   }
 }
-
-/** Required icon type kept for parity with adminNav usage sites. */
-export type { NavItem };
-export type { LucideIcon };
