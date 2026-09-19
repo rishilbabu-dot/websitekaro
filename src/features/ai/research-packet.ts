@@ -31,14 +31,14 @@ export function buildResearchPacket(input: ResearchPacketInput): string {
   lines.push(`Industry: ${industryLabel} (${industryCategory})`);
 
   if (place) {
-    lines.push(`Google category: ${place.category ?? "not listed"}`);
-    if (place.address) lines.push(`Address: ${place.address}`);
+    lines.push(`Google category: ${place.category || "not listed"}`);
+    if (place.formattedAddress) lines.push(`Address: ${place.formattedAddress}`);
     if (place.phone) lines.push(`Phone: ${place.phone}`);
     if (place.website) lines.push(`Official website: ${place.website}`);
-    if (place.rating && place.userRatingCount) {
-      lines.push(`Google rating: ${place.rating} from ${place.userRatingCount} reviews`);
+    if (place.rating && place.reviewCount) {
+      lines.push(`Google rating: ${place.rating} from ${place.reviewCount} reviews`);
     }
-    if (place.hours?.length) lines.push(`Opening hours: ${place.hours.slice(0, 7).join("; ")}`);
+    if (place.hours?.length) lines.push(`Opening hours: ${place.hours.slice(0, 7).map((h) => `${h.day} ${h.open}`).join("; ")}`);
     if (place.photos?.length) lines.push(`Verified photos available: ${place.photos.length}`);
     if (place.reviews?.length) {
       lines.push("Real customer reviews (verbatim, use only as sentiment evidence — never quote as your own words):");
