@@ -69,14 +69,23 @@ export const Route = createFileRoute("/site/$slug")({
     });
     return {
       meta: [
-        { title: b.seo.title },
+        { title },
         { name: "description", content: b.seo.metaDescription },
         { name: "keywords", content: b.seo.keywords.join(", ") },
-        { property: "og:title", content: b.seo.title },
+        { property: "og:site_name", content: b.name },
+        { property: "og:title", content: title },
         { property: "og:description", content: b.seo.metaDescription },
         { property: "og:url", content: path },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: b.seo.metaDescription },
+        ...(ogImage
+          ? [
+              { property: "og:image", content: ogImage },
+              { name: "twitter:image", content: ogImage },
+            ]
+          : []),
       ],
       links: [{ rel: "canonical", href: path }],
       scripts: [
