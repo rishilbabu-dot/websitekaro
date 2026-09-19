@@ -31,7 +31,7 @@ export const Route = createFileRoute("/site/$slug")({
     const ogImage = /^https:\/\//.test(heroImage ?? "") ? heroImage : null;
     const sameAs = [
       b.websiteResearch?.url,
-      ...(b.socialLinks?.map((s: { url: string }) => s.url) ?? []),
+      ...(b.social ?? []).map((s) => s.url),
     ].filter((u): u is string => typeof u === "string" && /^https?:\/\//.test(u));
     const localBusiness = {
       "@type": b.industry === "dental" ? "Dentist" : "LocalBusiness",
