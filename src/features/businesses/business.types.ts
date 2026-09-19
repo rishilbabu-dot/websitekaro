@@ -59,6 +59,35 @@ export interface Review {
   text: string;
   source: string;
   date: string;
+  /** Link to the review on its source (Google Maps listing). Never fabricated. */
+  url?: string;
+  /** True only when the text came from a real Google Business source. */
+  verified?: boolean;
+}
+
+/** Where a piece of website content came from. */
+export type SourceKind =
+  | "google-maps"
+  | "google-reviews"
+  | "instagram"
+  | "facebook"
+  | "youtube"
+  | "x"
+  | "linkedin"
+  | "tiktok"
+  | "pinterest"
+  | "website"
+  | "booking"
+  | "whatsapp"
+  | "other";
+
+export type SourceConfidence = "verified" | "user-provided" | "inferred";
+
+export interface BrandSource {
+  kind: SourceKind;
+  label: string;
+  url: string;
+  confidence: SourceConfidence;
 }
 
 export interface BusinessBlueprint {
