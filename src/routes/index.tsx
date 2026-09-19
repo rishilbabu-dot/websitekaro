@@ -53,6 +53,7 @@ function Landing() {
   const { isGuest, isOwner, isStaff, user } = useAuth();
   const quota = useGuestQuota();
   const [signIn, setSignIn] = useState(false);
+  const [staffGate, setStaffGate] = useState(false);
   const blocked = isGuest && quota.exhausted;
 
   return (
