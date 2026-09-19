@@ -12,7 +12,7 @@ import clinicImg from "@/assets/dental-hero.jpg";
 import { industryDesigns } from "@/features/industries";
 import { GENERATION_MODES, generationModeInfo, type GenerationMode } from "@/features/ai";
 import { BrandMark } from "@/components/brand";
-import { GoogleSignInDialog, QUOTA_EXHAUSTED_MESSAGE, useAuth, useGuestQuota } from "@/features/auth";
+import { GoogleSignInDialog, QUOTA_EXHAUSTED_MESSAGE, StaffPasscodeDialog, useAuth, useGuestQuota } from "@/features/auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
