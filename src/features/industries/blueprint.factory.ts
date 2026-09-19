@@ -52,6 +52,20 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     media,
   }, design.heroVariant, design.sections);
 
+  // Source records: verified Google data, then the official website (from the
+  // listing or the owner) — user-provided links are merged later at render time.
+  const sources: NonNullable<BusinessBlueprint["sources"]> = [
+    ...(verified ? [
+      { kind: "google-maps" as const, label: "Google Maps", url: verified.mapsUrl, confidence: "verified" as const, verifiedAt: verified.verifiedAt },
+      ...(verified.reviews.length ? [{ kind: "google-reviews" as const, label: "Google Reviews", url: verified.mapsUrl, confidence: "verified" as const, verifiedAt: verified.verifiedAt }] : []),
+    ] : []),
+    ...(site
+      ? [{ kind: "website" as const, label: "Official website", url: site.url, confidence: site.confidence, verifiedAt: site.fetchedAt }]
+      : verified?.website
+        ? [{ kind: "website" as const, label: "Official website", url: verified.website, confidence: "verified" as const, verifiedAt: verified.verifiedAt }]
+        : []),
+  ];
+
   return {
     id: `gen_${slug}`,
     slug,

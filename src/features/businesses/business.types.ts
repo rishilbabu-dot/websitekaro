@@ -179,6 +179,8 @@ export interface BusinessBlueprint {
   /** Additive internal design intelligence; older saved websites remain valid. */
   brandDNA?: BrandDNA;
   designStrategy?: WebsiteDesignStrategy;
+  /** Facts and media extracted from the business's own official website. */
+  websiteResearch?: WebsiteResearch;
 }
 
 export interface Lead {
