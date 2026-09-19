@@ -91,47 +91,47 @@ export const researchGoogleBusiness = createServerFn({ method: "POST" })
       const raw = payload.places?.[0];
       if (!raw || typeof raw !== "object") return { place: null, notice: "No matching Google business was found." };
       const p = raw as Record<string, unknown>;
-      const displayName = p.displayName as { text?: unknown } | undefined;
-      if (typeof p.id !== "string" || typeof displayName?.text !== "string") return { place: null, notice: "No matching Google business was found." };
+      const displayName = p["displayName"] as { text?: unknown } | undefined;
+      if (typeof p["id"] !== "string" || typeof displayName?.text !== "string") return { place: null, notice: "No matching Google business was found." };
 
-      const mapsUrl = typeof p.googleMapsUri === "string" ? p.googleMapsUri : resolved;
-      const reviews = (Array.isArray(p.reviews) ? p.reviews : []).flatMap((review, index) => {
+      const mapsUrl = typeof p["googleMapsUri"] === "string" ? p["googleMapsUri"] : resolved;
+      const reviews = (Array.isArray(p["reviews"]) ? p["reviews"] : []).flatMap((review, index) => {
         if (!review || typeof review !== "object") return [];
         const row = review as Record<string, unknown>;
-        const author = row.authorAttribution as { displayName?: unknown } | undefined;
-        const text = row.text as { text?: unknown } | undefined;
-        if (typeof author?.displayName !== "string" || typeof text?.text !== "string" || typeof row.rating !== "number") return [];
-        return [{ id: `google-review-${index + 1}`, author: author.displayName, rating: row.rating, text: text.text, source: "Google", date: typeof row.relativePublishTimeDescription === "string" ? row.relativePublishTimeDescription : "", url: typeof row.googleMapsUri === "string" ? row.googleMapsUri : mapsUrl, verified: true }];
+        const author = row["authorAttribution"] as { displayName?: unknown } | undefined;
+        const text = row["text"] as { text?: unknown } | undefined;
+        if (typeof author?.displayName !== "string" || typeof text?.text !== "string" || typeof row["rating"] !== "number") return [];
+        return [{ id: `google-review-${index + 1}`, author: author.displayName, rating: row["rating"], text: text.text, source: "Google", date: typeof row["relativePublishTimeDescription"] === "string" ? row["relativePublishTimeDescription"] : "", url: typeof row["googleMapsUri"] === "string" ? row["googleMapsUri"] : mapsUrl, verified: true }];
       });
 
-      const photos = (await Promise.all((Array.isArray(p.photos) ? p.photos : []).slice(0, 6).map(async (photo) => {
+      const photos = (await Promise.all((Array.isArray(p["photos"]) ? p["photos"] : []).slice(0, 6).map(async (photo) => {
         if (!photo || typeof photo !== "object") return null;
         const row = photo as { name?: unknown; authorAttributions?: unknown };
         if (typeof row.name !== "string") return null;
-        const first = Array.isArray(row.authorAttributions) ? row.authorAttributions[0] : undefined;
+        const first = Array.isArray(row["authorAttribution"]s) ? row["authorAttribution"]s[0] : undefined;
         const author = first && typeof first === "object" ? first as { displayName?: unknown } : undefined;
         return fetchPhoto(row.name, mapsUrl, gatewayHeaders, typeof author?.displayName === "string" ? author.displayName : undefined);
       }))).filter((photo): photo is VerifiedPlacePhoto => photo !== null);
 
-      const address = typeof p.formattedAddress === "string" ? p.formattedAddress : "";
-      const category = p.primaryTypeDisplayName as { text?: unknown } | undefined;
-      const location = p.location as { latitude?: unknown; longitude?: unknown } | undefined;
-      const opening = p.regularOpeningHours as { weekdayDescriptions?: unknown } | undefined;
+      const address = typeof p["formattedAddress"] === "string" ? p["formattedAddress"] : "";
+      const category = p["primaryTypeDisplayName"] as { text?: unknown } | undefined;
+      const location = p["location"] as { latitude?: unknown; longitude?: unknown } | undefined;
+      const opening = p["regularOpeningHours"] as { weekdayDescriptions?: unknown } | undefined;
       const verifiedAt = new Date().toISOString();
       const place: VerifiedPlace = {
-        placeId: p.id,
+        placeId: p["id"],
         name: displayName.text,
         category: typeof category?.text === "string" ? category.text : "Local business",
         formattedAddress: address,
-        city: cityFromComponents(p.addressComponents, address),
-        phone: typeof p.internationalPhoneNumber === "string" ? p.internationalPhoneNumber : typeof p.nationalPhoneNumber === "string" ? p.nationalPhoneNumber : "",
-        website: typeof p.websiteUri === "string" ? p.websiteUri : "",
+        city: cityFromComponents(p["addressComponents"], address),
+        phone: typeof p["internationalPhoneNumber"] === "string" ? p["internationalPhoneNumber"] : typeof p["nationalPhoneNumber"] === "string" ? p["nationalPhoneNumber"] : "",
+        website: typeof p["websiteUri"] === "string" ? p["websiteUri"] : "",
         mapsUrl,
         ...(typeof location?.latitude === "number" ? { latitude: location.latitude } : {}),
         ...(typeof location?.longitude === "number" ? { longitude: location.longitude } : {}),
         hours: parseHours(opening?.weekdayDescriptions),
-        ...(typeof p.rating === "number" ? { rating: p.rating } : {}),
-        ...(typeof p.userRatingCount === "number" ? { reviewCount: p.userRatingCount } : {}),
+        ...(typeof p["rating"] === "number" ? { rating: p["rating"] } : {}),
+        ...(typeof p["userRatingCount"] === "number" ? { reviewCount: p["userRatingCount"] } : {}),
         reviews,
         photos,
         verifiedAt,
