@@ -114,7 +114,16 @@ export interface BusinessBlueprint {
   services: Service[];
   team: TeamMember[];
   faqs: Faq[];
-  reviews: { rating: number; count: number; summary: string; items: Review[] };
+  reviews: {
+    rating: number;
+    count: number;
+    summary: string;
+    items: Review[];
+    /** True only when rating/count/items come from the real Google listing. */
+    verified?: boolean;
+    /** Google listing reviews URL, when known. */
+    url?: string;
+  };
   cta: { primary: string; secondary: string };
   seo: { keywords: string[]; metaDescription: string; title: string };
   social: { label: string; url: string }[];
