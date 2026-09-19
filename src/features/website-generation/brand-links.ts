@@ -80,9 +80,9 @@ export type BrandLinkDraft = Partial<Record<SourceKind, string>>;
 /** Turns raw inputs into validated, user-provided sources (invalid entries are dropped). */
 export const toBrandSources = (draft: BrandLinkDraft): BrandSource[] =>
   brandLinkFields
-    .map((field) => {
+    .map((field): BrandSource | null => {
       const url = normaliseLink(field.kind, draft[field.kind] ?? "");
-      return url ? { kind: field.kind, label: sourceLabel(field.kind), url, confidence: "user-provided" as const } : null;
+      return url ? { kind: field.kind, label: sourceLabel(field.kind), url, confidence: "user-provided" } : null;
     })
     .filter((s): s is BrandSource => s !== null);
 
@@ -93,13 +93,13 @@ export const decodeBrandSources = (raw: string): BrandSource[] => {
   if (!raw) return [];
   return raw
     .split(",")
-    .map((part) => {
+    .map((part): BrandSource | null => {
       const [kind, url] = part.split("|");
       if (!kind || !url) return null;
       const field = brandLinkFields.find((f) => f.kind === kind);
       if (!field) return null;
       const safe = normaliseLink(field.kind, decodeURIComponent(url));
-      return safe ? { kind: field.kind, label: sourceLabel(field.kind), url: safe, confidence: "user-provided" as const } : null;
+      return safe ? { kind: field.kind, label: sourceLabel(field.kind), url: safe, confidence: "user-provided" } : null;
     })
     .filter((s): s is BrandSource => s !== null);
 };
