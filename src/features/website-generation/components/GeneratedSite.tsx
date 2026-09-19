@@ -417,6 +417,20 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
   const youtubeSrc = youtubeSource ? youtubeEmbed(youtubeSource.url) : null;
   const video = youtubeSource && youtubeSrc ? { src: youtubeSrc, href: youtubeSource.url } : null;
 
+  // Category-aware social section copy — the section only renders when the
+  // owner actually supplied official channels.
+  const socialCopy: Record<string, { title: string; blurb: string }> = {
+    wedding: { title: "Real weddings & celebrations", blurb: "Recent weddings, decor and behind-the-scenes moments from our official channels." },
+    event: { title: "Events we've brought to life", blurb: "Recent setups, themes and celebrations from our official channels." },
+    restaurant: { title: "Fresh from the kitchen", blurb: "New dishes, specials and moments from our official channels." },
+    salon: { title: "Latest looks & transformations", blurb: "Recent styles and client transformations from our official channels." },
+    gym: { title: "Training in action", blurb: "Workouts, transformations and community moments from our official channels." },
+    photographer: { title: "Recent shoots", blurb: "Fresh work and behind-the-scenes from our official channels." },
+    hotel: { title: "Moments from the property", blurb: "Rooms, dining and guest experiences from our official channels." },
+    resort: { title: "Moments from the property", blurb: "Rooms, dining and guest experiences from our official channels." },
+  };
+  const social = socialCopy[data.industry] ?? { title: "Follow us", blurb: "Latest work, offers and updates from our official channels." };
+
   const available = (section: SectionId) =>
     section === "services" ? data.services.length > 0
     : section === "team" ? data.team.length > 0

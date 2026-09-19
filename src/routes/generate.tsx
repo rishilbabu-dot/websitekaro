@@ -6,7 +6,7 @@ import { LaunchRequestDialog } from "@/features/leads";
 import { buildBlueprint, getIndustryDesign } from "@/features/industries";
 import { generateBlueprint, generationModeInfo, getGenerationMode, type GenerationMode, type GenerationOutcome } from "@/features/ai";
 import { GenerationComplete, GenerationProgress } from "@/features/website-generation/components/GenerationExperience";
-import { researchGoogleBusiness, researchOfficialWebsite } from "@/features/website-generation";
+import { researchGoogleBusiness, researchOfficialWebsite, type WebsiteResearch } from "@/features/website-generation";
 import { BrandMark } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import { applyBrandSources, decodeBrandSources } from "@/features/website-generation/brand-links";
