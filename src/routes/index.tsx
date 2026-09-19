@@ -50,7 +50,7 @@ function Landing() {
   const [industry, setIndustry] = useState("dental");
   const [mode, setMode] = useState<GenerationMode>("draft");
   const navigate = useNavigate();
-  const { isGuest, isOwner, isSuperAdmin, isStaff, user } = useAuth();
+  const { isGuest, isOwner, isStaff, user } = useAuth();
   const quota = useGuestQuota();
   const [signIn, setSignIn] = useState(false);
   const blocked = isGuest && quota.exhausted;
