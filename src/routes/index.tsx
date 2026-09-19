@@ -14,7 +14,7 @@ import { GENERATION_MODES, generationModeInfo, type GenerationMode } from "@/fea
 import { BrandMark } from "@/components/brand";
 import { GoogleSignInDialog, QUOTA_EXHAUSTED_MESSAGE, StaffPasscodeDialog, useAuth, useGuestQuota } from "@/features/auth";
 import { BrandLinksSection } from "@/features/website-generation/components/BrandLinksSection";
-import { encodeBrandSources, type BrandLinkDraft } from "@/features/website-generation/brand-links";
+import { encodeBrandSources, toBrandSources, type BrandLinkDraft } from "@/features/website-generation/brand-links";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -108,8 +108,8 @@ function Landing() {
                   setSignIn(true);
                   return;
                 }
-                const links = encodeBrandSources(brandLinks);
-                navigate({ to: "/generate", search: { url: link, industry, name: "", mode, ...(links ? { links } : {}) } });
+                const links = encodeBrandSources(toBrandSources(brandLinks));
+                navigate({ to: "/generate", search: { url: link, industry, name: "", mode, links } });
               }}
             >
               <div className="flex flex-col gap-2 sm:flex-row">
