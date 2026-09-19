@@ -13,6 +13,8 @@ import { industryDesigns } from "@/features/industries";
 import { GENERATION_MODES, generationModeInfo, type GenerationMode } from "@/features/ai";
 import { BrandMark } from "@/components/brand";
 import { GoogleSignInDialog, QUOTA_EXHAUSTED_MESSAGE, StaffPasscodeDialog, useAuth, useGuestQuota } from "@/features/auth";
+import { BrandLinksSection } from "@/features/website-generation/components/BrandLinksSection";
+import { encodeBrandSources, toBrandSources, type BrandLinkDraft } from "@/features/website-generation/brand-links";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -49,6 +51,7 @@ function Landing() {
   const [link, setLink] = useState("");
   const [industry, setIndustry] = useState("dental");
   const [mode, setMode] = useState<GenerationMode>("draft");
+  const [brandLinks, setBrandLinks] = useState<BrandLinkDraft>({});
   const navigate = useNavigate();
   const { isGuest, isOwner, isStaff, user } = useAuth();
   const quota = useGuestQuota();
@@ -105,7 +108,8 @@ function Landing() {
                   setSignIn(true);
                   return;
                 }
-                navigate({ to: "/generate", search: { url: link, industry, name: "", mode } });
+                const links = encodeBrandSources(toBrandSources(brandLinks));
+                navigate({ to: "/generate", search: { url: link, industry, name: "", mode, links } });
               }}
             >
               <div className="flex flex-col gap-2 sm:flex-row">
@@ -149,6 +153,7 @@ function Landing() {
                 <span className="hidden lg:inline">{generationModeInfo(mode).costLabel}</span>
               </div>
             </form>
+            <BrandLinksSection value={brandLinks} onChange={setBrandLinks} />
             <div className="rise-3 mt-5 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               <Link to="/site/$slug" params={{ slug: "smilecraft-dental-bandra" }} className="font-medium text-foreground underline underline-offset-4">
                 View sample website

@@ -59,6 +59,35 @@ export interface Review {
   text: string;
   source: string;
   date: string;
+  /** Link to the review on its source (Google Maps listing). Never fabricated. */
+  url?: string;
+  /** True only when the text came from a real Google Business source. */
+  verified?: boolean;
+}
+
+/** Where a piece of website content came from. */
+export type SourceKind =
+  | "google-maps"
+  | "google-reviews"
+  | "instagram"
+  | "facebook"
+  | "youtube"
+  | "x"
+  | "linkedin"
+  | "tiktok"
+  | "pinterest"
+  | "website"
+  | "booking"
+  | "whatsapp"
+  | "other";
+
+export type SourceConfidence = "verified" | "user-provided" | "inferred";
+
+export interface BrandSource {
+  kind: SourceKind;
+  label: string;
+  url: string;
+  confidence: SourceConfidence;
 }
 
 export interface BusinessBlueprint {
@@ -85,7 +114,16 @@ export interface BusinessBlueprint {
   services: Service[];
   team: TeamMember[];
   faqs: Faq[];
-  reviews: { rating: number; count: number; summary: string; items: Review[] };
+  reviews: {
+    rating: number;
+    count: number;
+    summary: string;
+    items: Review[];
+    /** True only when rating/count/items come from the real Google listing. */
+    verified?: boolean;
+    /** Google listing reviews URL, when known. */
+    url?: string;
+  };
   cta: { primary: string; secondary: string };
   seo: { keywords: string[]; metaDescription: string; title: string };
   social: { label: string; url: string }[];
@@ -93,6 +131,10 @@ export interface BusinessBlueprint {
   audience: string;
   usp: string[];
   trust: { label: string; value: string }[];
+  /** Official Google Maps listing URL, when the visitor supplied one. */
+  mapsUrl?: string;
+  /** Every source that fed this website. Internal provenance, shown as a summary. */
+  sources?: BrandSource[];
 }
 
 export interface Lead {
