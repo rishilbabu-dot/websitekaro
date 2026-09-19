@@ -8,6 +8,7 @@ import { generateBlueprint, generationModeInfo, getGenerationMode, type Generati
 import { GenerationComplete, GenerationProgress } from "@/features/website-generation/components/GenerationExperience";
 import { BrandMark } from "@/components/brand";
 import { Button } from "@/components/ui/button";
+import { applyBrandSources, decodeBrandSources } from "@/features/website-generation/brand-links";
 import { GoogleSignInDialog, recordGuestGeneration, readGuestQuota, useAuth } from "@/features/auth";
 
 interface GenerateSearch {
@@ -15,6 +16,7 @@ interface GenerateSearch {
   industry: string;
   name: string;
   mode: GenerationMode;
+  links: string;
 }
 
 export const Route = createFileRoute("/generate")({
@@ -23,6 +25,7 @@ export const Route = createFileRoute("/generate")({
     industry: typeof search["industry"] === "string" ? search["industry"] : "dental",
     name: typeof search["name"] === "string" ? search["name"] : "",
     mode: getGenerationMode(typeof search["mode"] === "string" ? search["mode"] : undefined),
+    links: typeof search["links"] === "string" ? search["links"] : "",
   }),
   head: () => ({
     meta: [
@@ -49,7 +52,7 @@ const nameFromUrl = (url: string, fallback: string) => {
 };
 
 function GeneratePage() {
-  const { url, industry, name, mode } = Route.useSearch();
+  const { url, industry, name, mode, links } = Route.useSearch();
   const navigate = useNavigate();
   const [done, setDone] = useState(false);
   const [outcome, setOutcome] = useState<GenerationOutcome | null>(null);
@@ -91,7 +94,12 @@ function GeneratePage() {
     return () => { active = false; };
   }, [businessName, industry, mode, url, runGeneration]);
 
-  const blueprint = outcome?.blueprint ?? draftBlueprint;
+  // Optional brand links the owner supplied are merged in as attributed sources.
+  const brandSources = useMemo(() => decodeBrandSources(links), [links]);
+  const blueprint = useMemo(
+    () => applyBrandSources(outcome?.blueprint ?? draftBlueprint, brandSources, url),
+    [outcome, draftBlueprint, brandSources, url],
+  );
   const notice = outcome?.notice;
 
   return (
@@ -147,7 +155,7 @@ function GeneratePage() {
               googleMapsUrl: url,
               generatedWebsiteId: blueprint.slug,
               generatedWebsiteUrl: typeof window === "undefined" ? `/site/${blueprint.slug}` : `${window.location.origin}/site/${blueprint.slug}`,
-              socialSourcesUsed: ["Google Maps"],
+              socialSourcesUsed: ["Google Maps", ...brandSources.map((s) => s.label)],
             }}
             onContinue={() => navigate({ to: "/" })}
           />
