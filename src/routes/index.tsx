@@ -392,6 +392,7 @@ function Landing() {
             )}
             <a href="#pricing">Pricing</a>
             <a href="#faq">FAQ</a>
+            <button type="button" onClick={() => setStaffGate(true)} className="transition-colors hover:text-foreground">Admin</button>
           </div>
           <p>© {new Date().getFullYear()} WebsiteKaro, Mumbai</p>
         </div>
