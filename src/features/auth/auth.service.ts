@@ -54,4 +54,7 @@ export const unlockWithPasscode = (passcode: string): UserRole | null => {
   return user.role;
 };
 
-export const signOut = () => setSession(GUEST_SESSION);
+export const signOut = () => {
+  clearStaffToken();
+  setSession(GUEST_SESSION);
+};

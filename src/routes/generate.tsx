@@ -133,12 +133,22 @@ function GeneratePage() {
               Served from cache — this business was already generated, so no credits were used.
             </div>
           ) : null}
-          <GenerationComplete
-          data={blueprint}
-          onPublish={() => {
-            toast.success("Launch requested", { description: "Our team will confirm your domain and go live." });
-            navigate({ to: "/owner" });
-          }}
+          <GenerationComplete data={blueprint} onPublish={() => setLaunch(true)} />
+          <LaunchRequestDialog
+            open={launch}
+            onOpenChange={setLaunch}
+            context={{
+              name: "",
+              phone: "",
+              email: "",
+              businessName: blueprint.name,
+              businessType: blueprint.category,
+              googleMapsUrl: url,
+              generatedWebsiteId: blueprint.slug,
+              generatedWebsiteUrl: typeof window === "undefined" ? `/site/${blueprint.slug}` : `${window.location.origin}/site/${blueprint.slug}`,
+              socialSourcesUsed: ["Google Maps"],
+            }}
+            onContinue={() => navigate({ to: "/" })}
           />
         </>
       ) : (
