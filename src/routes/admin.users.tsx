@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { businesses } from "@/features/businesses";
 import { toast } from "sonner";
+import { RequireRole } from "@/features/auth";
 
 export const Route = createFileRoute("/admin/users")({ component: UsersPage });
 
@@ -14,6 +15,7 @@ const permissions = {
 
 function UsersPage() {
   return (
+    <RequireRole role="super-admin">
     <>
       <PageHeader title="Users & roles" subtitle="Who can touch what across the network." actions={<Button onClick={() => toast("Invite flow arrives with authentication.")}>Invite admin</Button>} />
       <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
@@ -46,5 +48,6 @@ function UsersPage() {
         </section>
       </div>
     </>
+    </RequireRole>
   );
 }
