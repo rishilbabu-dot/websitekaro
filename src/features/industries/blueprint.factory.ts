@@ -5,6 +5,7 @@
  */
 import type { BusinessBlueprint, Industry } from "@/features/businesses";
 import type { VerifiedPlace } from "@/features/website-generation/place-research.types";
+import { deriveBrandDirection } from "@/features/website-generation/brand-dna";
 import { getIndustryDesign } from "./industry.config";
 
 export interface BlueprintSeedInput {
@@ -29,6 +30,22 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
   const city = verified?.city || input.city.trim() || "Mumbai";
   const slug = `${slugify(name)}-${slugify(city)}`;
   const digits = Array.from(slug).reduce((a, c) => a + c.charCodeAt(0), 0);
+
+  const media = verified?.photos.map((photo) => ({ url: photo.url, source: "google-maps" as const, sourceUrl: photo.sourceUrl, ...(photo.attribution ? { attribution: photo.attribution } : {}) })) ?? [];
+  const direction = deriveBrandDirection({
+    name,
+    city,
+    industry: design.id as Industry,
+    category: verified?.category ?? design.category,
+    reviews: verified ? {
+      rating: verified.rating ?? 0,
+      count: verified.reviewCount ?? 0,
+      summary: "",
+      verified: typeof verified.rating === "number" && typeof verified.reviewCount === "number",
+      items: verified.reviews,
+    } : { rating: 0, count: 0, summary: "", verified: false, items: [] },
+    media,
+  }, design.heroVariant, design.sections);
 
   return {
     id: `gen_${slug}`,
@@ -101,7 +118,8 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
         ...(verified.website ? [{ kind: "website" as const, label: "Official website", url: verified.website, confidence: "verified" as const, verifiedAt: verified.verifiedAt }] : []),
       ],
       verifiedIdentity: { placeId: verified.placeId, name: verified.name, mapsUrl: verified.mapsUrl, verifiedAt: verified.verifiedAt },
-      media: verified.photos.map((photo) => ({ url: photo.url, source: "google-maps" as const, sourceUrl: photo.sourceUrl, ...(photo.attribution ? { attribution: photo.attribution } : {}) })),
+      media,
     } : {}),
+    ...direction,
   };
 };

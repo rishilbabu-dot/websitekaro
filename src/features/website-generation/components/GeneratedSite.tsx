@@ -411,7 +411,12 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
 
 export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
   const [open, setOpen] = useState(false);
-  const design = getIndustryDesign(data.industry);
+  const categoryDesign = getIndustryDesign(data.industry);
+  const design: IndustryDesign = {
+    ...categoryDesign,
+    heroVariant: data.designStrategy?.heroVariant ?? categoryDesign.heroVariant,
+    sections: data.designStrategy?.sectionOrder ?? categoryDesign.sections,
+  };
   const heroImage = siteImages(data).hero;
   // Official YouTube embed only — never re-hosted video.
   const youtubeSource = data.sources?.find((s) => s.kind === "youtube");
@@ -443,7 +448,13 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
   const ctx: Ctx = { data, design, tone: true };
 
   return (
-    <div className="bg-background text-foreground" style={industryCssVars(design)}>
+    <div
+      className="bg-background text-foreground"
+      data-brand-archetype={data.brandDNA?.archetype}
+      data-brand-energy={data.brandDNA?.energy}
+      data-image-treatment={data.designStrategy?.imageTreatment}
+      style={industryCssVars(design)}
+    >
       <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5 sm:px-8">
           <a href="#top" className="flex items-center gap-3">
