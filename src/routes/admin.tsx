@@ -1,24 +1,16 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { AppShell } from "@/components/layout";
-import { adminNav } from "@/features/admin";
-import { RequireRole } from "@/features/auth";
+import { adminNavForRole } from "@/features/admin";
+import { RequireRole, roleLabelFor, useAuth } from "@/features/auth";
 
-export const Route = createFileRoute("/admin")({
-  head: () => ({
-    meta: [
-      { title: "Super Admin — WebsiteKaro" },
-      { name: "description", content: "Manage businesses, generate websites and publish across the WebsiteKaro network." },
-      { property: "og:title", content: "Super Admin — WebsiteKaro" },
-      { property: "og:description", content: "The WebsiteKaro control room for generated business websites." },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
-  component: () => (
-    <RequireRole role="super-admin">
+function AdminShell() {
+  const { role } = useAuth();
+  return (
+    <RequireRole roles={["admin", "super-admin"]}>
       <AppShell
-        nav={adminNav}
+        nav={adminNavForRole(role)}
         role="/admin"
-        roleLabel="Super Admin"
+        roleLabel={roleLabelFor(role)}
         footer={
           <div className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-center justify-between">
@@ -37,5 +29,18 @@ export const Route = createFileRoute("/admin")({
         <Outlet />
       </AppShell>
     </RequireRole>
-  ),
+  );
+}
+
+export const Route = createFileRoute("/admin")({
+  head: () => ({
+    meta: [
+      { title: "Super Admin — WebsiteKaro" },
+      { name: "description", content: "Manage businesses, generate websites and publish across the WebsiteKaro network." },
+      { property: "og:title", content: "Super Admin — WebsiteKaro" },
+      { property: "og:description", content: "The WebsiteKaro control room for generated business websites." },
+      { name: "robots", content: "noindex" },
+    ],
+  }),
+  component: AdminShell,
 });
