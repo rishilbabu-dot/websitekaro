@@ -5,6 +5,7 @@
  */
 import type { BusinessBlueprint, Industry } from "@/features/businesses";
 import type { VerifiedPlace } from "@/features/website-generation/place-research.types";
+import type { WebsiteResearch } from "@/features/website-generation/website-research.types";
 import { deriveBrandDirection } from "@/features/website-generation/brand-dna";
 import { getIndustryDesign } from "./industry.config";
 
@@ -14,6 +15,7 @@ export interface BlueprintSeedInput {
   industry: string;
   sourceUrl?: string;
   verifiedPlace?: VerifiedPlace;
+  websiteResearch?: WebsiteResearch;
 }
 
 const slugify = (s: string) =>
@@ -31,7 +33,10 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
   const slug = `${slugify(name)}-${slugify(city)}`;
   const digits = Array.from(slug).reduce((a, c) => a + c.charCodeAt(0), 0);
 
-  const media = verified?.photos.map((photo) => ({ url: photo.url, source: "google-maps" as const, sourceUrl: photo.sourceUrl, ...(photo.attribution ? { attribution: photo.attribution } : {}) })) ?? [];
+  const site = input.websiteResearch;
+  const mapsMedia = verified?.photos.map((photo) => ({ url: photo.url, source: "google-maps" as const, sourceUrl: photo.sourceUrl, ...(photo.attribution ? { attribution: photo.attribution } : {}) })) ?? [];
+  const websiteMedia = site?.images.map((image) => ({ url: image.url, source: "website" as const, sourceUrl: image.sourcePage, ...(image.alt ? { attribution: image.alt } : {}) })) ?? [];
+  const media = [...mapsMedia, ...websiteMedia];
   const direction = deriveBrandDirection({
     name,
     city,
