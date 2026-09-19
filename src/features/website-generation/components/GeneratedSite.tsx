@@ -564,8 +564,8 @@ export function GeneratedSite({ data }: { data: BusinessBlueprint }) {
         <Section className="py-14">
           <div className="flex flex-col items-start justify-between gap-5 rounded-[calc(var(--radius)+0.75rem)] border border-border bg-card p-8 sm:flex-row sm:items-center">
             <div>
-              <h2 className="text-2xl">Follow us</h2>
-              <p className="mt-1.5 text-sm text-muted-foreground">Latest work, offers and updates from our official channels.</p>
+              <h2 className="text-2xl">{social.title}</h2>
+              <p className="mt-1.5 text-sm text-muted-foreground">{social.blurb}</p>
             </div>
             <div className="flex flex-wrap gap-2">
               {data.social.map((s) => (
