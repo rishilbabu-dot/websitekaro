@@ -8,19 +8,19 @@ import type { BusinessBlueprint } from "@/features/businesses";
 import { Button } from "@/components/ui/button";
 import { GeneratedSite } from "./GeneratedSite";
 import { savePreviewBlueprint } from "../preview-store";
+import { SourcesPanel } from "./SourcesPanel";
 
 export const generationStages = [
-  { icon: Search, label: "Finding your business" },
-  { icon: MessageSquareQuote, label: "Analyzing reviews" },
-  { icon: Sparkles, label: "Understanding services" },
-  { icon: Users, label: "Researching competitors" },
-  { icon: Palette, label: "Creating brand identity" },
-  { icon: PenLine, label: "Writing website content" },
-  { icon: LayoutTemplate, label: "Designing website" },
-  { icon: Gauge, label: "Optimizing SEO" },
-  { icon: Bot, label: "Optimizing AI Search" },
-  { icon: MonitorSmartphone, label: "Generating responsive layouts" },
-  { icon: ShieldCheck, label: "Final quality checks" },
+  { icon: Search, label: "Reading your Google Maps listing" },
+  { icon: MessageSquareQuote, label: "Researching your business" },
+  { icon: Users, label: "Checking your brand channels" },
+  { icon: Sparkles, label: "Understanding what you offer" },
+  { icon: PenLine, label: "Writing authentic content" },
+  { icon: Palette, label: "Designing your website" },
+  { icon: Gauge, label: "Optimising local SEO" },
+  { icon: ShieldCheck, label: "Adding trust and proof" },
+  { icon: MonitorSmartphone, label: "Building your preview" },
+  { icon: Bot, label: "Final quality checks" },
 ];
 
 const STAGE_MS = 900;
@@ -338,6 +338,10 @@ export function GenerationComplete({ data, onPublish }: { data: BusinessBlueprin
 
       <section className="mx-auto w-full max-w-6xl px-5 pb-14 sm:px-8">
         <QualityScoreCard slug={data.slug} />
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-5 pb-14 sm:px-8">
+        <SourcesPanel data={data} />
       </section>
 
       <section className="border-y border-border bg-secondary/40 px-5 py-14 sm:px-8">
