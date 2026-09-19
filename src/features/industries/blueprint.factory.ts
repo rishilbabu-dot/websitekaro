@@ -68,23 +68,11 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
     logoMark: initials(name) || "WK",
     brand: { primary: design.theme.primary, accent: design.theme.accent },
     photos: verified?.photos.map((photo) => photo.url) ?? [],
-    services: (verified ? [] : s.services).map(([sname, desc, priceFrom, duration], i) => ({
-      id: `s${i + 1}`,
-      name: sname,
-      description: desc,
-      priceFrom,
-      duration,
-    })),
-    team: verified ? [] : s.team.map(([tname, role, qualification, experience, bio], i) => ({
-      id: `t${i + 1}`,
-      name: tname,
-      role,
-      qualification,
-      experience,
-      bio,
-      photo: "",
-    })),
-    faqs: (verified ? [] : s.faqs).map(([question, answer], i) => ({ id: `f${i + 1}`, question, answer })),
+    // Business-specific services, people, prices and FAQs must come from an
+    // attributed source or an owner edit. Category presets are visual only.
+    services: [],
+    team: [],
+    faqs: [],
     // Sample wording only. Nothing here is presented as a real Google review —
     // verified reviews arrive with the live Google Business source.
     reviews: verified ? {
@@ -101,15 +89,15 @@ export const buildBlueprint = (input: BlueprintSeedInput): BusinessBlueprint => 
       metaDescription: verified
         ? `${name}${city ? ` in ${city}` : ""}. View verified business details, services and contact information.`.slice(0, 155)
         : `${name} is a ${design.category.toLowerCase()} in ${city}.`.slice(0, 155),
-      keywords: [...s.keywords, `${design.label.toLowerCase()} in ${city.toLowerCase()}`],
+      keywords: [`${design.label.toLowerCase()} in ${city.toLowerCase()}`],
     },
     // Social links only exist when the owner supplies them — we never guess
     // that a profile belongs to this business.
     social: [],
-    personality: verified ? [] : ["Premium", "Trustworthy", "Warm"],
-    audience: verified ? "" : s.audience,
-    usp: verified ? [] : s.usp,
-    trust: verified ? [] : s.trust.map(([label, value]) => ({ label, value })),
+    personality: [],
+    audience: "",
+    usp: [],
+    trust: [],
     ...(verified ? {
       mapsUrl: verified.mapsUrl,
       sources: [

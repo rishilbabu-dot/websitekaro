@@ -71,12 +71,6 @@ function HeroSplit({ data, image }: { data: BusinessBlueprint; image: string }) 
               </div>
             </div>
           ) : null}
-          <div className="absolute -left-5 top-8 hidden rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur lg:block">
-            <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Today</p>
-            <p className="mt-1 flex items-center gap-2 text-sm font-medium">
-              <span className="size-1.5 rounded-full bg-success" /> Slots available
-            </p>
-          </div>
         </div>
       </div>
     </div>
@@ -347,7 +341,7 @@ const sectionRenderers: Record<SectionId, (ctx: Ctx, tinted: boolean) => React.R
           <Eyebrow>{design.words.contactEyebrow}</Eyebrow>
           <h2 className="text-3xl sm:text-4xl">{design.words.contactTitle}</h2>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            Tell us when suits you. We reply within business hours, usually in minutes.
+            Share what you need and the best way to reach you.
           </p>
           <form
             className="mt-8 grid gap-4"
