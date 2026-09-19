@@ -109,6 +109,30 @@ function SitePage() {
   const [local, setLocal] = useState<BusinessBlueprint | null>(null);
   useEffect(() => { if (!business) setLocal(loadPreviewBlueprint(slug) ?? null); }, [business, slug]);
 
+  // Browser-stored previews are invisible to the server render, so keep the
+  // verified business name in the tab title and social preview tags client-side.
+  useEffect(() => {
+    if (!local) return;
+    const raw = local.seo.title?.trim() || `${local.name} | ${local.city}`;
+    const title = raw.toLowerCase().includes(local.name.toLowerCase())
+      ? raw
+      : `${local.name} | ${raw}`.slice(0, 70);
+    document.title = title;
+    const setMeta = (attr: "name" | "property", key: string, content: string) => {
+      let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+    setMeta("name", "description", local.seo.metaDescription);
+    setMeta("property", "og:title", title);
+    setMeta("property", "og:site_name", local.name);
+    setMeta("property", "og:description", local.seo.metaDescription);
+  }, [local]);
+
   const data = business ?? local;
   if (!data) {
     return (
