@@ -59,7 +59,11 @@ export interface SiteImages {
  * (Google Maps / owner uploads) take priority over the industry stock set.
  */
 export const siteImages = (data: BusinessBlueprint, galleryCount = 4): SiteImages => {
-  const own = (data.photos ?? []).filter(Boolean);
+  const sourced = (data.media ?? []).sort((a, b) => {
+    const priority = { owner: 0, website: 1, "google-maps": 2, social: 3, stock: 4, "ai-generated": 5 } as const;
+    return priority[a.source] - priority[b.source];
+  }).map((photo) => photo.url);
+  const own = [...sourced, ...(data.photos ?? [])].filter((value, index, all) => Boolean(value) && all.indexOf(value) === index);
   const stock = industryPhotoIds(data.industry);
   const pool = own.length ? [...own, ...stock] : stock;
 

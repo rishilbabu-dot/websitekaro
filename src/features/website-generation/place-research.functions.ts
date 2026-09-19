@@ -108,7 +108,7 @@ export const researchGoogleBusiness = createServerFn({ method: "POST" })
         if (!photo || typeof photo !== "object") return null;
         const row = photo as { name?: unknown; authorAttributions?: unknown };
         if (typeof row.name !== "string") return null;
-        const first = Array.isArray(row["authorAttribution"]s) ? row["authorAttribution"]s[0] : undefined;
+        const first = Array.isArray(row.authorAttributions) ? row.authorAttributions[0] : undefined;
         const author = first && typeof first === "object" ? first as { displayName?: unknown } : undefined;
         return fetchPhoto(row.name, mapsUrl, gatewayHeaders, typeof author?.displayName === "string" ? author.displayName : undefined);
       }))).filter((photo): photo is VerifiedPlacePhoto => photo !== null);
