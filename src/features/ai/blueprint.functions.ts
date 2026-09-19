@@ -96,25 +96,30 @@ export const generateBlueprint = createServerFn({ method: "POST" })
       let inputTokens = 0;
       let outputTokens = 0;
 
-      const context = [
-        `Business name: ${base.name}`,
-        `City: ${city}`,
-        `Industry: ${design.label} (${design.category})`,
-        `Existing service names: ${base.services.map((s) => s.name).join(", ")}`,
-        `Existing FAQ questions: ${base.faqs.map((f) => f.question).join(" | ")}`,
-      ].join("\n");
+      // The packet is the only ground truth the model is allowed to write from.
+      const context = buildResearchPacket({
+        blueprint: base,
+        city,
+        industryLabel: design.label,
+        industryCategory: design.category,
+        ...(data.verifiedPlace ? { verifiedPlace: data.verifiedPlace } : {}),
+        ...(data.websiteResearch ? { websiteResearch: data.websiteResearch } : {}),
+      });
+
+      const SYSTEM =
+        "You are a senior copywriter at a premium Indian digital agency. You write from a verified research packet only. Every line must be specific to this one business. Never invent prices, awards, certifications, experience claims or medical claims.";
 
       const copyResult = await generateText({
         model,
         output: Output.object({ schema: aiCopySchema }),
-        system:
-          "You are a senior copywriter at a premium Indian digital agency. Write warm, specific, non-generic website copy for a local business. Never invent prices, awards, certifications or medical claims.",
+        system: SYSTEM,
         prompt: [
           context,
           "",
           `Write website copy for this business. Keep the tagline under 70 characters, the description 2-3 sentences, seoTitle under 60 characters and seoDescription under 155 characters. Return exactly ${base.services.length} services (reuse the existing service names) and ${base.faqs.length} FAQs. Give 3 usp items, 3 personality words and 6 keywords.`,
         ].join("\n"),
       });
+
 
       inputTokens += copyResult.usage?.inputTokens ?? 0;
       outputTokens += copyResult.usage?.outputTokens ?? 0;
